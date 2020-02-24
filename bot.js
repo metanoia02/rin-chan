@@ -1,33 +1,20 @@
 ﻿const Discord = require('discord.js');
-const client = new Discord.Client();
-const config = require("./config.json");
-
 const SQLite = require("better-sqlite3");
+
+const config = require("./config.json");
+var orangeModule = require("./orange.js");
+
+global.client = new Discord.Client();
 const sql = new SQLite('./orange.sqlite');
 
-
-
-const cmd = [
-    ["hi", "hello", "morning", "afternoon", "evening", "night", "good morning", "good evening", "good night"],
-    ["lets play a game", "let's play a game", "play a game", "lets play", "let's play"],
-    ["are you hungry?", "hungry?"],
-    ["harvest oranges", "harvest", "look for oranges", "find orange", "find oranges", "look for orange", "find an orange"],
-    ["have an orange", "give orange"],
-    ["<:rinheadpat:650489863312769036>"],
-    ["help", "commands"]
-];
-
-const adminCmd = [""];
-
-var maxHunger = 2;
 var hunger = 1;
 var catchUser;
 var catching = false;
 var catchMessage;
 
-client.login(config.token);
+global.client.login(config.token);
 
-client.once('ready', () => {
+global.client.once('ready', () => {
     console.log('Ready!');
 
     const table = sql.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'orange';").get();
@@ -40,18 +27,18 @@ client.once('ready', () => {
         sql.pragma("journal_mode = wal");
     }
 
-    client.getOrange = sql.prepare("SELECT * FROM orange WHERE user = ? AND guild = ?");
-    client.trawlTable = sql.prepare("SELECT * FROM orange WHERE id = ?");
-    client.setOrange = sql.prepare("INSERT OR REPLACE INTO orange (id, user, guild, oranges, affection, tries) VALUES (@id, @user, @guild, @oranges, @affection, @tries);");
+    global.client.getOrange = sql.prepare("SELECT * FROM orange WHERE user = ? AND guild = ?");
+    global.client.trawlTable = sql.prepare("SELECT * FROM orange WHERE id = ?");
+    global.client.setOrange = sql.prepare("INSERT OR REPLACE INTO orange (id, user, guild, oranges, affection, tries) VALUES (@id, @user, @guild, @oranges, @affection, @tries);");
 
     sql.prepare("UPDATE orange SET tries = 3").run();
 });
 
-client.on('message', message => {
+global.client.on('message', message => {
 
     console.log(message.content);
 
-    if (message.isMentioned(client.user) && message.guild) {
+    if (message.isMentioned(global.client.user) && message.guild) {
         if (message.content.length < 23) {
             message.channel.send('Yes?');
         } else {
@@ -89,11 +76,11 @@ client.on('message', message => {
                     return;
                 }
                 case 3: {
-                    harvestOrange(message);
+                    orangeModule.harvestOrange(message);
                     return;
                 }
                 case 4: {
-                    feedOrange(message);
+                    orangeModule.feedOrange(message);
                     return;
                 }
                 case 5: {
@@ -121,7 +108,7 @@ client.on('message', message => {
 
 });
 
-client.on('guildMemberAdd', member => {
+global.client.on('guildMemberAdd', member => {
     const channel = member.guild.channels.find(ch => ch.name === 'lounge');
 
     if (!channel) return;
@@ -132,7 +119,7 @@ client.on('guildMemberAdd', member => {
     });
 });
 
-client.on('guildMemberRemove', member => {
+global.client.on('guildMemberRemove', member => {
 
 });
 
@@ -187,12 +174,7 @@ function checkForEmote(message) {
         }
     }
 
-    if ((orangeTotal - orangeEmotes) > 0) {
-        return true;
-    } else {
-        return false;
-    }
-
+    return (orangeTotal - orangeEmotes) > 0;
 };
 
 function checkCommands(message) {
@@ -203,9 +185,9 @@ function checkCommands(message) {
 
     var i;
     var v;
-    for (i = 0; i < cmd.length; i++) {
-        for (v = 0; v < cmd[i].length; v++) {
-            if (cmd[i][v] === message) {
+    for (i = 0; i < config.cmd.length; i++) {
+        for (v = 0; v < config.cmd[i].length; v++) {
+            if (config.cmd[i][v] === message) {
                 return i;
             }
         }
@@ -217,7 +199,7 @@ function checkAdminCommands(message) {
         var i;
 
         for (i = 0; i < adminCmd.length; i++) {
-            if (cmd[i] === message.content.toLowerCase()) {
+            if (config.adminCmd[i] === message.content.toLowerCase()) {
                 return i;
             }
         }
@@ -226,7 +208,7 @@ function checkAdminCommands(message) {
 };
 
 setInterval(function() {
-    if (hunger < maxHunger) {
+    if (hunger < config.maxHunger) {
         hunger++;
     }
 
@@ -238,137 +220,3 @@ setInterval(function() {
     sql.prepare("UPDATE orange SET tries = 3").run();
 
 }, 14400000);
-
-function feedOrange(message) {
-    let orangeTry = client.getOrange.get(message.author.id, message.guild.id);
-
-    if (!orangeTry) {
-        orangeTry = {
-            id: `${message.guild.id}-${message.author.id}`,
-            user: message.author.id,
-            guild: message.guild.id,
-            oranges: 0,
-            affection: 0,
-            tries: 3
-        };
-    }
-
-
-    if (orangeTry.oranges < 1) {
-        message.channel.send(`You don't have any oranges!`);
-    } else {
-        switch (hunger) {
-            case 0:
-                message.channel.send('Im stuffed, I cant eat another one');
-                break;
-            case 1:
-                message.channel.send(`Thanks, I can't eat another bite`);
-                orangeTry.oranges--;
-                hunger--;
-                break;
-            case 2:
-                message.channel.send(`I'm starving! What took you so long`);
-                orangeTry.oranges--;
-                hunger--;
-                break;
-        }
-    }
-
-    client.setOrange.run(orangeTry);
-};
-
-function harvestOrange(message) {
-    let orangeTry = client.getOrange.get(message.author.id, message.guild.id);
-
-    if (!orangeTry) {
-        orangeTry = {
-            id: `${message.guild.id}-${message.author.id}`,
-            user: message.author.id,
-            guild: message.guild.id,
-            oranges: 0,
-            affection: 0,
-            tries: 3
-        };
-    }
-
-    if (orangeTry.tries > 0) {
-        if (Math.random() > 0.5) {
-            orangeTry.oranges++;
-            orangeTry.tries--;
-
-            message.channel.send('Found an Orange!');
-        } else {
-            orangeTry.tries--;
-            message.channel.send('Couldnt find anything');
-        }
-    } else {
-        message.channel.send(`I'm tired! <:rinded:603549269106098186>`);
-    }
-
-    client.setOrange.run(orangeTry);
-}
-
-
-function catchOrange(message) {
-    //check tired 
-
-    var user = message.author;
-    var catching = true;
-
-    message.channel.send(""); //intro
-
-    catchMessage = message.channel.send(""); //ascii art
-
-    message.channel.send(""); //ask to pick
-}
-
-function catchChoice(message, pick) {
-    var pattern = [
-        Math.round(Math.random()),
-        Math.round(Math.random()),
-        Math.round(Math.random()),
-        Math.round(Math.random())
-    ];
-
-    setTimeout(function() {
-        catchMessage.edit("");
-    }, 1000);
-
-    setTimeout(function() {
-        catchMessage.edit("");
-    }, 1000);
-
-    setTimeout(function() {
-        catchMessage.edit("");
-    }, 1000);
-
-    setTimeout(function() {
-        catchMessage.edit("");
-    }, 1000); //Final
-
-    let orangeTry = client.getOrange.get(message.author.id, message.guild.id);
-
-    if (!orangeTry) {
-        orangeTry = {
-            id: `${message.guild.id}-${message.author.id}`,
-            user: message.author.id,
-            guild: message.guild.id,
-            oranges: 0,
-            affection: 0,
-            tries: 3
-        };
-    }
-
-    if (pick == pattern[pick]) {
-        orangeTry.oranges++;
-        orangeTry.tries--;
-
-        message.channel.send('Gotcha');
-    } else {
-        orangeTry.tries--;
-        message.channel.send('Bad luck');
-    }
-
-    client.setOrange.run(orangeTry);
-    catching = false;
-}
