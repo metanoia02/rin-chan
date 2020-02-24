@@ -1,0 +1,15 @@
+{
+     "cmd": [
+        ["hi", "hello", "morning", "afternoon", "evening", "night", "good morning", "good evening", "good night"],
+        ["lets play a game", "let's play a game", "play a game", "lets play", "let's play"],
+        ["are you hungry?", "hungry?"],
+        ["harvest oranges", "harvest", "look for oranges", "find orange", "find oranges", "look for orange", "find an orange"],
+        ["have an orange", "give orange"],
+        ["<:rinheadpat:650489863312769036>"],
+        ["help", "commands"]
+    ],
+
+    "adminCmd": [ "" ],
+
+    "maxHunger": 2
+}

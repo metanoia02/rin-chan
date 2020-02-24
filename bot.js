@@ -2,6 +2,7 @@
 const SQLite = require("better-sqlite3");
 
 const config = require("./config.json");
+const token = require("./token.json");
 var orangeModule = require("./orange.js");
 
 global.client = new Discord.Client();
@@ -12,7 +13,7 @@ var catchUser;
 var catching = false;
 var catchMessage;
 
-global.client.login(config.token);
+global.client.login(token.login);
 
 global.client.once('ready', () => {
     console.log('Ready!');
