@@ -3,20 +3,20 @@ const SQLite = require("better-sqlite3");
 
 const config = require("./config.json");
 const token = require("./token.json");
-var orangeModule = require("./orange.js");
 
 global.client = new Discord.Client();
 const sql = new SQLite('./orange.sqlite');
 
-var hunger = 1;
 var catchUser;
 var catching = false;
 var catchMessage;
+var modules = {};
 
 global.client.login(token.login);
 
 global.client.once('ready', () => {
-    console.log('Ready!');
+    
+    addModules();
 
     const table = sql.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'orange';").get();
 
@@ -33,6 +33,8 @@ global.client.once('ready', () => {
     global.client.setOrange = sql.prepare("INSERT OR REPLACE INTO orange (id, user, guild, oranges, affection, tries) VALUES (@id, @user, @guild, @oranges, @affection, @tries);");
 
     sql.prepare("UPDATE orange SET tries = 3").run();
+
+    console.log('Ready!');
 });
 
 global.client.on('message', message => {
@@ -40,74 +42,43 @@ global.client.on('message', message => {
     console.log(message.content);
 
     if (message.isMentioned(global.client.user) && message.guild) {
-        if (message.content.length < 23) {
-            message.channel.send('Yes?');
-        } else {
-            var command = message.content.substring(message.content.search(">") + 2).toLowerCase()
+  
+        var command = message.content.substring(message.content.search(">") + 2).toLowerCase()
 
-            switch (checkAdminCommands(message)) {}
-
-            switch (checkCommands(command)) {
-                case 0: //hi
-                {
-                    sayHi(message);
-                    return;
-                }
-                case 1: //game
-                {
-                    //guessGame.startPlaying(message);
-                    return;
-                }
-                case 2: //hungry?
-                {
-                    switch (hunger) {
-                        case 0: {
-                            message.channel.send("Im stuffed <:rinchill:600745019514814494>");
-                            return;
-                        }
-                        case 1: {
-                            message.channel.send("Dont you have one more orange? <:oharin:601107083265441849>");
-                            return;
-                        }
-                        case 2: {
-                            message.channel.send("Im starving here! <:rinangrey:620576239224225835>");
+        for (var k in modules) {
+            if (modules.hasOwnProperty(k)) {
+            for (var i = 0; i < modules[k].config.cmd.length; i++) {
+                    for (var v = 0; v < modules[k].config.cmd[i].length; v++) {
+                        if (modules[k].config.cmd[i][v] === command) {
+                            modules[k][modules[k].config.function[i]](message);
                             return;
                         }
                     }
-                    return;
-                }
-                case 3: {
-                    orangeModule.harvestOrange(message);
-                    return;
-                }
-                case 4: {
-                    orangeModule.feedOrange(message);
-                    return;
-                }
-                case 5: {
-                    message.channel.send('<:rincomf:634115522002419744>');
-                    return;
-                }
-                case 6: {
-                    message.channel.send("My commands are:\nHi\nHungry?\nlook for oranges\nhave an orange\n<:rinheadpat:650489863312769036>\nhelp");
-                    return;
-                }
-
-                default: {
-                    message.channel.send('<:rinwha:600747717081432074>');
-                    return;
                 }
             }
         }
-    } else if (checkForEmote(message) && !message.author.bot && hunger > 0) {
-        message.channel.send('Who said orange?! Gimme!');
-        return;
-    } else if (message.content.includes('🍊') && !message.author.bot && hunger > 0) {
-        message.channel.send(`That's my orange! Gimme!`);
-        return;
-    }
 
+        if (message.content.length < 23) {
+            message.channel.send('Yes?');
+        } else if (checkForEmote(message) && !message.author.bot && hunger > 0) {
+            message.channel.send('Who said orange?! Gimme!');
+            return;
+        } else if (message.content.includes('🍊') && !message.author.bot && hunger > 0) {
+            message.channel.send(`That's my orange! Gimme!`);
+            return;
+        } else {
+            message.channel.send('<:rinwha:600747717081432074>');
+        }
+    }
 });
+
+function addModules() {
+    console.log("Adding modules...")
+    config.modules.forEach(function(value) {
+        modules[value] = require(`./rinchan_modules/${value}/module.js`);
+        console.log(`Added ${value}`);
+    });
+};
 
 global.client.on('guildMemberAdd', member => {
     const channel = member.guild.channels.find(ch => ch.name === 'lounge');
@@ -124,25 +95,6 @@ global.client.on('guildMemberRemove', member => {
 
 });
 
-function sayHi(message) {
-    var d = new Date();
-    var n = d.getHours();
-
-    if (n > 6 && n < 12) {
-        message.channel.send(`Good morning ${message.author}`);
-        return;
-    } else if (n >= 12 && n < 18) {
-        message.channel.send(`Good afternoon ${message.author}`);
-        return;
-    } else if (n >= 18 && n < 22) {
-        message.channel.send(`Good evening ${message.author}`);
-        return;
-    } else {
-        message.channel.send('Why are you bothering me at this time, I need to sleep!');
-        return;
-    }
-};
-
 function checkForEmote(message) {
     var orangeTotal;
 
@@ -153,14 +105,11 @@ function checkForEmote(message) {
     }
 
     var orangeEmotes = 0;
-
-    var i;
-
     var colon = false;
     var colonPosition;
     var emote;
 
-    for (i = 0; i < message.content.length; i++) {
+    for (var i = 0; i < message.content.length; i++) {
         if (colon == false && message.content.charAt(i) == ':') {
             colon = true;
             colonPosition = i;
@@ -178,28 +127,11 @@ function checkForEmote(message) {
     return (orangeTotal - orangeEmotes) > 0;
 };
 
-function checkCommands(message) {
-
-    if (message === '<:rinheadpat:650489863312769036>') {
-        return 5;
-    }
-
-    var i;
-    var v;
-    for (i = 0; i < config.cmd.length; i++) {
-        for (v = 0; v < config.cmd[i].length; v++) {
-            if (config.cmd[i][v] === message) {
-                return i;
-            }
-        }
-    }
-};
-
 function checkAdminCommands(message) {
     if (message.member.roles.find(r => r.name === "Mods")) {
         var i;
 
-        for (i = 0; i < adminCmd.length; i++) {
+        for (i = 0; i < config.adminCmd.length; i++) {
             if (config.adminCmd[i] === message.content.toLowerCase()) {
                 return i;
             }
@@ -209,11 +141,9 @@ function checkAdminCommands(message) {
 };
 
 setInterval(function() {
-    if (hunger < config.maxHunger) {
-        hunger++;
+    if (modules.orange.hunger < config.maxHunger) {
+        modules.orange.hunger++;
     }
-
-    console.log(hunger);
 }, 57600000);
 
 setInterval(function() {
@@ -221,3 +151,4 @@ setInterval(function() {
     sql.prepare("UPDATE orange SET tries = 3").run();
 
 }, 14400000);
+
