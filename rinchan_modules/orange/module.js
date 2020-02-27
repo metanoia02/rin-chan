@@ -2,6 +2,50 @@ var orange = {
     hunger: 1,
     config: require("./config.json"),
 
+    handler: function(message) { 
+        if (orange.checkForEmote(message) && !message.author.bot && orange.hunger > 0) {
+            message.channel.send('Who said orange?! Gimme!');
+            return true;
+        } else if (message.content.includes('🍊') && !message.author.bot && orange.hunger > 0) {
+            message.channel.send(`That's my orange! Gimme!`);
+            return true;
+        } 
+
+        return false;
+    },
+
+    checkForEmote: function(message) {
+        var orangeTotal;
+    
+        if (message.content.match(/orange/gi) != null) {
+            orangeTotal = message.content.match(/orange/gi).length;
+        } else {
+            return false;
+        }
+    
+        var orangeEmotes = 0;
+        var colon = false;
+        var colonPosition;
+        var emote;
+    
+        for (var i = 0; i < message.content.length; i++) {
+            if (colon == false && message.content.charAt(i) == ':') {
+                colon = true;
+                colonPosition = i;
+            } else if (colon == true && message.content.charAt(i) == ':') {
+                emote = message.content.slice(colonPosition, i);
+    
+                if (emote.match(/orange/gi) != null && emote.match(/orange/gi).length > 0) {
+                    orangeEmotes++;
+                }
+    
+                colon = false;
+            }
+        }
+    
+        return (orangeTotal - orangeEmotes) > 0;
+    },
+
     feedOrange: function(message) {
         let orangeTry = global.client.getOrange.get(message.author.id, message.guild.id);
 
@@ -26,12 +70,12 @@ var orange = {
                 case 1:
                     message.channel.send(`Thanks, I can't eat another bite`);
                     orangeTry.oranges--;
-                    hunger--;
+                    orange.hunger--;
                     break;
                 case 2:
                     message.channel.send(`I'm starving! What took you so long`);
                     orangeTry.oranges--;
-                    hunger--;
+                    orange.hunger--;
                     break;
             }
         }
@@ -121,13 +165,13 @@ var orange = {
     
         if (pick == pattern[pick]) {
             orangeTry.oranges++;
-            orangeTry.tries--;
-    
+   
             message.channel.send('Gotcha');
         } else {
-            orangeTry.tries--;
             message.channel.send('Bad luck');
         }
+
+        orangeTry.tries--;
     
         global.client.setOrange.run(orangeTry);
         catching = false;
@@ -155,5 +199,11 @@ var orange = {
         console.log("test");
     }
 };
+
+setInterval(function() {
+    if (orange.hunger < config.maxHunger) {
+        orange.hunger++;
+    }
+}, 57600000);
 
 module.exports = orange

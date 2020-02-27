@@ -12,8 +12,10 @@
     ],
 
     "description": [
-        "Try and find an orange for Rin-chan",
-        "Give an orange to Rin-Chan",
-        "Rin-chan reports her state of hunger"
-    ]
+        "Try and find an orange for Rin-chan.",
+        "Give an orange to Rin-Chan.",
+        "Rin-chan reports her state of hunger."
+    ],
+
+    "maxHunger": 2
 }

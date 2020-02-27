@@ -1,7 +1,9 @@
 {
-    "cmd": [ "help", "commands", "what can you do" ],
+    "cmd": [
+        [ "help", "commands", "what can you do" ]
+    ],
 
     "function": [ "help" ],
 
-    "description": [ "Rin-chan lists her commands, you are here" ]
+    "description": [ "Rin-chan lists her commands, you are here." ]
 }
