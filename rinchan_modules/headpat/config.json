@@ -1,12 +1,7 @@
 {
-    "cmd": [
-        ["headpat", "<:rinheadpat:650489863312769036>"]
-    ],
+	"cmd": {
+		"headpat": ["headpat", "<:rinheadpat:650489863312769036>"]
+	},
 
-    "function": [
-        "headpat"
-    ],
-
-    "description": [ "You may headpat Rin-chan." ]
-
+	"description": ["You may headpat Rin-chan."]
 }

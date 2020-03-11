@@ -1,21 +1,27 @@
 {
-    "cmd": [
-        ["harvest oranges", "harvest", "look for oranges", "find orange", "find oranges", "look for orange", "find an orange"],
-        ["have an orange", "give orange"],
-        ["are you hungry", "hungry"]
-    ],
+	"cmd": {
+		"harvestOrange": [
+			"harvest oranges",
+			"harvest",
+			"look for oranges",
+			"find orange",
+			"find oranges",
+			"look for orange",
+			"find an orange"
+		],
+		"feedOrange": ["have an orange", "give orange"],
+		"hungry": ["are you hungry", "hungry"],
+		"leaderboard": ["scoreboard", "leaderboard"]
+	},
 
-    "function": [
-        "harvestOrange",
-        "feedOrange",
-        "hungry"
-    ],
+	"description": [
+		"Try and find an orange for Rin-chan.",
+		"Give an orange to Rin-Chan.",
+		"Rin-chan reports her state of hunger.",
+		"Display the ranking of orange hoarders."
+	],
 
-    "description": [
-        "Try and find an orange for Rin-chan.",
-        "Give an orange to Rin-Chan.",
-        "Rin-chan reports her state of hunger."
-    ],
+	"maxHunger": 2,
 
-    "maxHunger": 2
+	"orangePhrases": ["orange", "orenji", "オレンジ"]
 }
