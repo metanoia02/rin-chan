@@ -11,14 +11,16 @@
 		],
 		"feedOrange": ["have an orange", "give orange"],
 		"hungry": ["are you hungry", "hungry"],
-		"leaderboard": ["scoreboard", "leaderboard"]
+		"leaderboard": ["scoreboard", "leaderboard"],
+		"giveOrange": ["give an orange to"]
 	},
 
 	"description": [
 		"Try and find an orange for Rin-chan.",
 		"Give an orange to Rin-Chan.",
 		"Rin-chan reports her state of hunger.",
-		"Display the ranking of orange hoarders."
+		"Display the ranking of orange hoarders.",
+		"Give an orange to mentioned user."
 	],
 
 	"maxHunger": 2,

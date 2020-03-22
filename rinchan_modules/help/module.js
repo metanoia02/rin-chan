@@ -13,12 +13,14 @@ var help = {
 
 		for (var k in configs) {
 			if (configs.hasOwnProperty(k)) {
-				for (var i = 0; i < configs[k].cmd.length; i++) {
-					help.commandList += '**' + configs[k].description[i] + ' Keywords:**\n';
+				var x = 0;
+				for (var c in configs[k].cmd) {
+					help.commandList += '**' + configs[k].description[x] + ' Keywords:**\n';
 
-					for (var v = 0; v < configs[k].cmd[i].length; v++) {
-						help.commandList += configs[k].cmd[i][v] + '\n';
+					for (var v = 0; v < configs[k].cmd[c].length; v++) {
+						help.commandList += configs[k].cmd[c][v] + '\n';
 					}
+					x++;
 
 					help.commandList += '\n';
 				}

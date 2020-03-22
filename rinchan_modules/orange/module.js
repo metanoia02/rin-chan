@@ -16,8 +16,41 @@ var orange = {
 		return false;
 	},
 
-	async leaderboard(message) {
-		var board = global.client.getBoard.all();
+	giveOrange(message) {
+		let usersArray = message.mentions.users.array();
+
+		if (usersArray.length == 1 && usersArray[0].id == global.client.user.id) {
+			orange.feedOrange(message);
+			return;
+		} else if (usersArray.length !== 2) {
+			message.channel.send('Mention only one user');
+			return;
+		}
+
+		let destId = usersArray[0].id == global.client.user.id ? 1 : 0;
+
+		if (usersArray[destId].id == message.author.id) {
+			message.channel.send('You cant give oranges to yourself!');
+			return;
+		}
+
+		let sourceUser = global.rinchanSQL.getUser(message.author.id, message.guild.id);
+		let destUser = global.rinchanSQL.getUser(usersArray[destId].id, message.guild.id);
+
+		if (sourceUser.oranges < 1) {
+			message.channel.send('You dont have an orange to give');
+		} else {
+			sourceUser.oranges--;
+			destUser.oranges++;
+			message.channel.send('Ok, you gave an orange');
+		}
+
+		global.rinchanSQL.setOrange.run(sourceUser);
+		global.rinchanSQL.setOrange.run(destUser);
+	},
+
+	leaderboard(message) {
+		var board = global.rinchanSQL.getBoard.all();
 
 		var output = '';
 
@@ -72,20 +105,9 @@ var orange = {
 	},
 
 	feedOrange(message) {
-		let orangeTry = global.client.getOrange.get(message.author.id, message.guild.id);
+		let user = global.rinchanSQL.getUser(message.author.id, message.guild.id);
 
-		if (!orangeTry) {
-			orangeTry = {
-				id: `${message.guild.id}-${message.author.id}`,
-				user: message.author.id,
-				guild: message.guild.id,
-				oranges: 0,
-				affection: 0,
-				tries: 3,
-			};
-		}
-
-		if (orangeTry.oranges < 1) {
+		if (user.oranges < 1) {
 			message.channel.send(`You don't have any oranges!`);
 		} else {
 			switch (orange.hunger) {
@@ -94,48 +116,39 @@ var orange = {
 					break;
 				case 1:
 					message.channel.send(`Thanks, I can't eat another bite`);
-					orangeTry.oranges--;
+					user.oranges--;
+					user.affection++;
 					orange.hunger--;
 					break;
 				case 2:
 					message.channel.send(`I'm starving! What took you so long`);
-					orangeTry.oranges--;
+					user.oranges--;
+					user.affection++;
 					orange.hunger--;
 					break;
 			}
 		}
 
-		global.client.setOrange.run(orangeTry);
+		global.rinchanSQL.setOrange.run(user);
 	},
 
 	harvestOrange(message) {
-		let orangeTry = global.client.getOrange.get(message.author.id, message.guild.id);
+		let user = global.rinchanSQL.getUser(message.author.id, message.guild.id);
 
-		if (!orangeTry) {
-			orangeTry = {
-				id: `${message.guild.id}-${message.author.id}`,
-				user: message.author.id,
-				guild: message.guild.id,
-				oranges: 0,
-				affection: 0,
-				tries: 3,
-			};
-		}
-
-		if (orangeTry.tries > 0) {
+		if (user.tries > 0) {
 			if (Math.random() > 0.5) {
-				orangeTry.oranges++;
+				user.oranges++;
 				message.channel.send('Found an Orange!');
 			} else {
 				message.channel.send('Couldnt find anything');
 			}
 
-			orangeTry.tries--;
+			user.tries--;
 		} else {
 			message.channel.send(`I'm tired! <:rinded:603549269106098186>`);
 		}
 
-		global.client.setOrange.run(orangeTry);
+		global.rinchanSQL.setOrange.run(user);
 	},
 
 	catchOrange(message) {
@@ -175,30 +188,19 @@ var orange = {
 			catchMessage.edit('');
 		}, 1000); //Final
 
-		let orangeTry = global.client.getOrange.get(message.author.id, message.guild.id);
-
-		if (!orangeTry) {
-			orangeTry = {
-				id: `${message.guild.id}-${message.author.id}`,
-				user: message.author.id,
-				guild: message.guild.id,
-				oranges: 0,
-				affection: 0,
-				tries: 3,
-			};
-		}
+		let user = global.rinchanSQL.getUser(message.author.id, message.guild.id);
 
 		if (pick == pattern[pick]) {
-			orangeTry.oranges++;
+			user.oranges++;
 
 			message.channel.send('Gotcha');
 		} else {
 			message.channel.send('Bad luck');
 		}
 
-		orangeTry.tries--;
+		user.tries--;
 
-		global.client.setOrange.run(orangeTry);
+		global.client.setOrange.run(user);
 		catching = false;
 	},
 
