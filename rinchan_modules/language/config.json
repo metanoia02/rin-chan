@@ -1,0 +1,10 @@
+{
+    "verb": ["give", "look", "show", "harvest", "look", "do", "have", "are", "headpat"],
+    "determiner": [ "an", "a", "what" ],
+    "preposition": [ "for", "to" ],
+    "noun": [ "orange", "leaderboard", "scoreboard", "help", "command" ],
+    "negative": [ "dont", "not" ],
+    "pronoun": [ "you", "your" ],
+    "adjective": [ "hungry" ],
+    "exclamation": [ "hi", "hello" ]
+}

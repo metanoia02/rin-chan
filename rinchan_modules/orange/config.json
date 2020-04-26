@@ -12,7 +12,7 @@
 		"feedOrange": ["have an orange", "give orange"],
 		"hungry": ["are you hungry", "hungry"],
 		"leaderboard": ["scoreboard", "leaderboard"],
-		"giveOrange": ["give an orange to"]
+		"giveOrange": ["give an orange to <", "give [0-9]+ oranges to <"]
 	},
 
 	"description": [
@@ -23,7 +23,5 @@
 		"Give an orange to mentioned user."
 	],
 
-	"maxHunger": 2,
-
-	"orangePhrases": ["orange", "orenji", "オレンジ"]
+	"maxHunger": 2
 }
