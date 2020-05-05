@@ -1,4 +1,4 @@
-var orange = {
+const orange = {
 	hunger: 1,
 	config: require('./config.json'),
 	guessing: false,
@@ -19,7 +19,7 @@ var orange = {
 	giveOrange(message, command) {
 		let usersArray = message.mentions.users.array();
 
-		var testRegex = new RegExp(/<@![0-9]+>|<@[0-9]+>/);
+		let testRegex = new RegExp(/<@![0-9]+>|<@[0-9]+>/);
 
 		let testID = command.match(testRegex);
 		if (testID) {
@@ -91,9 +91,9 @@ var orange = {
 	},
 
 	async leaderboard(message) {
-		var board = global.rinchanSQL.getBoard.all();
+		let board = global.rinchanSQL.getBoard.all();
 
-		var output = '';
+		let output = '';
 
 		board.sort((a, b) => {
 			return b.oranges - a.oranges;
@@ -124,7 +124,7 @@ var orange = {
 	},
 
 	checkForEmote(message) {
-		var orangeTotal;
+		let orangeTotal;
 
 		if (message.content.match(/orange/gi) != null) {
 			orangeTotal = message.content.match(/orange/gi).length;
@@ -132,12 +132,12 @@ var orange = {
 			return false;
 		}
 
-		var orangeEmotes = 0;
-		var colon = false;
-		var colonPosition;
-		var emote;
+		let orangeEmotes = 0;
+		let colon = false;
+		let colonPosition;
+		let emote;
 
-		for (var i = 0; i < message.content.length; i++) {
+		for (let i = 0; i < message.content.length; i++) {
 			if (colon == false && message.content.charAt(i) == ':') {
 				colon = true;
 				colonPosition = i;
@@ -231,8 +231,8 @@ var orange = {
 	catchOrange(message) {
 		//check tired
 
-		var user = message.author;
-		var catching = true;
+		let user = message.author;
+		let catching = true;
 
 		message.channel.send(''); //intro
 
@@ -242,7 +242,7 @@ var orange = {
 	},
 
 	catchChoice: function (message) {
-		var pattern = [
+		let pattern = [
 			Math.round(Math.random()),
 			Math.round(Math.random()),
 			Math.round(Math.random()),

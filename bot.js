@@ -75,8 +75,8 @@ function addModules() {
 	let modules = {}
 	
 	config.modules.forEach(curr => {
-		console.log(`Added ${curr}`);
 		modules[curr] = require(`./rinchan_modules/${curr}/module.js`);
+		console.log(`Added ${curr}`);
 	});
 
 	return modules;

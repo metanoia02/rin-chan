@@ -1,4 +1,4 @@
-var headpat = {
+const headpat = {
 	config: require('./config.json'),
 
 	headpat: function(message) {

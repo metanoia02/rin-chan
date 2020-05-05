@@ -1,9 +1,9 @@
-var sayhi = {
+const sayhi = {
     config: require("./config.json"),
 
     sayhi: function(message) {
-        var d = new Date();
-        var n = d.getHours();
+        let d = new Date();
+        let n = d.getHours();
     
         if (n > 6 && n < 12) {
             message.channel.send(`Good morning ${message.author}`);

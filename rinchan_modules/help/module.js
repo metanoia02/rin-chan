@@ -1,23 +1,23 @@
-var help = {
+const help = {
 	config: require('./config.json'),
 
 	commandList: '',
 
 	init() {
-		var mainConfig = require('../../config.json');
-		var configs = {};
+		const mainConfig = require('../../config.json');
+		let configs = {};
 
 		mainConfig.modules.forEach(function(value) {
 			configs[value] = require(`../${value}/config.json`);
 		});
 
-		for (var k in configs) {
+		for (let k in configs) {
 			if (configs.hasOwnProperty(k)) {
-				var x = 0;
-				for (var c in configs[k].cmd) {
+				let x = 0;
+				for (let c in configs[k].cmd) {
 					help.commandList += '**' + configs[k].description[x] + ' Keywords:**\n';
 
-					for (var v = 0; v < configs[k].cmd[c].length; v++) {
+					for (let v = 0; v < configs[k].cmd[c].length; v++) {
 						help.commandList += configs[k].cmd[c][v] + '\n';
 					}
 					x++;
