@@ -1,7 +1,5 @@
-const headpat = {
-	config: require('./config.json'),
-
-	headpat: function(message) {
+module.exports = {
+	headpat(message) {
 		let user = global.rinchanSQL.getUser(message.author.id, message.guild.id);
 
 		if (user.affection > 0) {
@@ -14,5 +12,3 @@ const headpat = {
 		global.rinchanSQL.setOrange.run(user);
 	},
 };
-
-module.exports = headpat;

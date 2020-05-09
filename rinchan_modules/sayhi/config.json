@@ -1,7 +1,0 @@
-{
-	"cmd": {
-		"sayhi": ["hi", "hello", "morning", "afternoon", "evening", "night", "good morning", "good evening", "good night"]
-	},
-
-	"description": ["Rin-chan responds based on the time of day(GMT)."]
-}

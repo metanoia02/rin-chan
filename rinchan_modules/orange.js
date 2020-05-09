@@ -1,14 +1,15 @@
-const orange = {
+module.exports = {
 	hunger: 1,
-	config: require('./config.json'),
 	guessing: false,
 	usr: [],
+		
+	"maxHunger": 2,
 
 	handler(message) {
-		if (orange.checkForEmote(message) && !message.author.bot && orange.hunger > 0) {
+		if (this.checkForEmote(message) && !message.author.bot && this.hunger > 0) {
 			message.channel.send('Who said orange?! Gimme!');
 			return true;
-		} else if (message.content.includes('🍊') && !message.author.bot && orange.hunger > 0) {
+		} else if (message.content.includes('🍊') && !message.author.bot && this.hunger > 0) {
 			message.channel.send(`That's my orange! Gimme!`);
 			return true;
 		}
@@ -19,33 +20,30 @@ const orange = {
 	giveOrange(message, command) {
 		let usersArray = message.mentions.users.array();
 
-		let testRegex = new RegExp(/<@![0-9]+>|<@[0-9]+>/);
+		if(usersArray.length === 1) { //Mentioned Rinchan, or mentioned nobody
 
-		let testID = command.match(testRegex);
-		if (testID) {
-			testID = String(testID).substr(3, 18);
+			return false;
 		}
 
-		if (message.guild.member(testID) == null && testRegex.test(command)) {
+		if (message.guild.member(testID) == null) {
 			message.channel.send('They arent in the server <:rinconfuse:687276500998815813>');
-			return;
+			return false;
 		}
-
-		if (usersArray.length == 1 && usersArray[0].id == global.client.user.id) {
-			orange.feedOrange(message);
-			return;
-		} else if (usersArray.length !== 2) {
-			message.channel.send('Mention only one user');
-			return;
-		}
-
-		let destId = usersArray[0].id == global.client.user.id ? 1 : 0;
 
 		if (usersArray[destId].id == message.author.id) {
 			message.channel.send('You cant give oranges to yourself!');
-			return;
+			return false;
 		}
-		let test = new RegExp('give [0-9]+ oranges to');
+
+		if (usersArray.length !== 2) {
+			message.channel.send('Mention only one user');
+			return false;
+		}
+
+		//Passed Checks, now check oranges in inventory and 0 quantities / negatives etc
+
+		
+
 		if (message.content.match(test)) {
 			let num = command.match(/\d+/)[0];
 
@@ -161,7 +159,7 @@ const orange = {
 		if (user.oranges < 1) {
 			message.channel.send(`You don't have any oranges!`);
 		} else {
-			switch (orange.hunger) {
+			switch (this.hunger) {
 				case 0:
 					message.channel.send('Im stuffed, I cant eat another one');
 					break;
@@ -169,15 +167,15 @@ const orange = {
 					message.channel.send(`Thanks, I can't eat another bite`);
 					user.oranges--;
 					user.affection++;
-					orange.hunger--;
-					orange.setIcon();
+					this.hunger--;
+					this.setIcon();
 					break;
 				case 2:
 					message.channel.send(`I'm starving! What took you so long`);
 					user.oranges--;
 					user.affection++;
-					orange.hunger--;
-					orange.setIcon();
+					this.hunger--;
+					this.setIcon();
 					break;
 			}
 		}
@@ -241,7 +239,7 @@ const orange = {
 		message.channel.send(''); //ask to pick
 	},
 
-	catchChoice: function (message) {
+	catchChoice(message) {
 		let pattern = [
 			Math.round(Math.random()),
 			Math.round(Math.random()),
@@ -281,8 +279,8 @@ const orange = {
 		catching = false;
 	},
 
-	hungry: function (message) {
-		switch (orange.hunger) {
+	hungry(message) {
+		switch (this.hunger) {
 			case 0: {
 				message.channel.send('Im stuffed <:rinchill:600745019514814494>');
 				return;
@@ -300,7 +298,7 @@ const orange = {
 	},
 
 	setIcon() {
-		switch (orange.hunger) {
+		switch (this.hunger) {
 			case 0: {
 				global.client.guilds.cache
 					.get('585071519638487041')
@@ -319,17 +317,13 @@ const orange = {
 					.setIcon('https://cdn.discordapp.com/attachments/601856655873015831/693159742608113784/sakura.png');
 				return;
 			}
-
-			/* .find(guild => guild.id === '585071519638487041') */
 		}
 	},
 };
 
 setInterval(function () {
-	if (orange.hunger < orange.config.maxHunger) {
-		orange.hunger++;
-		orange.setIcon();
+	if (this.hunger < this.maxHunger) {
+		this.hunger++;
+		this.setIcon();
 	}
 }, 14400000);
-
-module.exports = orange;

@@ -1,7 +1,5 @@
-const sayhi = {
-    config: require("./config.json"),
-
-    sayhi: function(message) {
+module.exports = {
+     sayhi(message) {
         let d = new Date();
         let n = d.getHours();
     
@@ -20,5 +18,3 @@ const sayhi = {
         }
     }
 };
-
-module.exports = sayhi

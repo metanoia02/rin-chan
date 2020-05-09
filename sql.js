@@ -1,7 +1,7 @@
 const SQLite = require('better-sqlite3');
 const sql = new SQLite('./orange.sqlite');
 
-rinchanSQL = {
+module.exports = {
 	init() {
 		const table = sql.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'orange';").get();
 
@@ -28,13 +28,13 @@ rinchanSQL = {
 		this.setTries.run();
 	},
 
-	getUser(authorId, guildId) {
-		let user = this.getOrange.get(authorId, guildId);
+	getUser(userId, guildId) {
+		let user = this.getOrange.get(userId, guildId);
 
 		if (!user) {
 			user = {
-				id: `${guildId}-${authorId}`,
-				user: authorId,
+				id: `${guildId}-${userId}`,
+				user: userId,
 				guild: guildId,
 				oranges: 0,
 				affection: 0,
@@ -44,6 +44,10 @@ rinchanSQL = {
 
 		return user;
 	},
-};
 
-module.exports = rinchanSQL;
+	setOranges(userId, guildId, quantity = 0) {
+
+		let user = getUser(userId, guildId);
+
+	},
+};

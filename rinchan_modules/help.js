@@ -1,15 +1,8 @@
-const help = {
-	config: require('./config.json'),
-
+module.exports = {
 	commandList: '',
 
 	init() {
-		const mainConfig = require('../../config.json');
-		let configs = {};
-
-		mainConfig.modules.forEach(function(value) {
-			configs[value] = require(`../${value}/config.json`);
-		});
+		const configs = require('../config.js');
 
 		for (let k in configs) {
 			if (configs.hasOwnProperty(k)) {
@@ -32,5 +25,3 @@ const help = {
 		message.channel.send(help.commandList);
 	},
 };
-
-module.exports = help;

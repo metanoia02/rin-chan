@@ -1,12 +1,12 @@
 ﻿const Discord = require('discord.js');
 
-const config = require('./config.json');
+const config = require('./config.js');
 const token = require('./token.json');
 
 global.client = new Discord.Client();
 global.rinchanSQL = require('./sql.js');
 
-var modules = {};
+let modules = {};
 
 global.client.login(token.login);
 
@@ -20,8 +20,8 @@ global.client.once('ready', () => {
 	console.log('Ready!');
 });
 
-var meDEBUG = "687050182508019742";
-var me = "601807905053736991";
+const me = "687050182508019742";
+const memain = "601807905053736991";
 
 global.client.on('message', (message) => {
 	console.log(message.content);
@@ -30,18 +30,18 @@ global.client.on('message', (message) => {
 	rinTest = new RegExp(reg);
 
 	if (message.mentions.has(global.client.user) && message.guild && rinTest.test(message.content)) {
-		var command = message.content.replace(/^<@![0-9]*>\s*|^<@[0-9]*>\s*/, '');
+		let command = message.content.replace(/^<@![0-9]*>\s*|^<@[0-9]*>\s*/, '');
 		command = command.replace(/\s\s+/g, ' ');
 
 		console.log(command);
 
-		for (var k in modules) {
-			if (modules.hasOwnProperty(k)) {
-				for (var c in modules[k].config.cmd) {
-					for (var v = 0; v < modules[k].config.cmd[c].length; v++) {
-						let cmdRegex = new RegExp(modules[k].config.cmd[c][v], 'i');
+		for (let k in config) {
+			if (config.hasOwnProperty(k)) {
+				for (let c in config[k].cmd) {
+					for (let v = 0; v < config[k].cmd[c].length; v++) {
+						let cmdRegex = new RegExp(config[k].cmd[c][v], 'i');
 						if (cmdRegex.test(command)) {
-							modules[k][c](message, command);
+							modules[k][c](message);
 							return;
 						}
 					}
@@ -57,7 +57,7 @@ global.client.on('message', (message) => {
 			return;
 		}
 	} else {
-		for (var k in modules) {
+		for (let k in modules) {
 			if (modules.hasOwnProperty(k)) {
 				if (typeof modules[k].handler == 'function') {
 					if (modules[k].handler(message)) {
@@ -73,11 +73,11 @@ function addModules() {
 	console.log('Adding modules...');
 
 	let modules = {}
-	
-	config.modules.forEach(curr => {
-		modules[curr] = require(`./rinchan_modules/${curr}/module.js`);
-		console.log(`Added ${curr}`);
-	});
+
+	for(let mod in config) {
+		modules[mod] = require(`./rinchan_modules/${mod}.js`);
+		console.log(`Added ${mod}`);
+	}
 
 	return modules;
 }
