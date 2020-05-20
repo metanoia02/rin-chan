@@ -17,7 +17,7 @@ module.exports = {
 	handler(message) {
 		let emoteRegex = new RegExp(/<:\w*orange\w*:[0-9]+>/, 'gi');
 
-		if (!emoteRegex.test(message.content) && !message.author.bot && this.hunger > 0) {
+		if (emoteRegex.test(message.content) && !message.author.bot && this.hunger > 0) {
 			message.channel.send('Who said orange?! Gimme!');
 			return true;
 		} else if (message.content.includes('🍊') && !message.author.bot && this.hunger > 0) {
