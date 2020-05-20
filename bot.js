@@ -2,6 +2,7 @@
 
 const config = require('./config.js');
 const token = require('./token.json');
+let me = '';
 
 global.client = new Discord.Client();
 global.rinchanSQL = require('./sql.js');
@@ -11,22 +12,21 @@ let modules = {};
 global.client.login(token.login);
 
 global.client.once('ready', () => {
+	me = global.client.user.id;
 	modules = addModules();
-
 	global.rinchanSQL.init();
-
 	modules.orange.setIcon();
-
 	console.log('Ready!');
 });
-
-const me = "687050182508019742";
-const memain = "601807905053736991";
 
 global.client.on('message', (message) => {
 	console.log(message.content);
 
-	let reg = "^<@"+me+">|^<@!"+me+">";
+	if (mentionSpamDetect(message)) {
+		return null;
+	}
+
+	let reg = '^<@' + me + '>|^<@!' + me + '>';
 	rinTest = new RegExp(reg);
 
 	if (message.mentions.has(global.client.user) && message.guild && rinTest.test(message.content)) {
@@ -41,7 +41,7 @@ global.client.on('message', (message) => {
 					for (let v = 0; v < config[k].cmd[c].length; v++) {
 						let cmdRegex = new RegExp(config[k].cmd[c][v], 'i');
 						if (cmdRegex.test(command)) {
-							modules[k][c](message);
+							modules[k][c](message, command);
 							return;
 						}
 					}
@@ -72,14 +72,23 @@ global.client.on('message', (message) => {
 function addModules() {
 	console.log('Adding modules...');
 
-	let modules = {}
+	let modules = {};
 
-	for(let mod in config) {
+	for (let mod in config) {
 		modules[mod] = require(`./rinchan_modules/${mod}.js`);
 		console.log(`Added ${mod}`);
 	}
 
 	return modules;
+}
+
+function mentionSpamDetect(message) {
+	if (message.mentions.users.array.length > 20) {
+		var role = message.guild.roles.find((role) => role.name === 'Muted');
+		message.member.addRole(role);
+		return true;
+	}
+	return false;
 }
 
 global.client.on('guildMemberAdd', (member) => {

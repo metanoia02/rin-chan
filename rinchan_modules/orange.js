@@ -1,12 +1,23 @@
 module.exports = {
-	hunger: 1,
-	guessing: false,
+	hunger: 3,
 	usr: [],
-		
-	"maxHunger": 2,
+	orangeGiveInterval: 3600000,
+
+	hungerIcon: {
+		0: 'https://cdn.discordapp.com/emojis/697594415790686218.png', //Stuffed
+		1: 'https://cdn.discordapp.com/emojis/620970346626940958.gif', //Turbo Flap
+		2: 'https://cdn.discordapp.com/emojis/591970280843247616.gif', //Normal Flap
+		3: 'https://cdn.discordapp.com/emojis/243272900449271808.png', //NoFlap
+		4: 'https://cdn.discordapp.com/emojis/628298482616107018.png', //Pout
+		5: 'https://cdn.discordapp.com/emojis/620576239224225835.png', //Angrey
+	},
+
+	maxHunger: 5,
 
 	handler(message) {
-		if (this.checkForEmote(message) && !message.author.bot && this.hunger > 0) {
+		let emoteRegex = new RegExp(/<:\w*orange\w*:[0-9]+>/, 'gi');
+
+		if (!emoteRegex.test(message.content) && !message.author.bot && this.hunger > 0) {
 			message.channel.send('Who said orange?! Gimme!');
 			return true;
 		} else if (message.content.includes('🍊') && !message.author.bot && this.hunger > 0) {
@@ -17,74 +28,66 @@ module.exports = {
 		return false;
 	},
 
-	giveOrange(message, command) {
-		let usersArray = message.mentions.users.array();
+	getUserIdArr(command) {
+		let userIdRegex = new RegExp(/<!*@!*([0-9]+)>/, 'g');
 
-		if(usersArray.length === 1) { //Mentioned Rinchan, or mentioned nobody
+		let result = [...command.matchAll(userIdRegex)];
 
-			return false;
-		}
+		return result.map((ele) => {
+			return ele[1];
+		});
+	},
 
-		if (message.guild.member(testID) == null) {
-			message.channel.send('They arent in the server <:rinconfuse:687276500998815813>');
-			return false;
-		}
+	giveNumOranges(message, command, num) {
+		let sourceUser = global.rinchanSQL.getUser(message.author.id, message.guild.id);
 
-		if (usersArray[destId].id == message.author.id) {
-			message.channel.send('You cant give oranges to yourself!');
-			return false;
-		}
+		let orangeString = num > 1 ? num + ' oranges' : 'an orange';
 
-		if (usersArray.length !== 2) {
-			message.channel.send('Mention only one user');
-			return false;
-		}
+		if (sourceUser.oranges >= num) {
+			const usersArray = this.getUserIdArr(message.content);
+			if (usersArray.length === 1) {
+				message.channel.send('You need to mention a user');
+			} else if (message.guild.member(usersArray[1]) == null) {
+				message.channel.send('They arent in the server <:rinconfuse:687276500998815813>');
+			} else if (usersArray[1] == message.author.id) {
+				message.channel.send('You cant give oranges to yourself!');
+			} else if (usersArray.length !== 2) {
+				message.channel.send('Mention only one user');
+			} else if (usersArray[1] === global.client.user.id) {
+				this.feedOrange(message);
+			} else {
+				let destUser = global.rinchanSQL.getUser(usersArray[1], message.guild.id);
 
-		//Passed Checks, now check oranges in inventory and 0 quantities / negatives etc
-
-		
-
-		if (message.content.match(test)) {
-			let num = command.match(/\d+/)[0];
-
-			if (num > 0) {
-				let sourceUser = global.rinchanSQL.getUser(message.author.id, message.guild.id);
-				let destUser = global.rinchanSQL.getUser(usersArray[destId].id, message.guild.id);
-
-				if (sourceUser.oranges < num) {
-					message.channel.send('You dont have ' + num + ' oranges to give');
-				} else {
-					sourceUser.oranges -= parseInt(num);
-					destUser.oranges += parseInt(num);
-
-					message.channel.send('Ok, you gave ' + num + ' oranges');
-				}
+				sourceUser.oranges--;
+				destUser.oranges++;
+				message.channel.send('Ok, you gave ' + orangeString);
 
 				global.rinchanSQL.setOrange.run(sourceUser);
 				global.rinchanSQL.setOrange.run(destUser);
-				return;
-			} else {
-				message.channel.send(
-					'Fine, no oranges for ' +
-						message.mentions.users.get(usersArray[destId].id).username +
-						' <:smugrin:674044431502016532>'
-				);
-				return;
 			}
 		} else {
-			let sourceUser = global.rinchanSQL.getUser(message.author.id, message.guild.id);
-			let destUser = global.rinchanSQL.getUser(usersArray[destId].id, message.guild.id);
+			message.channel.send("You don't have " + orangeString + ' to give');
+		}
+	},
 
-			if (sourceUser.oranges < 1) {
-				message.channel.send('You dont have an orange to give');
-			} else {
-				sourceUser.oranges--;
-				destUser.oranges++;
-				message.channel.send('Ok, you gave an orange');
-			}
+	giveOrange(message, command) {
+		this.giveNumOranges(message, command, 1);
+	},
 
-			global.rinchanSQL.setOrange.run(sourceUser);
-			global.rinchanSQL.setOrange.run(destUser);
+	giveOranges(message, command) {
+		let quantityRegex = new RegExp(/\s[0-9]+\s/);
+		numGiveOranges = parseInt(command.match(quantityRegex));
+
+		this.giveNumOranges(message, command, numGiveOranges);
+	},
+
+	checkGiveSpam(sourceUser) {
+		let now = new Date().getTime();
+
+		if (now - sourceUser.lastTry > this.orangeGiveInterval) {
+			return false;
+		} else {
+			return true;
 		}
 	},
 
@@ -121,38 +124,6 @@ module.exports = {
 		message.channel.send(output);
 	},
 
-	checkForEmote(message) {
-		let orangeTotal;
-
-		if (message.content.match(/orange/gi) != null) {
-			orangeTotal = message.content.match(/orange/gi).length;
-		} else {
-			return false;
-		}
-
-		let orangeEmotes = 0;
-		let colon = false;
-		let colonPosition;
-		let emote;
-
-		for (let i = 0; i < message.content.length; i++) {
-			if (colon == false && message.content.charAt(i) == ':') {
-				colon = true;
-				colonPosition = i;
-			} else if (colon == true && message.content.charAt(i) == ':') {
-				emote = message.content.slice(colonPosition, i);
-
-				if (emote.match(/orange/gi) != null && emote.match(/orange/gi).length > 0) {
-					orangeEmotes++;
-				}
-
-				colon = false;
-			}
-		}
-
-		return orangeTotal - orangeEmotes > 0;
-	},
-
 	feedOrange(message) {
 		let user = global.rinchanSQL.getUser(message.author.id, message.guild.id);
 
@@ -163,15 +134,15 @@ module.exports = {
 				case 0:
 					message.channel.send('Im stuffed, I cant eat another one');
 					break;
-				case 1:
-					message.channel.send(`Thanks, I can't eat another bite`);
+				case 5:
+					message.channel.send(`I'm starving! What took you so long`);
 					user.oranges--;
 					user.affection++;
 					this.hunger--;
 					this.setIcon();
 					break;
-				case 2:
-					message.channel.send(`I'm starving! What took you so long`);
+				default:
+					message.channel.send(`Thanks, I can't eat another bite`);
 					user.oranges--;
 					user.affection++;
 					this.hunger--;
@@ -190,19 +161,17 @@ module.exports = {
 		console.log(chance);
 
 		if (user.tries > 0) {
-			if (0 < chance && chance < 0.05) {
+			if (0 < chance && chance <= 0.05) {
 				this.easterEgg(message);
-				console.log('1');
-			} else if (0.05 < chance && chance < 0.6) {
+				user.tries = 0;
+			} else if (0.05 < chance && chance <= 0.6) {
 				user.oranges++;
 				this.foundOrange(message);
-				console.log('2');
+				user.tries--;
 			} else if (0.6 < chance && chance < 1) {
 				this.couldntFind(message);
-				console.log('3');
+				user.tries--;
 			}
-
-			user.tries--;
 		} else {
 			message.channel.send(`I'm tired! <:rinded:603549269106098186>`);
 		}
@@ -226,59 +195,6 @@ module.exports = {
 		message.channel.send('Couldnt find anything... <:rinyabai:635101260080480256>');
 	},
 
-	catchOrange(message) {
-		//check tired
-
-		let user = message.author;
-		let catching = true;
-
-		message.channel.send(''); //intro
-
-		catchMessage = message.channel.send(''); //ascii art
-
-		message.channel.send(''); //ask to pick
-	},
-
-	catchChoice(message) {
-		let pattern = [
-			Math.round(Math.random()),
-			Math.round(Math.random()),
-			Math.round(Math.random()),
-			Math.round(Math.random()),
-		];
-
-		setTimeout(function () {
-			catchMessage.edit('');
-		}, 1000);
-
-		setTimeout(function () {
-			catchMessage.edit('');
-		}, 1000);
-
-		setTimeout(function () {
-			catchMessage.edit('');
-		}, 1000);
-
-		setTimeout(function () {
-			catchMessage.edit('');
-		}, 1000); //Final
-
-		let user = global.rinchanSQL.getUser(message.author.id, message.guild.id);
-
-		if (pick == pattern[pick]) {
-			user.oranges++;
-
-			message.channel.send('Gotcha');
-		} else {
-			message.channel.send('Bad luck');
-		}
-
-		user.tries--;
-
-		global.client.setOrange.run(user);
-		catching = false;
-	},
-
 	hungry(message) {
 		switch (this.hunger) {
 			case 0: {
@@ -298,26 +214,7 @@ module.exports = {
 	},
 
 	setIcon() {
-		switch (this.hunger) {
-			case 0: {
-				global.client.guilds.cache
-					.get('585071519638487041')
-					.setIcon('https://cdn.discordapp.com/attachments/601856655873015831/693153043742457977/trubosakura.gif');
-				return;
-			}
-			case 1: {
-				global.client.guilds.cache
-					.get('585071519638487041')
-					.setIcon('https://cdn.discordapp.com/attachments/601856655873015831/693153034519183370/sakuraflap.gif');
-				return;
-			}
-			case 2: {
-				global.client.guilds.cache
-					.get('585071519638487041')
-					.setIcon('https://cdn.discordapp.com/attachments/601856655873015831/693159742608113784/sakura.png');
-				return;
-			}
-		}
+		global.client.guilds.cache.get('585071519638487041').setIcon(this.hungerIcon[this.hunger]);
 	},
 };
 

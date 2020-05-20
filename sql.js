@@ -8,7 +8,7 @@ module.exports = {
 		if (!table['count(*)']) {
 			sql
 				.prepare(
-					'CREATE TABLE orange (id TEXT PRIMARY KEY, user TEXT, guild TEXT, oranges INTEGER, affection INTEGER, tries INTEGER);'
+					'CREATE TABLE orange (id TEXT PRIMARY KEY, user TEXT, guild TEXT, oranges INTEGER, affection INTEGER, tries INTEGER, lastTry INTEGER);'
 				)
 				.run();
 
@@ -19,9 +19,8 @@ module.exports = {
 
 		this.setTries = sql.prepare('UPDATE orange SET tries = 3');
 		this.getOrange = sql.prepare('SELECT * FROM orange WHERE user = ? AND guild = ?');
-		this.trawlTable = sql.prepare('SELECT * FROM orange WHERE id = ?');
 		this.setOrange = sql.prepare(
-			'INSERT OR REPLACE INTO orange (id, user, guild, oranges, affection, tries) VALUES (@id, @user, @guild, @oranges, @affection, @tries);'
+			'INSERT OR REPLACE INTO orange (id, user, guild, oranges, affection, tries, lastTry) VALUES (@id, @user, @guild, @oranges, @affection, @tries, @lastTry);'
 		);
 		this.getBoard = sql.prepare('SELECT * FROM orange');
 
@@ -39,15 +38,13 @@ module.exports = {
 				oranges: 0,
 				affection: 0,
 				tries: 3,
+				lastTry: 0,
 			};
 		}
-
 		return user;
 	},
 
 	setOranges(userId, guildId, quantity = 0) {
-
 		let user = getUser(userId, guildId);
-
 	},
 };
