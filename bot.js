@@ -95,9 +95,15 @@ function addModules() {
 function mentionSpamDetect(message) {
 	if (global.getUserIdArr(message.content).length > 10) {
 		var role = message.guild.roles.cache.find((role) => role.name === 'Muted');
-		message.member.roles.add(role);
+		message.member.roles.set(role);
 		message.author.send("Go spam somewhere else!", { files: ['https://cdn.discordapp.com/attachments/601814319990046738/713124422881640579/bbf22a157ab6fabc0a7510b4ce0ad59e.jpg'] });
 		message.delete();
+
+		const channel = message.guild.channels.cache.find((ch) => ch.name === 'rinchans-diary');
+		if (!channel) return true;
+	
+		channel.send(`<@&588521716481785859> Muted ${message.author} for mention spam.`);
+
 		return true;
 	}
 	return false;
