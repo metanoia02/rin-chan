@@ -19,6 +19,16 @@ global.client.once('ready', () => {
 	console.log('Ready!');
 });
 
+global.getUserIdArr = function(command) {
+	let userIdRegex = new RegExp(/<!*@!*([0-9]+)>/, 'g');
+
+	let result = [...command.matchAll(userIdRegex)];
+
+	return result.map((ele) => {
+		return ele[1];
+	});
+};
+
 global.client.on('message', (message) => {
 	console.log(message.content);
 
@@ -83,9 +93,10 @@ function addModules() {
 }
 
 function mentionSpamDetect(message) {
-	if (message.mentions.users.array.length > 20) {
-		var role = message.guild.roles.find((role) => role.name === 'Muted');
-		message.member.addRole(role);
+	if (global.getUserIdArr(message.content).length > 10) {
+		var role = message.guild.roles.cache.find((role) => role.name === 'Muted');
+		message.member.roles.add(role);
+		message.author.send("Go spam somewhere else!", { files: ['https://cdn.discordapp.com/attachments/601814319990046738/713124422881640579/bbf22a157ab6fabc0a7510b4ce0ad59e.jpg'] });
 		return true;
 	}
 	return false;

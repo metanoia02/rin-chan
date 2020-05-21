@@ -1,7 +1,7 @@
 module.exports = {
 	hunger: 3,
-	usr: [],
 	orangeGiveInterval: 3600000,
+	maxHunger: 5,
 
 	hungerIcon: {
 		0: 'https://cdn.discordapp.com/emojis/697594415790686218.png', //Stuffed
@@ -12,30 +12,24 @@ module.exports = {
 		5: 'https://cdn.discordapp.com/emojis/620576239224225835.png', //Angrey
 	},
 
-	maxHunger: 5,
+	init() {
+		let reaction = require("../reations/reactions.js");
+
+		this.findOrange = new Reaction("../reactions/findOrange.json");
+	},	
 
 	handler(message) {
 		let emoteRegex = new RegExp(/<:\w*orange\w*:[0-9]+>/, 'gi');
 
-		if (emoteRegex.test(message.content) && !message.author.bot && this.hunger > 0) {
+		if (message.content.includes("orange") && !emoteRegex.test(message.content) && !message.author.bot && this.hunger > 3) {
 			message.channel.send('Who said orange?! Gimme!');
 			return true;
-		} else if (message.content.includes('🍊') && !message.author.bot && this.hunger > 0) {
+		} else if (message.content.includes('🍊') && !message.author.bot && this.hunger > 3) {
 			message.channel.send(`That's my orange! Gimme!`);
 			return true;
 		}
 
 		return false;
-	},
-
-	getUserIdArr(command) {
-		let userIdRegex = new RegExp(/<!*@!*([0-9]+)>/, 'g');
-
-		let result = [...command.matchAll(userIdRegex)];
-
-		return result.map((ele) => {
-			return ele[1];
-		});
 	},
 
 	giveNumOranges(message, command, num) {
@@ -44,7 +38,7 @@ module.exports = {
 		let orangeString = num > 1 ? num + ' oranges' : 'an orange';
 
 		if (sourceUser.oranges >= num) {
-			const usersArray = this.getUserIdArr(message.content);
+			const usersArray = global.getUserIdArr(message.content);
 			if (usersArray.length === 1) {
 				message.channel.send('You need to mention a user');
 			} else if (message.guild.member(usersArray[1]) == null) {
