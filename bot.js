@@ -30,7 +30,7 @@ global.getUserIdArr = function(command) {
 };
 
 global.client.on('message', (message) => {
-	console.log(message.content);
+	console.log(message.author.username + ": " + message.content);
 
 	if (mentionSpamDetect(message)) {
 		return null;
@@ -42,8 +42,6 @@ global.client.on('message', (message) => {
 	if (message.mentions.has(global.client.user) && message.guild && rinTest.test(message.content)) {
 		let command = message.content.replace(/^<@![0-9]*>\s*|^<@[0-9]*>\s*/, '');
 		command = command.replace(/\s\s+/g, ' ');
-
-		console.log(command);
 
 		for (let k in config) {
 			if (config.hasOwnProperty(k)) {
@@ -87,6 +85,12 @@ function addModules() {
 	for (let mod in config) {
 		modules[mod] = require(`./rinchan_modules/${mod}.js`);
 		console.log(`Added ${mod}`);
+
+		if (typeof modules[mod].init == 'function') {
+			if (modules[mod].init()) {
+				return;
+			}
+		}
 	}
 
 	return modules;
@@ -94,8 +98,8 @@ function addModules() {
 
 function mentionSpamDetect(message) {
 	if (global.getUserIdArr(message.content).length > 10) {
-		var role = message.guild.roles.cache.find((role) => role.name === 'Muted');
-		message.member.roles.set(role);
+		message.member.roles.remove('588677338007601163');
+		message.member.roles.add('620609193228894208');
 		message.author.send("Go spam somewhere else!", { files: ['https://cdn.discordapp.com/attachments/601814319990046738/713124422881640579/bbf22a157ab6fabc0a7510b4ce0ad59e.jpg'] });
 		message.delete();
 

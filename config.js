@@ -46,9 +46,10 @@ module.exports = {
 	greeting: {
 		cmd: {
 			sayHi: ['hi', 'hello', 'morning', 'afternoon', 'evening', 'night', 'good morning', 'good evening', 'good night'],
+			howAreYou: ['how are you'],
 		},
 
-		description: ['Rin-chan responds based on the time of day(GMT).'],
+		description: ['Rin-chan responds based on the time of day(GMT).', 'Ask how Rinchans doing.'],
 	},
 };
 

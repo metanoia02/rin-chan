@@ -13,7 +13,7 @@ module.exports = {
 	},
 
 	init() {
-		let reaction = require("../reations/reactions.js");
+		let Reaction = require("../reactions/reaction.js");
 
 		this.findOrange = new Reaction("../reactions/findOrange.json");
 	},	
@@ -152,7 +152,6 @@ module.exports = {
 		let user = global.rinchanSQL.getUser(message.author.id, message.guild.id);
 
 		let chance = Math.random();
-		console.log(chance);
 
 		if (user.tries > 0) {
 			if (0 < chance && chance <= 0.05) {
