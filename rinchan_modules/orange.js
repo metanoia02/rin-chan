@@ -195,12 +195,12 @@ module.exports = {
 				message.channel.send('Im stuffed <:rinchill:600745019514814494>');
 				return;
 			}
-			case 1: {
-				message.channel.send('Dont you have one more orange? <:oharin:601107083265441849>');
-				return;
-			}
 			case 2: {
 				message.channel.send('Im starving here! <:rinangrey:620576239224225835>');
+				return;
+			}
+        	default: {
+				message.channel.send('Dont you have one more orange? <:oharin:601107083265441849>');
 				return;
 			}
 		}
@@ -213,8 +213,8 @@ module.exports = {
 };
 
 setInterval(function () {
-	if (this.hunger < this.maxHunger) {
-		this.hunger++;
-		this.setIcon();
+	if (module.exports.hunger < module.exports.maxHunger) {
+		module.exports.hunger++;
+		module.exports.setIcon();
 	}
-}, 14400000);
+}, 3600000);
