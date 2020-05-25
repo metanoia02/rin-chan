@@ -52,8 +52,8 @@ module.exports = {
 			} else {
 				let destUser = global.rinchanSQL.getUser(usersArray[1], message.guild.id);
 
-				sourceUser.oranges--;
-				destUser.oranges++;
+				sourceUser.oranges -= num;
+				destUser.oranges += num;
 				message.channel.send('Ok, you gave ' + orangeString);
 
 				global.rinchanSQL.setOrange.run(sourceUser);
