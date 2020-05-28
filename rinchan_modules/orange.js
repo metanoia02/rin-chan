@@ -1,27 +1,25 @@
 module.exports = {
-	hunger: 3,
-	orangeGiveInterval: 3600000,
+	orangeGiveInterval: 900000,
+	orangeObj: 'orange',
+	lenObj: 'len',
+	hunger: 2,
 	maxHunger: 5,
 
-	hungerIcon: {
-		0: 'https://cdn.discordapp.com/emojis/697594415790686218.png', //Stuffed
-		1: 'https://cdn.discordapp.com/emojis/620970346626940958.gif', //Turbo Flap
-		2: 'https://cdn.discordapp.com/emojis/591970280843247616.gif', //Normal Flap
-		3: 'https://cdn.discordapp.com/emojis/243272900449271808.png', //NoFlap
-		4: 'https://cdn.discordapp.com/emojis/628298482616107018.png', //Pout
-		5: 'https://cdn.discordapp.com/emojis/620576239224225835.png', //Angrey
-	},
-
 	init() {
-		let Reaction = require("../reactions/reaction.js");
+		let Reaction = require('../reactions/reaction.js');
 
-		this.findOrange = new Reaction("../reactions/findOrange.json");
-	},	
+		this.findOrange = new Reaction('../reactions/findOrange.json');
+	},
 
 	handler(message) {
 		let emoteRegex = new RegExp(/<:\w*orange\w*:[0-9]+>/, 'gi');
 
-		if (message.content.includes("orange") && !emoteRegex.test(message.content) && !message.author.bot && this.hunger > 3) {
+		if (
+			message.content.includes('orange') &&
+			!emoteRegex.test(message.content) &&
+			!message.author.bot &&
+			this.hunger > 3
+		) {
 			message.channel.send('Who said orange?! Gimme!');
 			return true;
 		} else if (message.content.includes('🍊') && !message.author.bot && this.hunger > 3) {
@@ -34,12 +32,15 @@ module.exports = {
 
 	giveNumOranges(message, command, num) {
 		let sourceUser = global.rinchanSQL.getUser(message.author.id, message.guild.id);
+		let sourceInventory = global.rinchanSQL.getInventory(sourceUser, orangeObj);
 
 		let orangeString = num > 1 ? num + ' oranges' : 'an orange';
 
-		if (sourceUser.oranges >= num) {
+		if (sourceInventory.quantity >= num) {
 			const usersArray = global.getUserIdArr(message.content);
-			if (usersArray.length === 1) {
+			if (num === 0) {
+				message.channel.send('Fine, no oranges for them');
+			} else if (usersArray.length === 1) {
 				message.channel.send('You need to mention a user');
 			} else if (message.guild.member(usersArray[1]) == null) {
 				message.channel.send('They arent in the server <:rinconfuse:687276500998815813>');
@@ -51,13 +52,14 @@ module.exports = {
 				this.feedOrange(message);
 			} else {
 				let destUser = global.rinchanSQL.getUser(usersArray[1], message.guild.id);
+				let destInventory = global.rinchanSQL.getInventory(destUser, this.orangeObj);
 
-				sourceUser.oranges -= num;
-				destUser.oranges += num;
+				sourceInventory.quantity -= num;
+				destInventory.quantity += num;
 				message.channel.send('Ok, you gave ' + orangeString);
 
-				global.rinchanSQL.setOrange.run(sourceUser);
-				global.rinchanSQL.setOrange.run(destUser);
+				global.rinchanSQL.setInventory.run(sourceInventory);
+				global.rinchanSQL.setInventory.run(destInventory);
 			}
 		} else {
 			message.channel.send("You don't have " + orangeString + ' to give');
@@ -76,89 +78,77 @@ module.exports = {
 	},
 
 	checkGiveSpam(sourceUser) {
-		let now = new Date().getTime();
+		let now = new Date();
 
-		if (now - sourceUser.lastTry > this.orangeGiveInterval) {
-			return false;
-		} else {
+		if (now.getTime() - sourceUser.lastGive > this.orangeGiveInterval) {
 			return true;
+		} else {
+			return false;
 		}
 	},
 
-	async leaderboard(message) {
-		let board = global.rinchanSQL.getBoard.all();
-
-		let output = '';
-
-		board.sort((a, b) => {
-			return b.oranges - a.oranges;
-		});
-
-		await board.forEach(async function (user, index) {
-			if (user.oranges > 0) {
-				try {
-					let usr = await message.guild.members.fetch(user.user);
-					output +=
-						index +
-						1 +
-						'. ' +
-						usr.displayName +
-						' has ' +
-						user.oranges +
-						(user.oranges > 1 ? ' oranges' : ' orange') +
-						'\n';
-				} catch (e) {
-					console.log(e);
-				}
-			}
-		});
-
-		output = output.replace(/\s+$/, '');
-
-		message.channel.send(output);
-	},
-
-	feedOrange(message) {
+	feedOrange(message, command) {
 		let user = global.rinchanSQL.getUser(message.author.id, message.guild.id);
+		let inventory = global.rinchanSQL.getInventory(user, 'orange');
+
+		let curentTime = new Date();
 
 		if (user.oranges < 1) {
 			message.channel.send(`You don't have any oranges!`);
 		} else {
-			switch (this.hunger) {
-				case 0:
-					message.channel.send('Im stuffed, I cant eat another one');
-					break;
-				case 5:
-					message.channel.send(`I'm starving! What took you so long`);
-					user.oranges--;
-					user.affection++;
-					this.hunger--;
-					this.setIcon();
-					break;
-				default:
-					message.channel.send(`Thanks, I can't eat another bite`);
-					user.oranges--;
-					user.affection++;
-					this.hunger--;
-					this.setIcon();
-					break;
+			if (this.checkGiveSpam(user)) {
+				switch (this.hunger) {
+					case 0:
+						message.channel.send('Im stuffed, I cant eat another one');
+						break;
+					case 5:
+						message.channel.send(`I'm starving! What took you so long`);
+						inventory.oranges--;
+						user.affection++;
+						this.hunger--;
+						user.lastGive = curentTime.getTime();
+						this.setIcon();
+						break;
+					case 1:
+						message.channel.send(`Thanks, I can't eat another bite`);
+						inventory.oranges--;
+						user.affection++;
+						user.lastGive = curentTime.getTime();
+						this.hunger--;
+						this.setIcon();
+						break;
+					default:
+						message.channel.send(`Another delicious orange!`);
+						inventory.oranges--;
+						user.affection++;
+						user.lastGive = curentTime.getTime();
+						this.hunger--;
+						this.setIcon();
+						break;
+				}
+				global.rinchanSQL.setUser.run(user);
+				global.rinchanSQL.setInventory.run(inventory);
+			} else {
+				message.channel.send("It's okay, you just gave me one");
 			}
 		}
-
-		global.rinchanSQL.setOrange.run(user);
 	},
 
 	harvestOrange(message) {
 		let user = global.rinchanSQL.getUser(message.author.id, message.guild.id);
+		let inventory = global.rinchanSQL.getInventory(user, 'orange');
+
+		let now = new Date();
 
 		let chance = Math.random();
 
 		if (user.tries > 0) {
 			if (0 < chance && chance <= 0.05) {
-				this.easterEgg(message);
+				this.easterEgg(message, user);
 				user.tries = 0;
 			} else if (0.05 < chance && chance <= 0.6) {
-				user.oranges++;
+				inventory.quantity++;
+				inventory.lastGet = now.getTime();
 				this.foundOrange(message);
 				user.tries--;
 			} else if (0.6 < chance && chance < 1) {
@@ -169,15 +159,24 @@ module.exports = {
 			message.channel.send(`I'm tired! <:rinded:603549269106098186>`);
 		}
 
-		global.rinchanSQL.setOrange.run(user);
+		global.rinchanSQL.setUser.run(user);
+		global.rinchanSQL.setInventory.run(inventory);
 	},
 
-	easterEgg(message) {
+	easterEgg(message, user) {
+		let now = new Date();
+		let inventory = global.rinchanSQL.getInventory(user, 'len');
+		inventory.quantity++;
+		inventory.lastGet = now.getTime();
+		global.rinchanSQL.setInventory.run(inventory);
+
 		message.channel.send('Found a Len! <:rinwao:701505851449671871>', {
 			files: [
 				'https://cdn.discordapp.com/attachments/601856655873015831/703286810133921892/b5396d6cadd36f32424c4bb1b48913d30b7deb86.jpg',
 			],
 		});
+
+		let userInventory;
 	},
 
 	foundOrange(message) {
@@ -198,7 +197,7 @@ module.exports = {
 				message.channel.send('Im starving here! <:rinangrey:620576239224225835>');
 				return;
 			}
-        	default: {
+			default: {
 				message.channel.send('Dont you have one more orange? <:oharin:601107083265441849>');
 				return;
 			}
@@ -207,13 +206,13 @@ module.exports = {
 	},
 
 	setIcon() {
-		global.client.guilds.cache.get('585071519638487041').setIcon(this.hungerIcon[this.hunger]);
+		//	global.client.guilds.cache.get('585071519638487041').setIcon(this.hungerIcon[this.hunger]);
 	},
 };
 
 setInterval(function () {
-	if (module.exports.hunger < module.exports.maxHunger) {
-		module.exports.hunger++;
+	if (module.exports.getHunger < module.exports.maxHunger) {
+		module.exports.changeHunger(1);
 		module.exports.setIcon();
 	}
 }, 3600000);

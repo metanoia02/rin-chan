@@ -19,7 +19,7 @@ global.client.once('ready', () => {
 	console.log('Ready!');
 });
 
-global.getUserIdArr = function(command) {
+global.getUserIdArr = function (command) {
 	let userIdRegex = new RegExp(/<!*@!*([0-9]+)>/, 'g');
 
 	let result = [...command.matchAll(userIdRegex)];
@@ -30,7 +30,7 @@ global.getUserIdArr = function(command) {
 };
 
 global.client.on('message', (message) => {
-	console.log(message.author.username + ": " + message.content);
+	console.log(message.author.username + ': ' + message.content);
 
 	if (mentionSpamDetect(message)) {
 		return null;
@@ -100,12 +100,16 @@ function mentionSpamDetect(message) {
 	if (global.getUserIdArr(message.content).length > 10) {
 		message.member.roles.remove('588677338007601163');
 		message.member.roles.add('620609193228894208');
-		message.author.send("Go spam somewhere else!", { files: ['https://cdn.discordapp.com/attachments/601814319990046738/713124422881640579/bbf22a157ab6fabc0a7510b4ce0ad59e.jpg'] });
+		message.author.send('Go spam somewhere else!', {
+			files: [
+				'https://cdn.discordapp.com/attachments/601814319990046738/713124422881640579/bbf22a157ab6fabc0a7510b4ce0ad59e.jpg',
+			],
+		});
 		message.delete();
 
 		const channel = message.guild.channels.cache.find((ch) => ch.name === 'rinchans-diary');
 		if (!channel) return true;
-	
+
 		channel.send(`<@&588521716481785859> Muted ${message.author} for mention spam.`);
 
 		return true;
@@ -134,10 +138,12 @@ global.client.on('guildMemberRemove', (member) => {
 	});
 });
 
-setInterval(function () {
-	global.rinchanSQL.setTries.run();
-}, 7200000);
-
 global.client.on('exit', (exitCode) => {
 	global.rinchanSQL.close();
+
+	const channel = global.client.guild.channels.cache.find((ch) => ch.name === 'bot-spam');
+
+	if (!channel) return;
+
+	channel.send(`I'll be right back!`);
 });
