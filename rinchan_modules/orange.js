@@ -220,8 +220,8 @@ module.exports = {
 };
 
 setInterval(function () {
-	if (module.exports.getHunger < module.exports.maxHunger) {
-		module.exports.changeHunger(1);
+	if (module.exports.hunger < module.exports.maxHunger) {
+		module.exports.hunger++;
 		module.exports.setIcon();
 	}
 }, 3600000);
