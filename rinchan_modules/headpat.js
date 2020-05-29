@@ -9,6 +9,6 @@ module.exports = {
 			message.channel.send('<:rinpout:628298482616107018> You never give me oranges...');
 		}
 
-		global.rinchanSQL.setOrange.run(user);
+		global.rinchanSQL.setUser.run(user);
 	},
 };
