@@ -271,7 +271,7 @@ module.exports = {
 	},
 	
 		setIcon() {
-	//	global.client.guilds.cache.get('585071519638487041').setIcon(this.hungerIcon[this.hunger]);
+		global.client.guilds.cache.get('585071519638487041').setIcon(this.hungerIcon[this.hunger]);
 	},
 	
 
@@ -284,4 +284,3 @@ setInterval(function () {
 	}
 }, 3600000);
 
-/**/
