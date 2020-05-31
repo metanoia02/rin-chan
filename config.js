@@ -22,7 +22,7 @@ module.exports = {
 
 	leaderboard: {
 		cmd: {
-			leaderboard: ['scoreboard', 'leaderboard'],
+			showLeaderboard: ['scoreboard', 'leaderboard'],
 		},
 
 		description: [
