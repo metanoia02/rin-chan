@@ -224,7 +224,7 @@ module.exports = {
 			if(stealInventory.quantity < 5) {
 				message.channel.send('They arent a good target');
 			} else if(sourceUser.affection > stealUser.affection) {
-				if(chance >= 90) {
+				if(chance >= 93) {
 					(sourceUser.affection > 9) ? sourceUser.affection -= 10 : sourceUser.affection = 0;
 
 					const stolenOranges = (stealInventory.quantity/10 > 10) ? 10 : Math.round(stealInventory.quantity/10);
