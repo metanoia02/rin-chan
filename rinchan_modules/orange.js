@@ -203,8 +203,14 @@ module.exports = {
 
 		let now = new Date();
 
-		if(message.mentions.members.array().length > 1) {
-			message.channel.send('They knew i was coming!');
+		let mentionsArray = global.getUserIdArr(message.content);
+
+		if(mentionsArray[1] == global.client.user.id) {
+			message.channel.send("Step back from my oranges!");
+		} else if(mentionsArray[1] == message.author.id) {
+			message.channel.send('Dont tempt me!');
+		} else if(message.mentions.members.array().length > 1) {
+			message.channel.send('They knew i was coming!');			
 		} else if(!user) {
 			message.channel.send('Who are they? <:rinwha:600747717081432074>');
 		} else if (user.id == message.author.id) {
