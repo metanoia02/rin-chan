@@ -31,7 +31,7 @@ global.getUserIdArr = function (command) {
 
 global.escapeMarkdown = function(string) {
 	let markdownRegex = new RegExp("([*|_~`>])", 'g');
-	return string.replace(badUserRegex, '\\$1');
+	return string.replace(markdownRegex, '\\$1');
 };
 
 global.client.on('message', (message) => {
