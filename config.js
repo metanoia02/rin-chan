@@ -58,6 +58,14 @@ module.exports = {
 		],
 	},
 
+	inventory: {
+		cmd: {
+			showInventory: ['show inventory'],
+		},
+
+		description: ['Show everything you have'],
+	},
+
 	greeting: {
 		cmd: {
 			sayHi: ['hi', 'hello', 'morning', 'afternoon', 'evening', 'night', 'good morning', 'good evening', 'good night'],
