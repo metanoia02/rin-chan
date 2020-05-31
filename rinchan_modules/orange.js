@@ -234,7 +234,7 @@ module.exports = {
 
 					sourceUser.lastSteal = now.getTime();
 
-					global.rinchanSQL.setUser.run(sourceUser);
+					
 					global.rinchanSQL.setUser.run(stealUser);
 					
 					global.rinchanSQL.setInventory.run(sourceInventory);
@@ -244,6 +244,8 @@ module.exports = {
 				}else {
 					message.channel.send('I got caught... <:rinbuaaa:686741811850510411>');
 				}
+			sourceUser.lastSteal = now.getTime();
+			global.rinchanSQL.setUser.run(sourceUser);
 			} else {
 				message.channel.send("I don't think so, I like them more <:rintriumph:673972571254816824>");
 			}
