@@ -217,7 +217,7 @@ module.exports = {
 			message.channel.send('Dont tempt me!');
 		} else if (user.id === global.client.user.id) {
 			message.channel.send("Step back from my oranges!");
-		} else if((now.getTime() - sourceUser.lastSteal) > 1) {
+		} else if((now.getTime() - sourceUser.lastSteal) > 86400000) {
 			let stealUser = global.rinchanSQL.getUser(user.id,message.guild.id)
 			let stealInventory = global.rinchanSQL.getInventory(stealUser, "orange");
 
