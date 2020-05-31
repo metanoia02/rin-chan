@@ -1,4 +1,8 @@
 module.exports = {
+	init() {
+
+	},
+
 	headpat(message) {
 		let user = global.rinchanSQL.getUser(message.author.id, message.guild.id);
 
@@ -9,6 +13,12 @@ module.exports = {
 			message.channel.send('<:rinpout:628298482616107018> You never give me oranges...');
 		}
 
-		global.rinchanSQL.setOrange.run(user);
+		global.rinchanSQL.setUser.run(user);
 	},
+	yourCute(message) {
+		let user = global.rinchanSQL.getUser(message.author.id, message.guild.id);
+		let affection = user.affection;
+a
+
+	}
 };

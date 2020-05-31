@@ -6,7 +6,7 @@ module.exports = {
 		this.setTries = sql.prepare('UPDATE user SET tries = 3');
 		this.queryUser = sql.prepare('SELECT * FROM user WHERE user = ? AND guild = ?');
 		this.setUser = sql.prepare(
-			'INSERT OR REPLACE INTO user (id, user, guild, affection, tries, lastGive) VALUES (@id, @user, @guild, @affection, @tries, @lastGive);'
+			'INSERT OR REPLACE INTO user (id, user, guild, affection, tries, lastGive, lastSteal) VALUES (@id, @user, @guild, @affection, @tries, @lastGive, @lastSteal);'
 		);
 		this.getAllUsers = sql.prepare('SELECT * FROM user');
 
@@ -35,6 +35,7 @@ module.exports = {
 				affection: 0,
 				tries: 3,
 				lastGive: 0,
+				lastSteal: 0,
 			};
 		}
 		return user;

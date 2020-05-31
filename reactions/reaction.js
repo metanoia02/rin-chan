@@ -14,4 +14,35 @@ module.exports = class Reaction {
 
         return answer;
     }
+
+    //mood
+    //affection
+    //hunger
 };
+
+/*
+mood 0-5
+    angrey
+    sad
+    neutral
+    ok
+    good
+    amazing
+hunger 0-5
+    rinangrey
+    rinpout
+    flap
+    flapflap
+    turboflap
+    stuffed
+affection 0-5
+    0
+    20
+    40
+    60
+    80
+    100
+
+    
+
+*/

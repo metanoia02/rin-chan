@@ -2,5 +2,6 @@
 	"id": 0,
 	"hunger": 0,
 	"lastFed": 0,
-	"mood": 0
+	"mood": 0,
+	"maxHunger": 5
 }

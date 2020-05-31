@@ -26,5 +26,13 @@ module.exports = {
 
 	howAreYou(message) {
 		message.channel.send(this.howYou.getReaction());
-	}
+	},
+
+	checkAffection(message, command) {
+
+	},
+
+	goodNight(message) {
+
+	},
 };

@@ -1,3 +1,8 @@
+const user = {
+	desc: "@user",
+	regex: "<!*@!*[0-9]+>"
+};
+
 module.exports = {
 	headpat: {
 		cmd: {
@@ -5,14 +10,6 @@ module.exports = {
 		},
 
 		description: ['You may headpat Rin-chan.'],
-	},
-
-	inventory: {
-		cmd: {
-			showInventory: ['show inventory'],
-		},
-
-		description: ['Show everything you have'],
 	},
 
 	help: {
@@ -25,10 +22,12 @@ module.exports = {
 
 	leaderboard: {
 		cmd: {
-			showLeaderboard: ['scoreboard', 'leaderboard'],
+			leaderboard: ['scoreboard', 'leaderboard'],
 		},
 
-		description: ['Display the ranking of orange hoarders.'],
+		description: [
+			'Display the ranking of orange hoarders.',
+		],
 	},
 
 	orange: {
@@ -46,15 +45,16 @@ module.exports = {
 			hungry: ['are you hungry', 'hungry'],
 			giveOrange: ['give an orange to <!*@!*[0-9]+>'],
 			giveOranges: ['give [0-9]+ oranges to <!*@!*[0-9]+>', 'give <!*@!*[0-9]+> [0-9]+ oranges'],
+			stealOranges: ['steal oranges from <!*@!*[0-9]+>', 'steal <!*@!*[0-9]+> oranges', 'steal from <!*@!*[0-9]+>'],
 		},
 
 		description: [
 			'Try and find an orange for Rin-chan.',
 			'Give an orange to Rin-Chan.',
 			'Rin-chan reports her state of hunger.',
-
 			'Give an orange to mentioned user.',
 			'Give a number of oranges to the mentioned user.',
+			'Try and make an orange heist.',
 		],
 	},
 
@@ -69,6 +69,7 @@ module.exports = {
 };
 
 /*
+How are you
 What do you think of
 Road roller
 */

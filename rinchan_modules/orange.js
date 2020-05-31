@@ -1,7 +1,8 @@
 module.exports = {
 	orangeGiveInterval: 900000,
-	orangeObj: 'orange',
-	lenObj: 'len',
+	orangeObj: "orange",
+	lenObj: "len",
+
 	hunger: 2,
 	maxHunger: 5,
 
@@ -15,20 +16,15 @@ module.exports = {
 	},
 
 	init() {
-		let Reaction = require('../reactions/reaction.js');
+		let Reaction = require("../reactions/reaction.js");
 
-		this.findOrange = new Reaction('../reactions/findOrange.json');
-	},
+		this.findOrange = new Reaction("../reactions/findOrange.json");
+	},	
 
 	handler(message) {
 		let emoteRegex = new RegExp(/<:\w*orange\w*:[0-9]+>/, 'gi');
 
-		if (
-			message.content.includes('orange') &&
-			!emoteRegex.test(message.content) &&
-			!message.author.bot &&
-			this.hunger > 3
-		) {
+		if (message.content.includes("orange") && !emoteRegex.test(message.content) && !message.author.bot && this.hunger > 3) {
 			message.channel.send('Who said orange?! Gimme!');
 			return true;
 		} else if (message.content.includes('🍊') && !message.author.bot && this.hunger > 3) {
@@ -41,17 +37,17 @@ module.exports = {
 
 	giveNumOranges(message, command, num) {
 		let sourceUser = global.rinchanSQL.getUser(message.author.id, message.guild.id);
-		let sourceInventory = global.rinchanSQL.getInventory(sourceUser, this.orangeObj);
+		let sourceInventory = global.rinchanSQL.getInventory(sourceUser, orangeObj);
 
 		let orangeString = num > 1 ? num + ' oranges' : 'an orange';
 
 		if (sourceInventory.quantity >= num) {
 			const usersArray = global.getUserIdArr(message.content);
-			if (num === 0) {
+			if(num === 0) {
 				message.channel.send('Fine, no oranges for them');
 			} else if (usersArray.length === 1) {
 				message.channel.send('You need to mention a user');
-			} else if (message.guild.member(usersArray[1]) == null) {
+			} else if (!message.guild.member(mentions[1])) {
 				message.channel.send('They arent in the server <:rinconfuse:687276500998815813>');
 			} else if (usersArray[1] == message.author.id) {
 				message.channel.send('You cant give oranges to yourself!');
@@ -145,7 +141,7 @@ module.exports = {
 
 	harvestOrange(message) {
 		let user = global.rinchanSQL.getUser(message.author.id, message.guild.id);
-		let inventory = global.rinchanSQL.getInventory(user, 'orange');
+		let inventory = global.rinchanSQL.getInventory(user, "orange");
 
 		let now = new Date();
 
@@ -184,16 +180,68 @@ module.exports = {
 				'https://cdn.discordapp.com/attachments/601856655873015831/703286810133921892/b5396d6cadd36f32424c4bb1b48913d30b7deb86.jpg',
 			],
 		});
-
-		let userInventory;
 	},
 
 	foundOrange(message) {
-		message.channel.send('Found an Orange!');
+		message.channel.send(this.findOrange.getReaction());
 	},
 
 	couldntFind(message) {
 		message.channel.send('Couldnt find anything... <:rinyabai:635101260080480256>');
+	},
+
+	stealOranges(message, command) {
+		let chance = Math.floor(Math.random() * 100) + 1;
+		let mentions = global.getUserIdArr(message.content);
+
+		let sourceUser = global.rinchanSQL.getUser(message.author.id, message.guild.id)
+		let sourceInventory = global.rinchanSQL.getInventory(sourceUser, "orange");
+
+		let stealUser = global.rinchanSQL.getUser(mentions[1],message.guild.id)
+		let stealInventory = global.rinchanSQL.getInventory(stealUser, "orange");
+
+		let now = new Date();
+
+		if(mentions.length === 1) {
+			message.channel.send('You need to mention a user');
+		} else if(!message.guild.member(mentions[1])) {
+			message.channel.send('They arent in the server <:rinconfuse:687276500998815813>');
+		} else if (mentions[1] == message.author.id) {
+			message.channel.send('Dont tempt me!');
+		} else if (mentions.length !== 2) {
+			message.channel.send('Mention only one user');
+		} else if (mentions[1] === global.client.user.id) {
+			message.channel.send("Step back from my oranges!");
+		} else if((now.getTime() - sourceUser.lastSteal) > 86400000) {
+			if(stealInventory.quantity < 5) {
+				message.channel.send('They arent a good target');
+			} else if(sourceUser.affection > stealUser.affection) {
+				if(chance >= 90) {
+					(sourceUser.affection > 9) ? sourceUser.affection -= 10 : sourceUser.affection = 0;
+
+					const stolenOranges = (stealInventory.quantity/10 > 10) ? 10 : Math.round(stealInventory.quantity/10);
+
+					sourceInventory.quantity += stolenOranges;
+					stealInventory.quantity -= stolenOranges;
+
+					sourceUser.lastSteal = now.getTime();
+
+					global.rinchanSQL.setUser.run(sourceUser);
+					global.rinchanSQL.setUser.run(stealUser);
+					
+					global.rinchanSQL.setInventory.run(sourceInventory);
+					global.rinchanSQL.setInventory.run(stealInventory);
+
+					message.channel.send('I did it! Heres ' + stolenOranges + ((stolenOranges===1) ? ' orange' : ' oranges'));
+				}else {
+					message.channel.send('I got caught... <:rinbuaaa:686741811850510411>');
+				}
+			} else {
+				message.channel.send("I don't think so, I like them more <:rintriumph:673972571254816824>");
+			}
+		} else {
+			message.channel.send("Not again <:rinyabai:635101260080480256>");
+		}
 	},
 
 	hungry(message) {
@@ -206,7 +254,7 @@ module.exports = {
 				message.channel.send('Im starving here! <:rinangrey:620576239224225835>');
 				return;
 			}
-			default: {
+        	default: {
 				message.channel.send('Dont you have one more orange? <:oharin:601107083265441849>');
 				return;
 			}
@@ -217,11 +265,15 @@ module.exports = {
 	setIcon() {
 		global.client.guilds.cache.get('585071519638487041').setIcon(this.hungerIcon[this.hunger]);
 	},
+	
+
 };
 
 setInterval(function () {
-	if (module.exports.getHunger < module.exports.maxHunger) {
-		module.exports.changeHunger(1);
+	if (module.exports.hunger < module.exports.maxHunger) {
+		module.exports.hunger++;
 		module.exports.setIcon();
 	}
 }, 3600000);
+
+/**/
