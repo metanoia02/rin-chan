@@ -240,7 +240,7 @@ module.exports = {
 					global.rinchanSQL.setInventory.run(sourceInventory);
 					global.rinchanSQL.setInventory.run(stealInventory);
 
-					message.channel.send('I did it! Heres ' + stolenOranges + ((stolenOranges===1) ? ' orange' : ' oranges'));
+					message.channel.send('I did it! Heres ' + stolenOranges + ((stolenOranges===1) ? ' orange' : ' oranges') + ' from ' + username);
 				}else {
 					message.channel.send('I got caught... <:rinbuaaa:686741811850510411>');
 				}
