@@ -49,7 +49,7 @@ global.client.on('message', (message) => {
 					for (let v = 0; v < config[k].cmd[c].length; v++) {
 						let cmdRegex = new RegExp(config[k].cmd[c][v], 'i');
 						if (cmdRegex.test(command)) {
-							modules[k][c](message, command);
+							modules[k][c](message, command, cmdRegex);
 							return;
 						}
 					}

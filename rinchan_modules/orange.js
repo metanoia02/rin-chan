@@ -37,7 +37,7 @@ module.exports = {
 
 	giveNumOranges(message, command, num) {
 		let sourceUser = global.rinchanSQL.getUser(message.author.id, message.guild.id);
-		let sourceInventory = global.rinchanSQL.getInventory(sourceUser, orangeObj);
+		let sourceInventory = global.rinchanSQL.getInventory(sourceUser, this.orangeObj);
 
 		let orangeString = num > 1 ? num + ' oranges' : 'an orange';
 
@@ -47,7 +47,7 @@ module.exports = {
 				message.channel.send('Fine, no oranges for them');
 			} else if (usersArray.length === 1) {
 				message.channel.send('You need to mention a user');
-			} else if (!message.guild.member(mentions[1])) {
+			} else if (!message.guild.member(usersArray[1])) {
 				message.channel.send('They arent in the server <:rinconfuse:687276500998815813>');
 			} else if (usersArray[1] == message.author.id) {
 				message.channel.send('You cant give oranges to yourself!');
@@ -55,7 +55,9 @@ module.exports = {
 				message.channel.send('Mention only one user');
 			} else if (usersArray[1] === global.client.user.id) {
 				this.feedOrange(message);
-			} else {
+			}else if(message.guild.member(usersArray[1]).bot) {
+				message.channel.send('Why would that bot need oranges...');
+			}else {
 				let destUser = global.rinchanSQL.getUser(usersArray[1], message.guild.id);
 				let destInventory = global.rinchanSQL.getInventory(destUser, this.orangeObj);
 
@@ -190,29 +192,29 @@ module.exports = {
 		message.channel.send('Couldnt find anything... <:rinyabai:635101260080480256>');
 	},
 
-	stealOranges(message, command) {
+	stealOranges(message, command, cmdRegex) {
 		let chance = Math.floor(Math.random() * 100) + 1;
-		let mentions = global.getUserIdArr(message.content);
+
+		let username = command.replace(cmdRegex, "");
+		let user = global.client.users.cache.find(user => user.username == username);
 
 		let sourceUser = global.rinchanSQL.getUser(message.author.id, message.guild.id)
 		let sourceInventory = global.rinchanSQL.getInventory(sourceUser, "orange");
 
-		let stealUser = global.rinchanSQL.getUser(mentions[1],message.guild.id)
-		let stealInventory = global.rinchanSQL.getInventory(stealUser, "orange");
-
 		let now = new Date();
 
-		if(mentions.length === 1) {
-			message.channel.send('You need to mention a user');
-		} else if(!message.guild.member(mentions[1])) {
-			message.channel.send('They arent in the server <:rinconfuse:687276500998815813>');
-		} else if (mentions[1] == message.author.id) {
+		if(message.mentions.members.array().length > 1) {
+			message.channel.send('They knew i was coming!');
+		} else if(!user) {
+			message.channel.send('Who are they? <:rinwha:600747717081432074>');
+		} else if (user.id == message.author.id) {
 			message.channel.send('Dont tempt me!');
-		} else if (mentions.length !== 2) {
-			message.channel.send('Mention only one user');
-		} else if (mentions[1] === global.client.user.id) {
+		} else if (user.id === global.client.user.id) {
 			message.channel.send("Step back from my oranges!");
-		} else if((now.getTime() - sourceUser.lastSteal) > 86400000) {
+		} else if((now.getTime() - sourceUser.lastSteal) > 1) {
+			let stealUser = global.rinchanSQL.getUser(user.id,message.guild.id)
+			let stealInventory = global.rinchanSQL.getInventory(stealUser, "orange");
+
 			if(stealInventory.quantity < 5) {
 				message.channel.send('They arent a good target');
 			} else if(sourceUser.affection > stealUser.affection) {
@@ -261,9 +263,9 @@ module.exports = {
 		}
 		return;
 	},
-
-	setIcon() {
-		global.client.guilds.cache.get('585071519638487041').setIcon(this.hungerIcon[this.hunger]);
+	
+		setIcon() {
+	//	global.client.guilds.cache.get('585071519638487041').setIcon(this.hungerIcon[this.hunger]);
 	},
 	
 

@@ -43,9 +43,9 @@ module.exports = {
 			],
 			feedOrange: ['have an orange', 'give orange'],
 			hungry: ['are you hungry', 'hungry'],
-			giveOrange: ['give an orange to <!*@!*[0-9]+>'],
+			giveOrange: ['give an orange to <!*@!*[0-9]+>', 'give 1 orange to <!*@!*[0-9]+>', 'give <!*@!*[0-9]+> an orange'],
 			giveOranges: ['give [0-9]+ oranges to <!*@!*[0-9]+>', 'give <!*@!*[0-9]+> [0-9]+ oranges'],
-			stealOranges: ['steal oranges from <!*@!*[0-9]+>', 'steal <!*@!*[0-9]+> oranges', 'steal from <!*@!*[0-9]+>'],
+			stealOranges: ['steal oranges from ', 'steal from ', 'steal an orange from '],
 		},
 
 		description: [
