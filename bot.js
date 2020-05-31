@@ -29,6 +29,11 @@ global.getUserIdArr = function (command) {
 	});
 };
 
+global.escapeMarkdown = function(string) {
+	let markdownRegex = new RegExp("([*|_~`>])", 'g');
+	return string.replace(badUserRegex, '\\$1');
+};
+
 global.client.on('message', (message) => {
 	console.log(message.author.username + ': ' + message.content);
 

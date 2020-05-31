@@ -16,7 +16,7 @@ module.exports = {
 						index +
 						1 +
 						'. ' +
-						usr.displayName +
+						global.escapeMarkdown(usr.displayName) +
 						' has ' +
 						user.quantity +
 						(user.quantity > 1 ? ' oranges' : ' orange') +

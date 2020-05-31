@@ -35,4 +35,8 @@ module.exports = {
 	goodNight(message) {
 
 	},
+
+	yourCute(message) {
+//Cheer up you have me!
+	},
 };
