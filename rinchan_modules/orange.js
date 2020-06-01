@@ -196,7 +196,9 @@ module.exports = {
 		let chance = Math.floor(Math.random() * 100) + 1;
 
 		let username = command.replace(cmdRegex, "");
-		let user = global.client.users.cache.find(user => user.username == username);
+		let user = global.client.users.cache.find(user => user.tag == username);
+
+		console.log(user);
 
 		let sourceUser = global.rinchanSQL.getUser(message.author.id, message.guild.id)
 		let sourceInventory = global.rinchanSQL.getInventory(sourceUser, "orange");

@@ -54,7 +54,7 @@ module.exports = {
 			'Rin-chan reports her state of hunger.',
 			'Give an orange to mentioned user.',
 			'Give a number of oranges to the mentioned user.',
-			'Try and make an orange heist.',
+			'Try and make an orange heist. Use targets username and tag eg username#1234',
 		],
 	},
 
