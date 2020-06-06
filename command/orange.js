@@ -67,7 +67,8 @@ module.exports = {
 			} else if (usersArray.length !== 2) {
 				message.channel.send('Mention only one user');
 			} else if (usersArray[1] === message.client.user.id) {
-				this.feedOrange(message);
+				message.channel.send('<:rinconfuse:687276500998815813>');
+				//this.feedOrange(message);
 			} else if (message.guild.member(usersArray[1]).bot) {
 				message.channel.send('Why would that bot need ' + objectString + '...');
 			} else {
