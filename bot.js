@@ -1,21 +1,25 @@
 ﻿const Discord = require('discord.js');
+const RinChan = require('./rinchan/rinchan.js');
+global.rinchanSQL = require('./sql.js');
 
 const config = require('./config.js');
 const token = require('./token.json');
-let me = '';
 
-global.client = new Discord.Client();
-global.rinchanSQL = require('./sql.js');
+const client = new Discord.Client();
 
 let modules = {};
 
-global.client.login(token.login);
+client.login(token.login);
 
-global.client.once('ready', () => {
-	me = global.client.user.id;
+client.once('ready', () => {
 	modules = addModules();
 	global.rinchanSQL.init();
-	modules.orange.setIcon();
+
+	RinChan.init('./rinchan/rinchan.json', client);
+	RinChan.setId(client.user.id);
+
+	client.user.setActivity('Miku', { type: 'LISTENING' });
+
 	console.log('Ready!');
 });
 
@@ -29,22 +33,27 @@ global.getUserIdArr = function (command) {
 	});
 };
 
-global.escapeMarkdown = function(string) {
-	let markdownRegex = new RegExp("([*|_~`>])", 'g');
+global.escapeMarkdown = function (string) {
+	let markdownRegex = new RegExp('([*|_~`>])', 'g');
 	return string.replace(markdownRegex, '\\$1');
 };
 
-global.client.on('message', (message) => {
+global.validateUser = function (userId) {
+	//check if user exists, check if self, check if bot, check if rinchan
+	return true;
+};
+
+client.on('message', (message) => {
 	console.log(message.author.username + ': ' + message.content);
 
 	if (mentionSpamDetect(message)) {
 		return null;
 	}
 
-	let reg = '^<@' + me + '>|^<@!' + me + '>';
+	let reg = '^<@' + RinChan.getId() + '>|^<@!' + RinChan.getId() + '>';
 	rinTest = new RegExp(reg);
 
-	if (message.mentions.has(global.client.user) && message.guild && rinTest.test(message.content)) {
+	if (message.mentions.has(client.user) && message.guild && rinTest.test(message.content)) {
 		let command = message.content.replace(/^<@![0-9]*>\s*|^<@[0-9]*>\s*/, '');
 		command = command.replace(/\s\s+/g, ' ');
 
@@ -54,7 +63,7 @@ global.client.on('message', (message) => {
 					for (let v = 0; v < config[k].cmd[c].length; v++) {
 						let cmdRegex = new RegExp(config[k].cmd[c][v], 'i');
 						if (cmdRegex.test(command)) {
-							modules[k][c](message, command, cmdRegex);
+							modules[k][c](message, command, cmdRegex, RinChan);
 							return;
 						}
 					}
@@ -73,7 +82,7 @@ global.client.on('message', (message) => {
 		for (let k in modules) {
 			if (modules.hasOwnProperty(k)) {
 				if (typeof modules[k].handler == 'function') {
-					if (modules[k].handler(message)) {
+					if (modules[k].handler(message, RinChan)) {
 						return;
 					}
 				}
@@ -88,7 +97,7 @@ function addModules() {
 	let modules = {};
 
 	for (let mod in config) {
-		modules[mod] = require(`./rinchan_modules/${mod}.js`);
+		modules[mod] = require(`./command/${mod}.js`);
 		console.log(`Added ${mod}`);
 
 		if (typeof modules[mod].init == 'function') {
@@ -122,7 +131,7 @@ function mentionSpamDetect(message) {
 	return false;
 }
 
-global.client.on('guildMemberAdd', (member) => {
+client.on('guildMemberAdd', (member) => {
 	const channel = member.guild.channels.cache.find((ch) => ch.name === 'lounge');
 
 	if (!channel) return;
@@ -134,7 +143,7 @@ global.client.on('guildMemberAdd', (member) => {
 	});
 });
 
-global.client.on('guildMemberRemove', (member) => {
+client.on('guildMemberRemove', (member) => {
 	const channel = member.guild.channels.cache.find((ch) => ch.name === 'lounge');
 	if (!channel) return;
 
@@ -143,10 +152,10 @@ global.client.on('guildMemberRemove', (member) => {
 	});
 });
 
-global.client.on('exit', (exitCode) => {
+client.on('exit', (exitCode) => {
 	global.rinchanSQL.close();
 
-	const channel = global.client.guild.channels.cache.find((ch) => ch.name === 'bot-spam');
+	const channel = client.guild.channels.cache.find((ch) => ch.name === 'bot-spam');
 
 	if (!channel) return;
 

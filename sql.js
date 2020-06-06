@@ -19,9 +19,18 @@ module.exports = {
 
 		this.orangeLeaderboard = sql.prepare('SELECT * FROM inventory WHERE objectName = "orange"');
 
-		this.getObject = sql.prepare('SELECT * FROM object WHERE name = ?');
+		this.queryObject = sql.prepare('SELECT * FROM object WHERE name LIKE ? OR plural LIKE ?');
 
 		this.setTries.run();
+	},
+
+	getObject(objectString) {
+		let object = rinchanSQL.queryObject.get(objectString,objectString);
+
+		if(!object) {
+			return undefined;
+		}
+		return object;
 	},
 
 	getUser(userId, guildId) {
@@ -42,7 +51,7 @@ module.exports = {
 	},
 
 	getInventory(user, object) {
-		let objectType = this.getObject.get(object);
+		let objectType = this.queryObject.get(object,object);
 
 		if (objectType) {
 			let inventory = this.queryInventory.get(user.id, object);

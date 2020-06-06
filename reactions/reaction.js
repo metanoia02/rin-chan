@@ -1,9 +1,9 @@
 module.exports = class Reaction {
-    constructor(filePath) {
+    constructor(filePath, modifier) {
         this.config = require(filePath);
     }
     
-    getReaction() {
+    getReaction(rinchan) {
         let answer = "";
 
         for(let phraseArr in this.config) {
@@ -46,3 +46,8 @@ affection 0-5
     
 
 */
+
+//modifier = [mood,hunger,affection]
+
+//midnight random mood
+//hunger level decrease mood by 1 each hour less than 3
