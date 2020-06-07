@@ -13,10 +13,11 @@ module.exports = {
 	},
 
 	changeHunger(client, hunger, maxHunger) {
-		this.setIcon(client, hunger);
 		if (hunger < maxHunger) {
+			this.setIcon(client, hunger);
 			return hunger;
 		} else {
+			this.setIcon(client, maxHunger);
 			return maxHunger;
 		}
 	},

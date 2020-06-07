@@ -11,7 +11,7 @@ module.exports = {
 					this.commandList += '**' + configs[k].description[x] + ' Keywords:**\n';
 
 					for (let v = 0; v < configs[k].cmd[c].length; v++) {
-						this.commandList += configs[k].cmd[c][v] + '\n';
+						this.commandList += convertCommand(configs[k].cmd[c][v], false) + '\n';
 					}
 					x++;
 
@@ -19,9 +19,17 @@ module.exports = {
 				}
 			}
 		}
+
+		this.commandList += "**Available objects:**\n";
+
+		let objects = rinchanSQL.getAllObjects.all();
+
+		this.commandList += objects.reduce((acc,ele) => {
+			return acc += ele.name + "\n"; 
+		}, "");
 	},
 
 	help(message) {
-		message.channel.send(this.commandList);
+		message.author.send(this.commandList);
 	},
 };

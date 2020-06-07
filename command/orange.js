@@ -209,7 +209,7 @@ module.exports = {
 
 	easterEgg(message, user) {
 		let now = new Date();
-		let inventory = rinchanSQL.getInventory(user, 'len');
+		let inventory = rinchanSQL.getInventory(user, 'Len');
 		inventory.quantity++;
 		inventory.lastGet = now.getTime();
 		rinchanSQL.setInventory.run(inventory);

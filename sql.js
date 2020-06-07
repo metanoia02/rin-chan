@@ -20,6 +20,7 @@ module.exports = {
 		this.orangeLeaderboard = sql.prepare('SELECT * FROM inventory WHERE objectName = "orange"');
 
 		this.queryObject = sql.prepare('SELECT * FROM object WHERE name LIKE ? OR plural LIKE ?');
+		this.getAllObjects = sql.prepare('SELECT * FROM object');
 
 		this.setTries.run();
 	},

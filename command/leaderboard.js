@@ -1,6 +1,6 @@
 module.exports = {
 	async showLeaderboard(message) {
-		let board = global.rinchanSQL.orangeLeaderboard.all();
+		let board = rinchanSQL.orangeLeaderboard.all();
 
 		let output = '';
 
@@ -16,7 +16,7 @@ module.exports = {
 						index +
 						1 +
 						'. ' +
-						global.escapeMarkdown(usr.displayName) +
+						escapeMarkdown(usr.displayName) +
 						' has ' +
 						user.quantity +
 						(user.quantity > 1 ? ' oranges' : ' orange') +
@@ -33,7 +33,7 @@ module.exports = {
 	},
 
 	getLeaderboard() {
-		let board = global.rinchanSQL.getBoard.all();
+		let board = rinchanSQL.getBoard.all();
 
 		//return array
 	},

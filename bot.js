@@ -12,8 +12,8 @@ let modules = {};
 client.login(token.login);
 
 client.once('ready', () => {
-	modules = addModules();
-	global.rinchanSQL.init();
+	rinchanSQL.init();
+	modules = addModules();	
 
 	RinChan.init('./rinchan/rinchan.json', client);
 	RinChan.setId(client.user.id);
@@ -43,6 +43,48 @@ global.validateUser = function (userId) {
 	return true;
 };
 
+global.convertCommand = function(commandArr, regex) {
+	if(typeof commandArr === 'string') {
+		return commandArr;
+	} else {
+		return commandArr.reduce((acc,ele) => {
+			if(typeof ele === 'string') {
+				return acc += ele;
+			} else {
+				if(regex === true) {
+					return acc += ele.regex;
+				} else {
+					return acc += ele.string;
+				}
+			}
+		},"");
+	}
+
+};
+
+function mentionSpamDetect(message) {
+	if (getUserIdArr(message.content).length > 10) {
+		message.member.roles.remove('588677338007601163');
+		message.member.roles.add('620609193228894208');
+		message.author.send('Go spam somewhere else!', {
+			files: [
+				'https://cdn.discordapp.com/attachments/601814319990046738/713124422881640579/bbf22a157ab6fabc0a7510b4ce0ad59e.jpg',
+			],
+		});
+		message.delete();
+
+		const channel = message.guild.channels.cache.find((ch) => ch.name === 'rinchans-diary');
+		if (!channel) return true;
+
+		channel.send(`<@&588521716481785859> Muted ${message.author} for mention spam.`);
+
+		return true;
+	}
+	return false;
+}
+
+
+
 client.on('message', (message) => {
 	console.log(message.author.username + ': ' + message.content);
 
@@ -50,8 +92,8 @@ client.on('message', (message) => {
 		return null;
 	}
 
-	let reg = '^<@' + RinChan.getId() + '>|^<@!' + RinChan.getId() + '>';
-	rinTest = new RegExp(reg);
+	const reg = '^<@' + RinChan.getId() + '>|^<@!' + RinChan.getId() + '>';
+	let rinTest = new RegExp(reg);
 
 	if (message.mentions.has(client.user) && message.guild && rinTest.test(message.content)) {
 		let command = message.content.replace(/^<@![0-9]*>\s*|^<@[0-9]*>\s*/, '');
@@ -61,7 +103,7 @@ client.on('message', (message) => {
 			if (config.hasOwnProperty(k)) {
 				for (let c in config[k].cmd) {
 					for (let v = 0; v < config[k].cmd[c].length; v++) {
-						let cmdRegex = new RegExp(config[k].cmd[c][v], 'i');
+						let cmdRegex = new RegExp(convertCommand(config[k].cmd[c][v], true), 'i');
 						if (cmdRegex.test(command)) {
 							modules[k][c](message, command, cmdRegex, RinChan);
 							return;
@@ -110,27 +152,6 @@ function addModules() {
 	return modules;
 }
 
-function mentionSpamDetect(message) {
-	if (global.getUserIdArr(message.content).length > 10) {
-		message.member.roles.remove('588677338007601163');
-		message.member.roles.add('620609193228894208');
-		message.author.send('Go spam somewhere else!', {
-			files: [
-				'https://cdn.discordapp.com/attachments/601814319990046738/713124422881640579/bbf22a157ab6fabc0a7510b4ce0ad59e.jpg',
-			],
-		});
-		message.delete();
-
-		const channel = message.guild.channels.cache.find((ch) => ch.name === 'rinchans-diary');
-		if (!channel) return true;
-
-		channel.send(`<@&588521716481785859> Muted ${message.author} for mention spam.`);
-
-		return true;
-	}
-	return false;
-}
-
 client.on('guildMemberAdd', (member) => {
 	const channel = member.guild.channels.cache.find((ch) => ch.name === 'lounge');
 
@@ -153,7 +174,7 @@ client.on('guildMemberRemove', (member) => {
 });
 
 client.on('exit', (exitCode) => {
-	global.rinchanSQL.close();
+	rinchanSQL.close();
 
 	const channel = client.guild.channels.cache.find((ch) => ch.name === 'bot-spam');
 

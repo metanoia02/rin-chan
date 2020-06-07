@@ -1,6 +1,21 @@
+const object = {
+	regex: '([a-z]+)',
+	string: '**object**'
+};
+
 const user = {
-	desc: "@user",
-	regex: "<!*@!*[0-9]+>"
+	regex: '<!*@!*[0-9]+>',
+	string: '**@user**'
+};
+
+const quantity = {
+	regex: '[0-9]+',
+	string: '**quantity**'
+};
+
+const tag = {
+	regex: '',
+	string: '**username#1234**'
 };
 
 module.exports = {
@@ -43,8 +58,15 @@ module.exports = {
 			],
 			feedOrange: ['have an orange', 'give orange'],
 			hungry: ['are you hungry', 'hungry'],
-			giveObject: ['give an ([a-z]+) to <!*@!*[0-9]+>','give a ([a-z]+) to <!*@!*[0-9]+>', 'give 1 ([a-z]+) to <!*@!*[0-9]+>', 'give <!*@!*[0-9]+> an ([a-z]+)', 'give <!*@!*[0-9]+> a ([a-z]+)'],
-			giveObjects: ['give [0-9]+ ([a-z]+) to <!*@!*[0-9]+>', 'give <!*@!*[0-9]+> [0-9]+ ([a-z]+)'],
+			giveObject: [
+				['give an ', object, ' to ', user],
+				['give a ', object, ' to ', user], 
+				['give 1 ', object, ' to ', user], 
+				['give ', user, ' an ', object], 
+				['give ', user, ' a ', object]],
+			giveObjects: [
+				['give ', quantity, ' ', object, ' to ', user],
+				['give ', user,  ' ', quantity, ' ', object]],
 			stealOranges: ['steal oranges from ', 'steal from ', 'steal an orange from '],
 			stealLens: ['steal lens from ', 'steal a len from '],		
 		},
