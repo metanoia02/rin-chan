@@ -142,7 +142,7 @@ module.exports = {
 						break;
 					case 5:
 						message.channel.send(`I'm starving! What took you so long`);
-						inventory.oranges--;
+						inventory.quantity--;
 						user.affection++;
 						rinchan.setHunger(rinchan.getHunger() - 1);
 						rinchan.setLastFed(currentTime.getTime());
@@ -150,7 +150,7 @@ module.exports = {
 						break;
 					case 1:
 						message.channel.send(`Thanks, I can't eat another bite`);
-						inventory.oranges--;
+						inventory.quantity--;
 						user.affection++;
 						user.lastGive = currentTime.getTime();
 						rinchan.setHunger(rinchan.getHunger() - 1);
@@ -158,7 +158,7 @@ module.exports = {
 						break;
 					default:
 						message.channel.send(`Another delicious orange!`);
-						inventory.oranges--;
+						inventory.quantity--;
 						user.affection++;
 						user.lastGive = currentTime.getTime();
 						rinchan.setHunger(rinchan.getHunger() - 1);
