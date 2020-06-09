@@ -132,7 +132,7 @@ module.exports = {
 
 		let currentTime = new Date();
 
-		if (user.oranges < 1) {
+		if (user.quantity < 1) {
 			message.channel.send(`You don't have any oranges!`);
 		} else {
 			if (this.checkGiveSpam(user) || rinchan.getHunger() >= 4) {
