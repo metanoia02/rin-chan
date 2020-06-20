@@ -3,9 +3,9 @@ const Discord = require('discord.js');
 module.exports = {
 	orangeGiveCooldown: 900000,
 	orangeStealCooldown: 86400000,
-	orangeHarvestInterval: 2400000,
-	
-	lenImages: { path: './images/len/' , quantity: 10 },
+	orangeHarvestCooldown: 2400000,
+
+	lenImages: { path: './images/len/', quantity: 10 },
 
 	init() {
 		let Reaction = require('../reactions/reaction.js');
@@ -102,11 +102,11 @@ module.exports = {
 	giveObject(message, command, cmdRegex, rinchan) {
 		let object = rinchanSQL.getObject(this.getObjectType(command, cmdRegex));
 
-		if(!object) {
-			message.channel.send("What is that? <:rinwha:600747717081432074>");
+		if (!object) {
+			message.channel.send('What is that? <:rinwha:600747717081432074>');
 		} else {
 			this.giveNumObjects(message, command, 1, object.name);
-		}		
+		}
 	},
 
 	giveObjects(message, command, cmdRegex, rinchan) {
@@ -115,8 +115,8 @@ module.exports = {
 
 		let object = rinchanSQL.getObject(this.getObjectType(command, cmdRegex));
 
-		if(!object) {
-			message.channel.send("What is that? <:rinwha:600747717081432074>");
+		if (!object) {
+			message.channel.send('What is that? <:rinwha:600747717081432074>');
 		} else {
 			this.giveNumObjects(message, command, numGiveObjects, object.name);
 		}
@@ -125,7 +125,7 @@ module.exports = {
 	checkGiveSpam(sourceUser) {
 		let now = new Date();
 
-		if (now.getTime() - sourceUser.lastGive > this.orangeGiveInterval) {
+		if (now.getTime() - sourceUser.lastGive > this.orangeGiveCooldown) {
 			return true;
 		} else {
 			return false;
@@ -208,9 +208,8 @@ module.exports = {
 			user.lastHarvest = now.getTime();
 			rinchanSQL.setUser.run(user);
 			rinchanSQL.setInventory.run(inventory);
-
 		} else {
-			let duration = getCooldown(this.orangeHarvestInterval, user.lastHarvest);
+			let duration = getCooldown(this.orangeHarvestCooldown, user.lastHarvest);
 
 			const attachment = new Discord.MessageAttachment('./images/emotes/rinded.png', 'rinded.png');
 			const imTiredEmbed = new Discord.MessageEmbed()
@@ -232,15 +231,15 @@ module.exports = {
 		inventory.lastGet = now.getTime();
 		rinchanSQL.setInventory.run(inventory);
 
-		let imageName = (Math.floor(Math.random() * this.lenImages.quantity) + 1) + '.jpg';
+		let imageName = Math.floor(Math.random() * this.lenImages.quantity) + 1 + '.jpg';
 
-		const image = this.lenImages.path + imageName;							
-							
+		const image = this.lenImages.path + imageName;
+
 		const attachment = new Discord.MessageAttachment(image, imageName);
 		const couldntFindEmbed = new Discord.MessageEmbed()
 			.setColor('#FFFF00')
 			.setTitle('Harvest')
-			.setDescription("Found a Len! <:rinwao:701505851449671871>")
+			.setDescription('Found a Len! <:rinwao:701505851449671871>')
 			.attachFiles(attachment)
 			.setImage(`attachment://${imageName}`);
 
@@ -287,7 +286,6 @@ module.exports = {
 		let sourceInventory = rinchanSQL.getInventory(sourceUser, 'orange');
 
 		let now = new Date();
-
 
 		let mentionsArray = getUserIdArr(message.content);
 
@@ -356,14 +354,14 @@ const schedule = require('node-schedule');
 const updateTriesInterval = schedule.scheduleJob('0 * * * * *', function () {
 	let users = rinchanSQL.getAllUsers.all();
 	let now = new Date();
-	
-	users.forEach(user => {
-		let maxTries = (user.isBooster === 0) ? 3 : 4;
-		if(user.tries < maxTries) {
-			if((now.getTime() - user.lastHarvest) > module.exports.orangeHarvestInterval) {
+
+	users.forEach((user) => {
+		let maxTries = user.isBooster === 0 ? 3 : 4;
+		if (user.tries < maxTries) {
+			if (now.getTime() - user.lastHarvest > module.exports.orangeHarvestCooldown) {
 				user.tries++;
 				rinchanSQL.setUser.run(user);
 			}
 		}
-	});	
+	});
 });

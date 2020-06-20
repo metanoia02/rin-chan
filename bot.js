@@ -13,15 +13,21 @@ client.login(token.login);
 
 client.once('ready', () => {
 	rinchanSQL.init();
-	modules = addModules();	
+	modules = addModules();
 
 	RinChan.init('./rinchan/rinchan.json', client);
 	RinChan.setId(client.user.id);
+	updateBoosts(client.guilds.cache.first());
 
-	client.user.setActivity('Miku', { type: 'LISTENING' });
+	client.user.setActivity('GUMI', { type: 'LISTENING' });
 
 	console.log('Ready!');
 });
+
+global.commandException = function (message, emote = 'rinyabai.png') {
+	this.message = message;
+	this.emote = emote;
+};
 
 global.getUserIdArr = function (command) {
 	let userIdRegex = new RegExp(/<!*@!*([0-9]+)>/, 'g');
@@ -38,41 +44,55 @@ global.escapeMarkdown = function (string) {
 	return string.replace(markdownRegex, '\\$1');
 };
 
-global.validateUser = function (userId) {
+global.validateSingleUserAction = function (message) {
 	//check if user exists, check if self, check if bot, check if rinchan
+	let usersArray = getUserIdArr(message.content);
+
+	if (usersArray.length === 1) {
+		throw new commandException('You need to mention a user', 'rinwha.png');
+	} else if (!message.guild.member(usersArray[1])) {
+		throw new commandException('They arent in the server', 'rinconfuse.png');
+	} else if (usersArray.length !== 2) {
+		throw new commandException('Mention only one user', 'rinwha.png');
+	}
+
 	return true;
 };
 
-global.getCooldown = function(cooldown, lastTime) {
+global.getCooldown = function (cooldown, lastTime) {
 	let now = new Date();
-	let duration = Math.floor(((lastTime+cooldown) - now.getTime())/ 3600000) + ' hours';
-	if(duration === '0 hours') {
-		duration = Math.round(((lastTime+cooldown) -  now.getTime())/ 60000) + ' minutes';
+	let duration = Math.floor((lastTime + cooldown - now.getTime()) / 3600000) + ' hours';
+	if (duration === '0 hours') {
+		duration = Math.round((lastTime + cooldown - now.getTime()) / 60000) + ' minutes';
 	}
+	let regex = new RegExp(/^1\s/);
+	if (regex.test(duation)) {
+		duration = duration.substr(0, duration.length - 1);
+	}
+
 	return duration;
 };
 
-global.arrayRandom = function(array) {
+global.arrayRandom = function (array) {
 	return array[Math.floor(Math.random() * array.length)];
 };
 
-global.convertCommand = function(commandArr, regex) {
-	if(typeof commandArr === 'string') {
+global.convertCommand = function (commandArr, regex) {
+	if (typeof commandArr === 'string') {
 		return commandArr;
 	} else {
-		return commandArr.reduce((acc,ele) => {
-			if(typeof ele === 'string') {
-				return acc += ele;
+		return commandArr.reduce((acc, ele) => {
+			if (typeof ele === 'string') {
+				return (acc += ele);
 			} else {
-				if(regex === true) {
-					return acc += ele.regex;
+				if (regex === true) {
+					return (acc += ele.regex);
 				} else {
-					return acc += ele.string;
+					return (acc += ele.string);
 				}
 			}
-		},"");
+		}, '');
 	}
-
 };
 
 function mentionSpamDetect(message) {
@@ -96,13 +116,27 @@ function mentionSpamDetect(message) {
 	return false;
 }
 
-//client events
-	//boost update user db
-	//leave remove oranges to rinchan
-
-client.on("guildMemberUpdate", function(oldMember, newMember){
-    
+client.on('messageDelete', function (message) {
+	const channel = message.guild.channels.cache.find((ch) => ch.name === 'rinchans-diary');
+	if (!channel) return true;
+	channel.send(`Message by ${message.author} deleted.\n${message}`);
 });
+
+client.on('guildMemberUpdate', function (oldMember, newMember) {
+	let user = rinchanSQL.getUser(newMember.id, newMember.guild.id);
+	user.isBooster = newMember.premiumSince !== null ? 1 : 0;
+	rinchanSQL.setUser.run(user);
+});
+
+function updateBoosts(guild) {
+	let members = guild.members.cache.filter((user) => user.premiumSince !== null);
+
+	members.reduce((acc, element) => {
+		let user = rinchanSQL.getUser(element.id, guild.id);
+		user.isBooster = 1;
+		rinchanSQL.setUser.run(user);
+	}, '');
+}
 
 client.on('message', (message) => {
 	console.log(message.author.username + ': ' + message.content);

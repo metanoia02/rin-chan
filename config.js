@@ -1,38 +1,42 @@
 const object = {
 	regex: '([a-z]+)',
-	string: '**object**'
+	string: '**object**',
 };
 
 const user = {
 	regex: '<!*@!*[0-9]+>',
 	string: '**@user**',
-	filter: function(userMention) {
+	filter: function (userMention) {
 		return true;
 	},
 };
 
 const quantity = {
 	regex: '[0-9]+',
-	string: '**quantity**'
+	string: '**quantity**',
 };
 
 const tag = {
 	regex: '',
-	string: '**username#1234**'
+	string: '**username#1234**',
 };
 
 const percentage = {
 	regex: '[0-9]+%',
-	string: '**percentage**'
+	string: '**percentage**',
 };
 
 module.exports = {
 	contact: {
 		cmd: {
+			giveHeadpat: [
+				['headpat ', user],
+				['give a headpat to ', user],
+			],
 			headpat: ['headpat', '<:rinheadpat:686915995373142028>'],
 		},
 
-		description: ['You may headpat Rin-chan.'],
+		description: ['Get RInchan to headpat a user', 'You may headpat Rin-chan.'],
 	},
 
 	help: {
@@ -48,9 +52,7 @@ module.exports = {
 			showLeaderboard: ['scoreboard', 'leaderboard'],
 		},
 
-		description: [
-			'Display the ranking of orange hoarders.',
-		],
+		description: ['Display the ranking of orange hoarders.'],
 	},
 
 	orange: {
@@ -68,15 +70,17 @@ module.exports = {
 			hungry: ['are you hungry', 'hungry'],
 			giveObject: [
 				['give an ', object, ' to ', user],
-				['give a ', object, ' to ', user], 
-				['give 1 ', object, ' to ', user], 
-				['give ', user, ' an ', object], 
-				['give ', user, ' a ', object]],
+				['give a ', object, ' to ', user],
+				['give 1 ', object, ' to ', user],
+				['give ', user, ' an ', object],
+				['give ', user, ' a ', object],
+			],
 			giveObjects: [
 				['give ', quantity, ' ', object, ' to ', user],
-				['give ', user,  ' ', quantity, ' ', object]],
+				['give ', user, ' ', quantity, ' ', object],
+			],
 			stealOranges: ['steal oranges from ', 'steal from ', 'steal an orange from '],
-			stealLens: ['steal lens from ', 'steal a len from '],		
+			stealLens: ['steal lens from ', 'steal a len from '],
 		},
 
 		description: [
@@ -106,7 +110,7 @@ module.exports = {
 
 		description: ['Rin-chan responds based on the time of day(GMT).', 'Ask how Rinchans doing.'],
 	},
-/*
+	/*
 	shop: {
 		cmd: {
 			goShopping: ["let's go shopping", "go shopping"],
