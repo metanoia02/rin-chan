@@ -359,7 +359,6 @@ const updateTriesInterval = schedule.scheduleJob('0 * * * * *', function () {
 	
 	users.forEach(user => {
 		let maxTries = (user.isBooster === 0) ? 3 : 4;
-		console.log(maxTries);
 		if(user.tries < maxTries) {
 			if((now.getTime() - user.lastHarvest) > module.exports.orangeHarvestInterval) {
 				user.tries++;
@@ -367,14 +366,4 @@ const updateTriesInterval = schedule.scheduleJob('0 * * * * *', function () {
 			}
 		}
 	});	
-});
-
-const updateBoostersInterval = schedule.scheduleJob('0 * * * * *', function() {
-	let users = rinchanSQL.getAllUsers.all();
-
-	console.log(users);
-
-	users.forEach(async(user) => {
-		console.log(await checkBooster(user.user));
-	});
 });

@@ -27,12 +27,12 @@ module.exports = {
 		}
 	},
 
-	howAreYou(message) {
+	howAreYou(message, command, cmdRegex, rinchan) {
 		const filter = (reaction, user) => {
 			return user.id === message.author.id && reaction.emoji.name === '✅' || user.id === message.author.id && reaction.emoji.name === '❌';
 		};
 
-		message.channel.send(this.howYou.getReaction()).then(sentMessage => {
+		message.channel.send(this.howYou.getReaction(rinchan).string).then(sentMessage => {
 			sentMessage.react('✅')
 				.then(() => sentMessage.react('❌'))
 				.then(() => sentMessage.awaitReactions(filter, { max: 1, time: 15000, errors:['time']})

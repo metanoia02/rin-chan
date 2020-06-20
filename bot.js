@@ -43,13 +43,6 @@ global.validateUser = function (userId) {
 	return true;
 };
 
-global.checkBooster = async function(userId) {
-	let guildMember = await client.guilds.cache.first().members.fetch(userId);
-	console.log(guildMember);
-
-	return guildMember.roles.cache.has(role => role.name === '1, 2 Fanclub');
-}
-
 global.getCooldown = function(cooldown, lastTime) {
 	let now = new Date();
 	let duration = Math.floor(((now.getTime()+cooldown) - lastTime)/ 3600000) + ' hours';

@@ -12,15 +12,15 @@
         },
         {
             "mood": 2,
-            "response": ["I'm Okay"]
+            "response": ["I'm Okay."]
         },
         {
             "mood": 3,
-            "response": ["I'm pretty good"]
+            "response": ["I'm pretty good."]
         },
         {
             "mood": 4,
-            "response": ["I love you!"]
+            "response": ["Im happy."]
         },
         {
             "mood": 5,

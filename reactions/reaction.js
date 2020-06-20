@@ -3,14 +3,13 @@ module.exports = class Reaction {
         this.config = require(filePath);
     }
     
-    getReaction(rinchan, user) {
+    getReaction(rinchan, user = null) {
         let answers = [];
 
         let modifiers = this.config.modifiers;
-
-        let mood = rinchan.getMood();
+        let mood = rinchan.getMood().value;
         let hunger = rinchan.getHunger();
-        let affection = user.affection;
+        if(user) { let affection = user.affection; }
 
         if(this.config.hasOwnProperty('responses')) {
             answers = this.config.responses.filter(response => {
@@ -18,16 +17,16 @@ module.exports = class Reaction {
                 let hungerFulfilled = true;
                 let affectionFulfilled = true;
                 
-                if(response.includes('mood')) {
-                    moodFulfilled = module.exports.checkFulfilled(response.mood, mood);
+                if(response.hasOwnProperty('mood')) {
+                    moodFulfilled = this.checkFulfilled(response.mood, mood);
                 }
-                if(response.includes('hunger')) {
-                    hungerFulfilled = module.exports.checkFulfilled(response.hunger, hunger);
+                if(response.hasOwnProperty('hunger')) {
+                    hungerFulfilled = this.checkFulfilled(response.hunger, hunger);
                 }
-                if(response.includes('affection')) {
-                    affectionFulfilled = module.exports.checkFulfilled(response.affection, affection);
+                if(response.hasOwnProperty('affection') && user) {
+                    affectionFulfilled = this.checkFulfilled(response.affection, affection);
                 }          
-    
+ 
                 return moodFulfilled && hungerFulfilled && affectionFulfilled;
             });
         }
@@ -41,8 +40,8 @@ module.exports = class Reaction {
             answer = arrayRandom(answers);
 
             reaction.string = arrayRandom(answer.response);
-            if(answer.hasOwnProperty('followUp')) {
-                reaction.string += ' ' + arrayRandom(answer.followUp);
+            if(this.config.hasOwnProperty('followUp')) {
+                reaction.string += ' ' + arrayRandom(this.config.followUp);
             }
         }      
 
