@@ -337,7 +337,7 @@ module.exports = {
 				message.channel.send("I don't think so, I like them more <:rintriumph:673972571254816824>");
 			}
 		} else {
-			let duration = getCooldown(this.orangeStealCooldown, user.lastSteal);
+			let duration = getCooldown(this.orangeStealCooldown, sourceUser.lastSteal);
 
 			const notAgainEmbed = new Discord.MessageEmbed()
 				.setColor('#FF0000')

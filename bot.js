@@ -45,9 +45,9 @@ global.validateUser = function (userId) {
 
 global.getCooldown = function(cooldown, lastTime) {
 	let now = new Date();
-	let duration = Math.floor(((now.getTime()+cooldown) - lastTime)/ 3600000) + ' hours';
+	let duration = Math.floor(((lastTime+cooldown) - now.getTime())/ 3600000) + ' hours';
 	if(duration === '0 hours') {
-		duration = Math.round(((now.getTime()+cooldown) - lastTime)/ 60000) + ' minutes';
+		duration = Math.round(((lastTime+cooldown) -  now.getTime())/ 60000) + ' minutes';
 	}
 	return duration;
 };
