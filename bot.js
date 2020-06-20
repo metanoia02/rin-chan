@@ -43,6 +43,26 @@ global.validateUser = function (userId) {
 	return true;
 };
 
+global.checkBooster = async function(userId) {
+	let guildMember = await client.guilds.cache.first().members.fetch(userId);
+	console.log(guildMember);
+
+	return guildMember.roles.cache.has(role => role.name === '1, 2 Fanclub');
+}
+
+global.getCooldown = function(cooldown, lastTime) {
+	let now = new Date();
+	let duration = Math.floor(((now.getTime()+cooldown) - lastTime)/ 3600000) + ' hours';
+	if(duration === '0 hours') {
+		duration = Math.round(((now.getTime()+cooldown) - lastTime)/ 60000) + ' minutes';
+	}
+	return duration;
+};
+
+global.arrayRandom = function(array) {
+	return array[Math.floor(Math.random() * array.length)];
+};
+
 global.convertCommand = function(commandArr, regex) {
 	if(typeof commandArr === 'string') {
 		return commandArr;
@@ -83,7 +103,13 @@ function mentionSpamDetect(message) {
 	return false;
 }
 
+//client events
+	//boost update user db
+	//leave remove oranges to rinchan
 
+client.on("guildMemberUpdate", function(oldMember, newMember){
+    
+});
 
 client.on('message', (message) => {
 	console.log(message.author.username + ': ' + message.content);

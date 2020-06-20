@@ -1,5 +1,11 @@
+const Discord = require('discord.js');
+
 module.exports = {
-	orangeGiveInterval: 900000,
+	orangeGiveCooldown: 900000,
+	orangeStealCooldown: 86400000,
+	orangeHarvestInterval: 2400000,
+	
+	lenImages: { path: './images/len/' , quantity: 10 },
 
 	init() {
 		let Reaction = require('../reactions/reaction.js');
@@ -18,7 +24,7 @@ module.exports = {
 		) {
 			message.channel.send('Who said orange?! Gimme!');
 			return true;
-		} else if (message.content.includes('🍊') && !message.author.bot && rinchan.hunger > 3) {
+		} else if (message.content.includes('🍊') && !message.author.bot && rinchan.getHunger() > 3) {
 			message.channel.send(`That's my orange! Gimme!`);
 			return true;
 		}
@@ -178,55 +184,93 @@ module.exports = {
 		//perfect, i've been needing practice :rindevours
 	},
 
-	harvestOrange(message) {
+	harvestOrange(message, command, cmdRegex, rinchan) {
 		let user = rinchanSQL.getUser(message.author.id, message.guild.id);
 		let inventory = rinchanSQL.getInventory(user, 'orange');
 
 		let now = new Date();
-
 		let chance = Math.random();
 
 		if (user.tries > 0) {
 			if (0 < chance && chance <= 0.05) {
-				this.easterEgg(message, user);
+				this.easterEgg(message, user, rinchan);
 				user.tries = 0;
 			} else if (0.05 < chance && chance <= 0.6) {
 				inventory.quantity++;
 				inventory.lastGet = now.getTime();
-				this.foundOrange(message);
 				user.tries--;
+				this.foundOrange(message, user, rinchan);
 			} else if (0.6 < chance && chance < 1) {
-				this.couldntFind(message);
 				user.tries--;
+				this.couldntFind(message, user, rinchan);
 			}
-		} else {
-			message.channel.send(`I'm tired! <:rinded:603549269106098186>`);
-		}
 
-		rinchanSQL.setUser.run(user);
-		rinchanSQL.setInventory.run(inventory);
+			user.lastHarvest = now.getTime();
+			rinchanSQL.setUser.run(user);
+			rinchanSQL.setInventory.run(inventory);
+
+		} else {
+			let duration = getCooldown(this.orangeHarvestInterval, user.lastHarvest);
+
+			const attachment = new Discord.MessageAttachment('./images/emotes/rinded.png', 'rinded.png');
+			const imTiredEmbed = new Discord.MessageEmbed()
+				.setColor('#FF0000')
+				.setTitle('Harvest')
+				.setDescription("I'm tired!")
+				.attachFiles(attachment)
+				.setThumbnail('attachment://rinded.png')
+				.addField('You can try again in:', duration, true);
+
+			message.channel.send(imTiredEmbed).catch(console.error);
+		}
 	},
 
-	easterEgg(message, user) {
+	easterEgg(message, user, rinchan) {
 		let now = new Date();
 		let inventory = rinchanSQL.getInventory(user, 'Len');
 		inventory.quantity++;
 		inventory.lastGet = now.getTime();
 		rinchanSQL.setInventory.run(inventory);
 
-		message.channel.send('Found a Len! <:rinwao:701505851449671871>', {
-			files: [
-				'https://cdn.discordapp.com/attachments/601856655873015831/703286810133921892/b5396d6cadd36f32424c4bb1b48913d30b7deb86.jpg',
-			],
-		});
+		let imageName = (Math.floor(Math.random() * this.lenImages.quantity) + 1) + '.jpg';
+
+		const image = this.lenImages.path + imageName;							
+							
+		const attachment = new Discord.MessageAttachment(image, imageName);
+		const couldntFindEmbed = new Discord.MessageEmbed()
+			.setColor('#FFFF00')
+			.setTitle('Harvest')
+			.setDescription("Found a Len! <:rinwao:701505851449671871>")
+			.attachFiles(attachment)
+			.setImage(`attachment://${imageName}`);
+
+		message.channel.send(couldntFindEmbed).catch(console.error);
 	},
 
-	foundOrange(message) {
-		message.channel.send(this.findOrange.getReaction());
+	foundOrange(message, user, rinchan) {
+		let reaction = this.findOrange.getReaction(rinchan, user);
+
+		const attachment = new Discord.MessageAttachment(reaction.image, reaction.imageName);
+		const foundOrangeEmbed = new Discord.MessageEmbed()
+			.setColor('#FFA500')
+			.setTitle('Harvest')
+			.setDescription(reaction.string)
+			.attachFiles(attachment)
+			.setThumbnail(`attachment://${reaction.imageName}`);
+
+		message.channel.send(foundOrangeEmbed).catch(console.error);
 	},
 
-	couldntFind(message) {
-		message.channel.send('Couldnt find anything... <:rinyabai:635101260080480256>');
+	couldntFind(message, user, rinchan) {
+		const attachment = new Discord.MessageAttachment('./images/emotes/rinyabai.png', 'rinyabai.png');
+		const couldntFindEmbed = new Discord.MessageEmbed()
+			.setColor('#FF0000')
+			.setTitle('Harvest')
+			.setDescription("Couldn't find anything")
+			.attachFiles(attachment)
+			.setThumbnail('attachment://rinyabai.png');
+
+		message.channel.send(couldntFindEmbed).catch(console.error);
 	},
 
 	stealLens(message) {
@@ -239,12 +283,11 @@ module.exports = {
 		const username = command.replace(cmdRegex, '');
 		let user = message.client.users.cache.find((user) => user.tag == username);
 
-		console.log(user);
-
 		let sourceUser = rinchanSQL.getUser(message.author.id, message.guild.id);
 		let sourceInventory = rinchanSQL.getInventory(sourceUser, 'orange');
 
 		let now = new Date();
+
 
 		let mentionsArray = getUserIdArr(message.content);
 
@@ -294,7 +337,44 @@ module.exports = {
 				message.channel.send("I don't think so, I like them more <:rintriumph:673972571254816824>");
 			}
 		} else {
-			message.channel.send('Not again <:rinyabai:635101260080480256>');
+			let duration = getCooldown(this.orangeStealCooldown, user.lastSteal);
+
+			const notAgainEmbed = new Discord.MessageEmbed()
+				.setColor('#FF0000')
+				.setTitle('Steal Oranges')
+				.setDescription('Not again')
+				.setThumbnail('https://cdn.discordapp.com/emojis/635101260080480256.png')
+				.addField('You can try again in:', duration, true);
+
+			message.channel.send(notAgainEmbed);
 		}
 	},
 };
+
+const schedule = require('node-schedule');
+
+const updateTriesInterval = schedule.scheduleJob('0 * * * * *', function () {
+	let users = rinchanSQL.getAllUsers.all();
+	let now = new Date();
+	
+	users.forEach(user => {
+		let maxTries = (user.isBooster === 0) ? 3 : 4;
+		console.log(maxTries);
+		if(user.tries < maxTries) {
+			if((now.getTime() - user.lastHarvest) > module.exports.orangeHarvestInterval) {
+				user.tries++;
+				rinchanSQL.setUser.run(user);
+			}
+		}
+	});	
+});
+
+const updateBoostersInterval = schedule.scheduleJob('0 * * * * *', function() {
+	let users = rinchanSQL.getAllUsers.all();
+
+	console.log(users);
+
+	users.forEach(async(user) => {
+		console.log(await checkBooster(user.user));
+	});
+});

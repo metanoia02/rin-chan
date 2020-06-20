@@ -5,6 +5,7 @@ module.exports = {
 		let Reaction = require("../reactions/reaction.js");
 
 		this.howYou = new Reaction("../reactions/howYou.json");
+		this.cute = new Reaction('../reactions/yourCute.json');
 	},
 
 	sayHi(message) {
@@ -72,6 +73,8 @@ module.exports = {
 	},
 
 	yourCute(message) {
-
+		const image = this.cheerUpImages.path + (Math.floor(Math.random() * this.cheerUpImages.quantity) + 1) + '.jpg';							
+							
+		message.channel.send('Oh no, maybe this will make you feel better', {files: [image]}); 
 	},
 };

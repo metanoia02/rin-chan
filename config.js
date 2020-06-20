@@ -5,7 +5,10 @@ const object = {
 
 const user = {
 	regex: '<!*@!*[0-9]+>',
-	string: '**@user**'
+	string: '**@user**',
+	filter: function(userMention) {
+		return true;
+	},
 };
 
 const quantity = {
@@ -18,8 +21,13 @@ const tag = {
 	string: '**username#1234**'
 };
 
+const percentage = {
+	regex: '[0-9]+%',
+	string: '**percentage**'
+};
+
 module.exports = {
-	headpat: {
+	contact: {
 		cmd: {
 			headpat: ['headpat', '<:rinheadpat:686915995373142028>'],
 		},
@@ -84,7 +92,7 @@ module.exports = {
 
 	inventory: {
 		cmd: {
-			showInventory: ['show inventory'],
+			showInventory: ['show inventory', 'inventory'],
 		},
 
 		description: ['Show everything you have'],
@@ -98,6 +106,19 @@ module.exports = {
 
 		description: ['Rin-chan responds based on the time of day(GMT).', 'Ask how Rinchans doing.'],
 	},
+/*
+	shop: {
+		cmd: {
+			goShopping: ["let's go shopping", "go shopping"],
+		},
+
+		cmdMod: {
+			restock: [['restock ', quantity, ' ', object]],
+			makeSale: [['discount ', object, ' ', percentage]],
+		},
+
+		description: ['Go to the shop with Rin-chan. You can buy and exchange objects'],
+	}*/
 };
 
 /*

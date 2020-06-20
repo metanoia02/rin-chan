@@ -3,10 +3,9 @@ const sql = new SQLite('./orange.sqlite');
 
 module.exports = {
 	init() {
-		this.setTries = sql.prepare('UPDATE user SET tries = 3');
 		this.queryUser = sql.prepare('SELECT * FROM user WHERE user = ? AND guild = ?');
 		this.setUser = sql.prepare(
-			'INSERT OR REPLACE INTO user (id, user, guild, affection, tries, lastGive, lastSteal) VALUES (@id, @user, @guild, @affection, @tries, @lastGive, @lastSteal);'
+			'INSERT OR REPLACE INTO user (id, user, guild, affection, tries, lastGive, lastSteal, lastHarvest, isBooster) VALUES (@id, @user, @guild, @affection, @tries, @lastGive, @lastSteal, @lastHarvest, @isBooster);'
 		);
 		this.getAllUsers = sql.prepare('SELECT * FROM user');
 
@@ -21,8 +20,10 @@ module.exports = {
 
 		this.queryObject = sql.prepare('SELECT * FROM object WHERE name LIKE ? OR plural LIKE ?');
 		this.getAllObjects = sql.prepare('SELECT * FROM object');
+		
+		//shop
 
-		this.setTries.run();
+		this.getStock = sql.prepare('SELECT * FROM shop WHERE quantity > 0');
 	},
 
 	getObject(objectString) {
@@ -46,6 +47,8 @@ module.exports = {
 				tries: 3,
 				lastGive: 0,
 				lastSteal: 0,
+				lastHarvest: 0,
+				isBooster: 0
 			};
 		}
 		return user;
@@ -73,7 +76,3 @@ module.exports = {
 		}
 	},
 };
-
-setInterval(function () {
-	module.exports.setTries.run();
-}, 7200000);

@@ -1,5 +1,31 @@
 {
-    "1" : ["Im doing ", "I feel "],
-    "2" : ["pretty good. ", "amazing! "],
-    "3" : ["How are you?", "How you doing?", "What about you?"]
+    "modifiers": ["mood"],
+
+    "responses": [
+        {
+            "mood": 0,
+            "response": ["Len stole my oranges!"]
+        },
+        {
+            "mood": 1,
+            "response": ["I miss singing at concerts..."]
+        },
+        {
+            "mood": 2,
+            "response": ["I'm Okay"]
+        },
+        {
+            "mood": 3,
+            "response": ["I'm pretty good"]
+        },
+        {
+            "mood": 4,
+            "response": ["I love you!"]
+        },
+        {
+            "mood": 5,
+            "response": ["I feel amazing!"]
+        }],
+
+    "followUp": ["How are you?", "How you doing?", "What about you?"]
 }
