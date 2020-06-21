@@ -66,7 +66,7 @@ global.getCooldown = function (cooldown, lastTime) {
 		duration = Math.round((lastTime + cooldown - now.getTime()) / 60000) + ' minutes';
 	}
 	let regex = new RegExp(/^1\s/);
-	if (regex.test(duation)) {
+	if (regex.test(duration)) {
 		duration = duration.substr(0, duration.length - 1);
 	}
 
