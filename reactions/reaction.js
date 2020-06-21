@@ -46,8 +46,8 @@ module.exports = class Reaction {
         }      
 
         if(answer.hasOwnProperty("image")) {
-            reaction.image = this.config.images.path + answer.image + '.jpg';
-            reaction.imageName = answer.image + '.jpg';
+            reaction.image = this.config.images.path + answer.image;
+            reaction.imageName = answer.image;
         } else if(this.config.hasOwnProperty('images')) {          
             reaction.imageName = (Math.floor(Math.random() * this.config.images.quantity) + 1) + '.jpg';
             reaction.image = this.config.images.path + reaction.imageName;						
@@ -63,6 +63,8 @@ module.exports = class Reaction {
         }
     }
 };
+
+//todo max min from rinchan
 
 /*
 mood 0-5

@@ -1,9 +1,10 @@
 ﻿const Discord = require('discord.js');
 const RinChan = require('./rinchan/rinchan.js');
-global.rinchanSQL = require('./sql.js');
+global.rinchanSQL = require('./utils/sql.js');
 
 const config = require('./config.js');
 const token = require('./token.json');
+const CommandException = require('./utils/CommandException.js');
 
 const client = new Discord.Client();
 
@@ -24,10 +25,6 @@ client.once('ready', () => {
 	console.log('Ready!');
 });
 
-global.commandException = function (message, emote = 'rinyabai.png') {
-	this.message = message;
-	this.emote = emote;
-};
 
 global.getUserIdArr = function (command) {
 	let userIdRegex = new RegExp(/<!*@!*([0-9]+)>/, 'g');
@@ -39,21 +36,33 @@ global.getUserIdArr = function (command) {
 	});
 };
 
+global.capitalizeFirstLetter = function(string) {
+	return string.charAt(0).toUpperCase() + string.slice(1);
+};
+global.getObjectType = function(command, cmdRegex) {
+	let objects = cmdRegex.exec(command);
+console.log(objects);
+	return objects[1];
+};
+//validate
+//command object
+//preloaded with objects quantities etc
+
 global.escapeMarkdown = function (string) {
 	let markdownRegex = new RegExp('([*|_~`>])', 'g');
 	return string.replace(markdownRegex, '\\$1');
 };
 
-global.validateSingleUserAction = function (message) {
+global.validateSingleUserAction = function (message, commandName) {
 	//check if user exists, check if self, check if bot, check if rinchan
 	let usersArray = getUserIdArr(message.content);
 
 	if (usersArray.length === 1) {
-		throw new commandException('You need to mention a user', 'rinwha.png');
+		throw new CommandException(commandName, 'You need to mention a user', 'rinwha.png');
 	} else if (!message.guild.member(usersArray[1])) {
-		throw new commandException('They arent in the server', 'rinconfuse.png');
+		throw new CommandException(commandName, 'They arent in the server', 'rinconfuse.png');
 	} else if (usersArray.length !== 2) {
-		throw new commandException('Mention only one user', 'rinwha.png');
+		throw new CommandException(commandName, 'Mention only one user', 'rinwha.png');
 	}
 
 	return true;
@@ -66,7 +75,7 @@ global.getCooldown = function (cooldown, lastTime) {
 		duration = Math.round((lastTime + cooldown - now.getTime()) / 60000) + ' minutes';
 	}
 	let regex = new RegExp(/^1\s/);
-	if (regex.test(duation)) {
+	if (regex.test(duration)) {
 		duration = duration.substr(0, duration.length - 1);
 	}
 
@@ -116,12 +125,6 @@ function mentionSpamDetect(message) {
 	return false;
 }
 
-client.on('messageDelete', function (message) {
-	const channel = message.guild.channels.cache.find((ch) => ch.name === 'rinchans-diary');
-	if (!channel) return true;
-	channel.send(`Message by ${message.author} deleted.\n${message}`);
-});
-
 client.on('guildMemberUpdate', function (oldMember, newMember) {
 	let user = rinchanSQL.getUser(newMember.id, newMember.guild.id);
 	user.isBooster = newMember.premiumSince !== null ? 1 : 0;
@@ -139,8 +142,6 @@ function updateBoosts(guild) {
 }
 
 client.on('message', (message) => {
-	console.log(message.author.username + ': ' + message.content);
-
 	if (mentionSpamDetect(message)) {
 		return null;
 	}

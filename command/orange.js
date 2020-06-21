@@ -10,7 +10,8 @@ module.exports = {
 	init() {
 		let Reaction = require('../reactions/reaction.js');
 
-		this.findOrange = new Reaction('../reactions/findOrange.json');
+		this.findOrangeReact = new Reaction('../reactions/findOrange.json');
+		this.hungryReact = new Reaction('../reactions/hungry.json');
 	},
 
 	handler(message, rinchan) {
@@ -33,22 +34,17 @@ module.exports = {
 	},
 
 	hungry(message, command, cmdRegex, rinchan) {
-		console.log(rinchan.getHunger());
-		switch (rinchan.getHunger()) {
-			case 0: {
-				message.channel.send('Im stuffed <:rinchill:600745019514814494>');
-				return;
-			}
-			case rinchan.getMaxHunger(): {
-				message.channel.send('Im starving here! <:rinangrey:620576239224225835>');
-				return;
-			}
-			default: {
-				message.channel.send('Dont you have one more orange? <:oharin:601107083265441849>');
-				return;
-			}
-		}
-		return;
+		let reaction = this.hungryReact.getReaction(rinchan);
+
+		const attachment = new Discord.MessageAttachment(reaction.image, reaction.imageName);
+		const imTiredEmbed = new Discord.MessageEmbed()
+			.setColor('#FF0000')
+			.setTitle('Hungry?')
+			.setDescription(reaction.string)
+			.attachFiles(attachment)
+			.setThumbnail(`attachment://${reaction.imageName}`);
+
+		message.channel.send(imTiredEmbed).catch(console.error);
 	},
 
 	giveNumObjects(message, command, num, objectType) {
@@ -93,14 +89,8 @@ module.exports = {
 		}
 	},
 
-	getObjectType(command, cmdRegex) {
-		let objects = [...command.matchAll(cmdRegex)];
-
-		return objects[0][1];
-	},
-
 	giveObject(message, command, cmdRegex, rinchan) {
-		let object = rinchanSQL.getObject(this.getObjectType(command, cmdRegex));
+		let object = rinchanSQL.getObject(getObjectType(command, cmdRegex));
 
 		if (!object) {
 			message.channel.send('What is that? <:rinwha:600747717081432074>');
@@ -113,7 +103,7 @@ module.exports = {
 		let quantityRegex = new RegExp(/\s[0-9]+\s/);
 		numGiveObjects = parseInt(command.match(quantityRegex));
 
-		let object = rinchanSQL.getObject(this.getObjectType(command, cmdRegex));
+		let object = rinchanSQL.getObject(getObjectType(command, cmdRegex));
 
 		if (!object) {
 			message.channel.send('What is that? <:rinwha:600747717081432074>');
@@ -247,7 +237,7 @@ module.exports = {
 	},
 
 	foundOrange(message, user, rinchan) {
-		let reaction = this.findOrange.getReaction(rinchan, user);
+		let reaction = this.findOrangeReact.getReaction(rinchan, user);
 
 		const attachment = new Discord.MessageAttachment(reaction.image, reaction.imageName);
 		const foundOrangeEmbed = new Discord.MessageEmbed()

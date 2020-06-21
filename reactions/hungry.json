@@ -1,0 +1,29 @@
+{
+    "images":
+    { 
+        "path": "./images/emotes/"
+    },
+
+    "modifiers": ["hunger"], 
+
+    "responses": [
+        {
+            "hunger": 0,
+
+            "response": ["Im stuffed"],
+            "image": "rinchill.png"
+        },
+        {
+            "hunger": 5,
+
+            "response": ["Im starving here!"],
+            "image": "rinangrey.png"
+        },
+        {
+            "hunger": {"max":4,"min":1},
+
+            "response": ["Dont you have one more orange?"],
+            "image": "oharin.png"
+        }
+    ]
+}

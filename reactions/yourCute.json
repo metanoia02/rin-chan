@@ -16,7 +16,7 @@
             "hunger": {"min": 3,"max": 5},
 
             "response": ["I love you!"],
-            "image": 1
+            "image": "1.jpg"
         },
 
         {
@@ -25,7 +25,7 @@
             "hunger": {"min": 2,"max": 5},
     
             "response": ["You really think so?"],
-            "image": 7
+            "image": "7.jpg"
         },
 
         {
@@ -34,7 +34,7 @@
             "hunger": {"min": 2,"max": 5},
     
             "response": ["Only because you give me so many oranges!"],
-            "image": 8
+            "image": "8.jpg"
         }
 
 

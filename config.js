@@ -36,7 +36,7 @@ module.exports = {
 			headpat: ['headpat', '<:rinheadpat:686915995373142028>'],
 		},
 
-		description: ['Get RInchan to headpat a user', 'You may headpat Rin-chan.'],
+		description: ['Get Rinchan to headpat a user', 'You may headpat Rin-chan.'],
 	},
 
 	help: {
@@ -49,10 +49,11 @@ module.exports = {
 
 	leaderboard: {
 		cmd: {
-			showLeaderboard: ['scoreboard', 'leaderboard'],
+			showLeaderboard: [[object,' scoreboard'], [object, ' leaderboard']],
+			leaderboard: ['leaderboard', 'scoreboard'],
 		},
 
-		description: ['Display the ranking of orange hoarders.'],
+		description: ['Display the ranking of any object.', 'As above.'],
 	},
 
 	orange: {
@@ -66,6 +67,7 @@ module.exports = {
 				'look for orange',
 				'find an orange',
 			],
+			//feedOrange: {commands: ['have an orange', 'give orange'], tags{strict:true},/////
 			feedOrange: ['have an orange', 'give orange'],
 			hungry: ['are you hungry', 'hungry'],
 			giveObject: [
