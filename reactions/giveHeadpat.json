@@ -1,0 +1,13 @@
+{
+    "images":
+    { 
+        "path": "./images/emotes/"
+    },
+
+    "responses": [
+        {
+            "response": [" You got a headpat from "],
+            "image": "rinheadpat.png"
+        }
+    ]
+}

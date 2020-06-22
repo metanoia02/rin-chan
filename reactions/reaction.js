@@ -3,12 +3,15 @@ module.exports = class Reaction {
         this.config = require(filePath);
     }
     
-    getReaction(rinchan, user = null) {
+    getReaction(rinchan = null, user = null) {
         let answers = [];
 
         let modifiers = this.config.modifiers;
-        let mood = rinchan.getMood().value;
-        let hunger = rinchan.getHunger();
+        if(rinchan) {
+            let mood = rinchan.getMood().value;
+            let hunger = rinchan.getHunger();
+        }
+
         if(user) { let affection = user.affection; }
 
         if(this.config.hasOwnProperty('responses')) {

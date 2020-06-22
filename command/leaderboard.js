@@ -1,4 +1,5 @@
 const Discord = require('discord.js');
+const nodeHtmlToImage = require('node-html-to-image');
 
 module.exports = {
 	leaderboard(message, command, cmdRegex, rinchan) {
@@ -28,6 +29,39 @@ module.exports = {
 	 
 	objectLeaderboard(object,message) {
 		let board = this.getLeaderboard();
+
+		let htmlStart = `
+		<html>
+			<head>
+				<style>
+					body {
+						width: 600px;
+						height: 600px;
+					}
+					#container {
+						display: flex;
+						height:100%;
+					}
+					#rank-box {
+						width:25%;
+					}
+					#user-box {
+						width:50%;
+					}
+					#quantity-box {
+						width:25%;
+					}
+				</style>
+			</head>
+			<body>
+					<div id="container">
+		`;
+
+		let htmlEnd = `
+		</div>
+		</body>
+		</html>
+		`;
 		
 		let leaderboard = board.reduce(function (acc, user, index) {
 			if (user.quantity > 0) {
@@ -38,17 +72,30 @@ module.exports = {
 					acc.objectEmbedString += user.quantity +'\n';
 			}
 			return acc;
-		},{rankEmbedString:"",nicknameEmbedString:"",objectEmbedString:""});
+		},{rankEmbedString:'<div id="rank-box">Rank\n',nicknameEmbedString:'<div id="user-box">Nickname\n',objectEmbedString:`<div id="quantity-box">${capitalizeFirstLetter(object.plural)}`});
 
-		return new Discord.MessageEmbed()
-        .setColor('#FFA500')
-        .setTitle(`${capitalizeFirstLetter(object.name)} Leaderboard`)
-        .addFields(
-            { name: 'Rank', value:leaderboard.rankEmbedString, inline: true },
-            { name: 'Nickname', value:leaderboard.nicknameEmbedString, inline: true },
-            { name: capitalizeFirstLetter(object.plural), value:leaderboard.objectEmbedString, inline: true }
-        );
+		leaderboard.rankEmbedString += `</div>`;
+		leaderboard.nicknameEmbedString += `</div>`;
+		leaderboard.objectEmbedString += `</div>`;
+
+		let htmlFull = htmlStart + leaderboard.rankEmbedString + leaderboard.nicknameEmbedString + leaderboard.objectEmbedString + htmlEnd;
+
+		nodeHtmlToImage({
+			output: './leaderboard.png',
+			html: htmlFull,
+			transparent: true
+		}).then(() => {
+			const attachment = new Discord.MessageAttachment('./leaderboard.png', 'leaderboard.png');
+			const leaderboardEmbed = new Discord.MessageEmbed()
+				.setColor('#0099ff')
+				.setTitle(`${object.name} Leaderboard`)
+				.attachFiles(attachment)
+				.setImage('attachment://leaderboard.png');
+
+			message.channel.send(leaderboardEmbed).catch(console.error);
+		});
 	},
+
 
 	showLeaderboard(message, command, cmdRegex, rinchan) {
 		let object = rinchanSQL.getObject(getObjectType(command, cmdRegex));
@@ -56,7 +103,7 @@ module.exports = {
 		if (!object) {
 			message.channel.send('What is that? <:rinwha:600747717081432074>');
 		} else {
-			message.channel.send(this.objectLeaderboard(object,message)).catch(console.error);
+			this.objectLeaderboard(object,message);
 		}		
 	},
 

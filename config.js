@@ -27,8 +27,21 @@ const percentage = {
 };
 
 module.exports = {
+	utils: {
+		cmd: {
+			rinImage: ['show me an image of you', 'show rin image', 'rin image'],
+		},
+
+		description: ['Get a random image of Rin']
+
+	},
+
 	contact: {
 		cmd: {
+			giveHug: [
+				['hug ', user],
+				['give ', user, ' a hug'],
+			],
 			giveHeadpat: [
 				['headpat ', user],
 				['give a headpat to ', user],
