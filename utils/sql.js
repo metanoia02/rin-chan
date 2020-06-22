@@ -16,7 +16,7 @@ module.exports = {
 
 		this.showInventory = sql.prepare('SELECT * FROM inventory WHERE userId = ?');
 
-		this.orangeLeaderboard = sql.prepare('SELECT * FROM inventory WHERE objectName = "orange"');
+		this.objectLeaderboard = sql.prepare('SELECT * FROM inventory WHERE objectName LIKE ?');
 
 		this.queryObject = sql.prepare('SELECT * FROM object WHERE name LIKE ? OR plural LIKE ?');
 		this.getAllObjects = sql.prepare('SELECT * FROM object');

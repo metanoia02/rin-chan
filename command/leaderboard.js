@@ -27,15 +27,17 @@ module.exports = {
 	},
 	 
 	objectLeaderboard(object,message) {
-		let board = this.getLeaderboard();
+		let board = this.getLeaderboard(object.name);
 		
 		let leaderboard = board.reduce(function (acc, user, index) {
 			if (user.quantity > 0) {
 					let usr = message.guild.members.cache.get(user.userId.substr(19));
-
+					console.log(usr);
+            if(usr) {
 					acc.rankEmbedString += (index+1) + '.\n';
 					acc.nicknameEmbedString += escapeMarkdown(usr.displayName) + '\n';
 					acc.objectEmbedString += user.quantity +'\n';
+            }
 			}
 			return acc;
 		},{rankEmbedString:"",nicknameEmbedString:"",objectEmbedString:""});
@@ -60,8 +62,8 @@ module.exports = {
 		}		
 	},
 
-	getLeaderboard() {
-		let board = rinchanSQL.orangeLeaderboard.all();
+	getLeaderboard(object) {
+		let board = rinchanSQL.objectLeaderboard.all(object);
 
 		board.sort((a, b) => {
 			return b.quantity - a.quantity;
