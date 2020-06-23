@@ -1,18 +1,11 @@
 module.exports = class Reaction {
-    constructor(filePath, modifier) {
+    constructor(filePath) {
         this.config = require(filePath);
     }
     
-    getReaction(rinchan = null, user = null) {
+    getReaction(rinchan, user) {
         let answers = [];
-
         let modifiers = this.config.modifiers;
-        if(rinchan) {
-            let mood = rinchan.getMood().value;
-            let hunger = rinchan.getHunger();
-        }
-
-        if(user) { let affection = user.affection; }
 
         if(this.config.hasOwnProperty('responses')) {
             answers = this.config.responses.filter(response => {
@@ -21,13 +14,13 @@ module.exports = class Reaction {
                 let affectionFulfilled = true;
                 
                 if(response.hasOwnProperty('mood')) {
-                    moodFulfilled = this.checkFulfilled(response.mood, mood);
+                    moodFulfilled = this.checkFulfilled(response.mood, rinchan.getMood().value);
                 }
                 if(response.hasOwnProperty('hunger')) {
-                    hungerFulfilled = this.checkFulfilled(response.hunger, hunger);
+                    hungerFulfilled = this.checkFulfilled(response.hunger, rinchan.getHunger());
                 }
                 if(response.hasOwnProperty('affection') && user) {
-                    affectionFulfilled = this.checkFulfilled(response.affection, affection);
+                    affectionFulfilled = this.checkFulfilled(response.affection, user.affection);
                 }          
  
                 return moodFulfilled && hungerFulfilled && affectionFulfilled;

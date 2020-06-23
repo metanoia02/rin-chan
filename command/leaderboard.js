@@ -34,9 +34,7 @@ module.exports = {
 					let usr = message.guild.members.cache.get(user.userId.substr(19));
 					console.log(usr);
             if(usr) {
-					acc.rankEmbedString += (index+1) + '.\n';
-					acc.nicknameEmbedString += escapeMarkdown(usr.displayName) + '\n';
-					acc.objectEmbedString += user.quantity +'\n';
+					acc.rankEmbedString += (index+1) + '. ' + escapeMarkdown(usr.displayName) + ' ' + user.quantity + '\n';
             }
 			}
 			return acc;
@@ -46,9 +44,7 @@ module.exports = {
         .setColor('#FFA500')
         .setTitle(`${capitalizeFirstLetter(object.name)} Leaderboard`)
         .addFields(
-            { name: 'Rank', value:leaderboard.rankEmbedString, inline: true },
-            { name: 'Nickname', value:leaderboard.nicknameEmbedString, inline: true },
-            { name: capitalizeFirstLetter(object.plural), value:leaderboard.objectEmbedString, inline: true }
+            { name: '\u200b', value:leaderboard.rankEmbedString, inline: true },
         );
 	},
 
