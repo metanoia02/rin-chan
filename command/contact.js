@@ -11,14 +11,14 @@ module.exports = {
 
 		try {
 			if (user.affection < 0) {
-				throw new CommandException(commandName, 'You never give me oranges...', 'rinpout.png');
+				throw new CommandException('You never give me oranges...', 'rinpout.png');
 			} else {
 				message.channel.send('<:rincomf:634115522002419744>');
 				user.affection--;
 				rinchanSQL.setUser.run(user);
 			}
 		} catch(err) {
-			message.channel.send(err.getEmbed()).catch(console.error);
+			message.channel.send(err.getEmbed(commandName)).catch(console.error);
 		}		
 	},
 
@@ -49,12 +49,12 @@ module.exports = {
 			validateSingleUserAction(message, commandName);
 
 			if (targetUser.id === message.client.user.id) {
-				throw new CommandException(commandName, 'Excuse me?', 'rinwhat.png');
+				throw new CommandException('Excuse me?', 'rinwhat.png');
 			}
 
 			let sourceUser = rinchanSQL.getUser(message.author.id, message.guild.id);
 			if (sourceUser.affection < cost) {
-				throw new CommandException(commandName, 'You never give me oranges...', 'rinpout.png');
+				throw new CommandException('You never give me oranges...', 'rinpout.png');
 			} else {
 				sourceUser.affection -= cost;
 				rinchanSQL.setUser.run(sourceUser);
@@ -79,7 +79,7 @@ module.exports = {
 			message.channel.send(giveHeadpatEmbed).catch(console.error);
 			message.delete().catch(console.error);
 		} catch (err) {
-			message.channel.send(err.getEmbed()).catch(console.error);
+			message.channel.send(err.getEmbed(commandName)).catch(console.error);
 		}
 	},
 

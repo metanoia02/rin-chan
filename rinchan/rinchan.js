@@ -37,7 +37,6 @@ module.exports = {
 	},
 	setHunger(newHunger) {
 		this._config.hunger = this._hungerModule.changeHunger(this._client, newHunger, this.getMaxHunger());
-		console.log(this._config);
 		this.writeFile(this._config);
 	},
 

@@ -1,5 +1,6 @@
 const SQLite = require('better-sqlite3');
 const sql = new SQLite('./orange.sqlite');
+const CommandException = require('../utils/CommandException.js');
 
 module.exports = {
 	init() {
@@ -22,6 +23,8 @@ module.exports = {
 		this.getAllObjects = sql.prepare('SELECT * FROM object');
 		
 		//shop
+		this.queryShop = sql.prepare('SELECT * FROM shop WHERE objectName LIKE ?');
+		this.setShopStock = sql.prepare('REPLACE INTO shop (objectName, quantity) VALUES (@objectName, @quantity);'); 
 
 		this.getStock = sql.prepare('SELECT * FROM shop WHERE quantity > 0');
 	},
@@ -30,7 +33,7 @@ module.exports = {
 		let object = rinchanSQL.queryObject.get(objectString,objectString);
 
 		if(!object) {
-			return undefined;
+			throw new CommandException('What is that?','rinwha.png');
 		}
 		return object;
 	},
@@ -75,4 +78,23 @@ module.exports = {
 			return undefined;
 		}
 	},
+
+	getShopStock(object) {
+		let objectType = this.queryObject.get(object,object);
+
+		if (objectType) {
+			let shop = this.queryShop.get(object);
+
+			if (!shop) {
+				shop = {
+					objectName:	object,
+					quantity: 0
+				};
+			}
+
+			return shop;
+		} else {
+			throw new CommandException('What is that?','rinwha.png');
+		}
+	}
 };

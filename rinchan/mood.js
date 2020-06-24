@@ -1,9 +1,10 @@
 module.exports = {
 	moods: ['Angry', 'Sad', 'Neutral', 'Ok', 'Good', 'Amazing'],
-	moodSwing: {max:2, min:-2},
+	moodSwing: 5,
 
 	randomMood(mood) {
-		let newMood = mood.value + (Math.floor(Math.random() * (this.moodSwing.max - this.moodSwing.min) ) + this.moodSwing.min);
+		let modifier = Math.floor((swing-1)/2);
+		let newMood = (Math.floor(Math.random() * (5) )) - modifier ;
 		
 		if(newMood < 0) {
 			newMood = 0;

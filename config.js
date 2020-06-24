@@ -125,19 +125,19 @@ module.exports = {
 
 		description: ['Rin-chan responds based on the time of day(GMT).', 'Ask how Rinchans doing.'],
 	},
-	/*
+	
 	shop: {
 		cmd: {
 			goShopping: ["let's go shopping", "go shopping"],
 		},
 
 		cmdMod: {
-			restock: [['restock ', quantity, ' ', object]],
-			makeSale: [['discount ', object, ' ', percentage]],
+			//restock: [['restock ', quantity, ' ', object]],
+			//makeSale: [['discount ', object, ' ', percentage]],
 		},
 
 		description: ['Go to the shop with Rin-chan. You can buy and exchange objects'],
-	}*/
+	}
 };
 
 /*

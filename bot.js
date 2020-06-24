@@ -9,6 +9,7 @@ const CommandException = require('./utils/CommandException.js');
 const client = new Discord.Client();
 
 let modules = {};
+global.collecting = false;
 
 client.login(token.login);
 
@@ -58,11 +59,11 @@ global.validateSingleUserAction = function (message, commandName) {
 	let usersArray = getUserIdArr(message.content);
 
 	if (usersArray.length === 1) {
-		throw new CommandException(commandName, 'You need to mention a user', 'rinwha.png');
+		throw new CommandException('You need to mention a user', 'rinwha.png');
 	} else if (!message.guild.member(usersArray[1])) {
-		throw new CommandException(commandName, 'They arent in the server', 'rinconfuse.png');
+		throw new CommandException('They arent in the server', 'rinconfuse.png');
 	} else if (usersArray.length !== 2) {
-		throw new CommandException(commandName, 'Mention only one user', 'rinwha.png');
+		throw new CommandException('Mention only one user', 'rinwha.png');
 	}
 
 	return true;
@@ -177,7 +178,7 @@ client.on('message', (message) => {
 	} else {
 		for (let k in modules) {
 			if (modules.hasOwnProperty(k)) {
-				if (typeof modules[k].handler == 'function') {
+				if (typeof modules[k].handler == 'function'  && collecting===false) {
 					if (modules[k].handler(message, RinChan)) {
 						return;
 					}

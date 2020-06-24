@@ -68,14 +68,15 @@ module.exports = {
 				message.channel.send('You cant give ' + objectString + ' to yourself!');
 			} else if (usersArray.length !== 2) {
 				message.channel.send('Mention only one user');
-			} else if (usersArray[1] === message.client.user.id) {
-				message.channel.send('<:rinconfuse:687276500998815813>');
-				//this.feedOrange(message);
-			} else if (message.guild.member(usersArray[1]).bot) {
+			} else if (message.client.users.cache.get(usersArray[1]).bot && message.client.user.id != usersArray[1]) {
 				message.channel.send('Why would that bot need ' + objectString + '...');
 			} else {
 				let destUser = rinchanSQL.getUser(usersArray[1], message.guild.id);
 				let destInventory = rinchanSQL.getInventory(destUser, objectType);
+
+				if (usersArray[1] === message.client.user.id) {
+					message.channel.send("Thanks, I'll put them to good use");
+				}
 
 				sourceInventory.quantity -= num;
 				destInventory.quantity += num;
@@ -90,13 +91,18 @@ module.exports = {
 	},
 
 	giveObject(message, command, cmdRegex, rinchan) {
-		let object = rinchanSQL.getObject(getObjectType(command, cmdRegex));
-
-		if (!object) {
-			message.channel.send('What is that? <:rinwha:600747717081432074>');
-		} else {
+		try {
+			let object = rinchanSQL.getObject(getObjectType(command, cmdRegex));
 			this.giveNumObjects(message, command, 1, object.name);
+		}catch(err) {
+			if(err instanceof CommandException) {
+				message.channel.send(err.getEmbed('Give Object')).catch(console.error);
+			} else {
+				console.log(err);
+			}
 		}
+
+
 	},
 
 	giveObjects(message, command, cmdRegex, rinchan) {

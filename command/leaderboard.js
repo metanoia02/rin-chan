@@ -13,12 +13,12 @@ module.exports = {
 		message.channel.send('Leaderboard for what object?').then(() => {
 			message.channel.awaitMessages(filter, {max:1, time:30000, errors: ['time']})
 			.then(collected => {
-				let object = rinchanSQL.getObject(collected.first().content);
-				if (!object) {
-					message.channel.send('What is that? <:rinwha:600747717081432074>');
-				} else {
+				try{
+					let object = rinchanSQL.getObject(collected.first().content);
 					message.channel.send(this.objectLeaderboard(object,message)).catch(console.error);
-				}	
+				} catch(err) {
+					message.channel.send(err.getEmbed('Leaderboard')).catch(console.error);
+				}
 			})
 			.catch(collected => {
 				message.channel.send('Another time perhaps');
@@ -32,7 +32,6 @@ module.exports = {
 		let leaderboard = board.reduce(function (acc, user, index) {
 			if (user.quantity > 0) {
 					let usr = message.guild.members.cache.get(user.userId.substr(19));
-					console.log(usr);
             if(usr) {
 					acc.rankEmbedString += (index+1) + '. ' + escapeMarkdown(usr.displayName) + ' ' + user.quantity + '\n';
             }
@@ -49,13 +48,12 @@ module.exports = {
 	},
 
 	showLeaderboard(message, command, cmdRegex, rinchan) {
-		let object = rinchanSQL.getObject(getObjectType(command, cmdRegex));
-
-		if (!object) {
-			message.channel.send('What is that? <:rinwha:600747717081432074>');
-		} else {
+		try {
+			let object = rinchanSQL.getObject(getObjectType(command, cmdRegex));
 			message.channel.send(this.objectLeaderboard(object,message)).catch(console.error);
-		}		
+		}catch(err) {
+			message.channel.send(err.getEmbed('Leaderboard')).catch(console.error);
+		}	
 	},
 
 	getLeaderboard(object) {
