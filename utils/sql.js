@@ -26,7 +26,7 @@ module.exports = {
 		this.queryShop = sql.prepare('SELECT * FROM shop WHERE objectName LIKE ?');
 		this.setShopStock = sql.prepare('REPLACE INTO shop (objectName, quantity) VALUES (@objectName, @quantity);'); 
 
-		this.getStock = sql.prepare('SELECT * FROM shop WHERE quantity > 0');
+		this.getStock = sql.prepare('SELECT * FROM shop');
 	},
 
 	getObject(objectString) {

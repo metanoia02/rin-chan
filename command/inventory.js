@@ -8,12 +8,12 @@ module.exports = {
 		let output = 'Sure, you currently have\n';
 
 		for (var obj in inventory) {
-			if(inventory[obj].quantity > 0) {
-				output += inventory[obj].objectName + ': ' + inventory[obj].quantity + '\n';
+			if (inventory[obj].quantity > 0) {
+				output += capitalizeFirstLetter(inventory[obj].objectName) + ': ' + inventory[obj].quantity + '\n';
 			}
 		}
 
-		if(output === 'Sure, you currently have\n') {
+		if (output === 'Sure, you currently have\n') {
 			output = 'Your inventory is empty.';
 		}
 

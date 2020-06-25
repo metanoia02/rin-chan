@@ -27,13 +27,18 @@ const percentage = {
 };
 
 module.exports = {
+	gumi: {
+		cmd: {},
+
+		description: [''],
+	},
+
 	utils: {
 		cmd: {
 			rinImage: ['show me an image of you', 'show rin image', 'rin image'],
 		},
 
-		description: ['Get a random image of Rin']
-
+		description: ['Get a random image of Rin'],
 	},
 
 	contact: {
@@ -62,7 +67,10 @@ module.exports = {
 
 	leaderboard: {
 		cmd: {
-			showLeaderboard: [[object,' scoreboard'], [object, ' leaderboard']],
+			showLeaderboard: [
+				[object, ' scoreboard'],
+				[object, ' leaderboard'],
+			],
 			leaderboard: ['leaderboard', 'scoreboard'],
 		},
 
@@ -125,10 +133,10 @@ module.exports = {
 
 		description: ['Rin-chan responds based on the time of day(GMT).', 'Ask how Rinchans doing.'],
 	},
-	
+
 	shop: {
 		cmd: {
-			goShopping: ["let's go shopping", "go shopping"],
+			goShopping: ["let's go shopping", 'go shopping'],
 		},
 
 		cmdMod: {
@@ -137,7 +145,7 @@ module.exports = {
 		},
 
 		description: ['Go to the shop with Rin-chan. You can buy and exchange objects'],
-	}
+	},
 };
 
 /*

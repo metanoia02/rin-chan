@@ -6,6 +6,8 @@ const config = require('./config.js');
 const token = require('./token.json');
 const CommandException = require('./utils/CommandException.js');
 
+global.gumiID = '725019857099423755';
+
 const client = new Discord.Client();
 
 let modules = {};
@@ -26,7 +28,6 @@ client.once('ready', () => {
 	console.log('Ready!');
 });
 
-
 global.getUserIdArr = function (command) {
 	let userIdRegex = new RegExp(/<!*@!*([0-9]+)>/, 'g');
 
@@ -37,12 +38,12 @@ global.getUserIdArr = function (command) {
 	});
 };
 
-global.capitalizeFirstLetter = function(string) {
+global.capitalizeFirstLetter = function (string) {
 	return string.charAt(0).toUpperCase() + string.slice(1);
 };
-global.getObjectType = function(command, cmdRegex) {
+global.getObjectType = function (command, cmdRegex) {
 	let objects = cmdRegex.exec(command);
-console.log(objects);
+	console.log(objects);
 	return objects[1];
 };
 //validate
@@ -178,7 +179,7 @@ client.on('message', (message) => {
 	} else {
 		for (let k in modules) {
 			if (modules.hasOwnProperty(k)) {
-				if (typeof modules[k].handler == 'function'  && collecting===false) {
+				if (typeof modules[k].handler == 'function' && collecting === false) {
 					if (modules[k].handler(message, RinChan)) {
 						return;
 					}
@@ -223,9 +224,13 @@ client.on('guildMemberRemove', (member) => {
 	const channel = member.guild.channels.cache.find((ch) => ch.name === 'lounge');
 	if (!channel) return;
 
-	channel.send(`Cya ${member.user.username}`, {
-		files: ['https://cdn.discordapp.com/attachments/601856655873015831/707227730441142342/ezgif-6-719c4a54c38b.gif'],
-	});
+	if ((member.user.id = gumiID)) {
+		channel.send('See you soon GUMI!!!', { files: ['./images/gumi/leave.png'] });
+	} else {
+		channel.send(`Cya ${member.user.username}`, {
+			files: ['./images/leave/leave.gif'],
+		});
+	}
 });
 
 client.on('exit', (exitCode) => {

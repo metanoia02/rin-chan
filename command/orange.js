@@ -12,6 +12,8 @@ module.exports = {
 
 		this.findOrangeReact = new Reaction('../reactions/findOrange.json');
 		this.hungryReact = new Reaction('../reactions/hungry.json');
+
+		this.findCarrotReact = new Reaction('../reactions/gumi/findCarrot.json');
 	},
 
 	handler(message, rinchan) {
@@ -94,15 +96,13 @@ module.exports = {
 		try {
 			let object = rinchanSQL.getObject(getObjectType(command, cmdRegex));
 			this.giveNumObjects(message, command, 1, object.name);
-		}catch(err) {
-			if(err instanceof CommandException) {
+		} catch (err) {
+			if (err instanceof CommandException) {
 				message.channel.send(err.getEmbed('Give Object')).catch(console.error);
 			} else {
 				console.log(err);
 			}
 		}
-
-
 	},
 
 	giveObjects(message, command, cmdRegex, rinchan) {
@@ -190,14 +190,17 @@ module.exports = {
 		if (user.tries > 0) {
 			if (0 < chance && chance <= 0.05) {
 				this.easterEgg(message, user, rinchan);
-				user.tries = 0;
-			} else if (0.05 < chance && chance <= 0.6) {
+				//user.tries = 0;
+			} else if (0.05 < chance && chance <= 0.5) {
 				inventory.quantity++;
 				inventory.lastGet = now.getTime();
-				user.tries--;
+				//user.tries--;
 				this.foundOrange(message, user, rinchan);
-			} else if (0.6 < chance && chance < 1) {
-				user.tries--;
+			} else if (0.5 < chance && chance <= 0.65) {
+				//user.tries--;
+				this.foundCarrot(message, user, rinchan);
+			} else if (0.65 < chance && chance <= 1) {
+				//user.tries--;
 				this.couldntFind(message, user, rinchan);
 			}
 
@@ -240,6 +243,26 @@ module.exports = {
 			.setImage(`attachment://${imageName}`);
 
 		message.channel.send(couldntFindEmbed).catch(console.error);
+	},
+
+	foundCarrot(message, user, rinchan) {
+		let now = new Date();
+		let inventory = rinchanSQL.getInventory(user, 'carrot');
+		inventory.quantity++;
+		inventory.lastGet = now.getTime();
+		rinchanSQL.setInventory.run(inventory);
+
+		let reaction = this.findCarrotReact.getReaction(rinchan, user);
+
+		const attachment = new Discord.MessageAttachment(reaction.image, reaction.imageName);
+		const foundOrangeEmbed = new Discord.MessageEmbed()
+			.setColor('#FFA500')
+			.setTitle('Harvest')
+			.setDescription(reaction.string)
+			.attachFiles(attachment)
+			.setThumbnail(`attachment://${reaction.imageName}`);
+
+		message.channel.send(foundOrangeEmbed).catch(console.error);
 	},
 
 	foundOrange(message, user, rinchan) {
