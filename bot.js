@@ -46,6 +46,17 @@ global.getObjectType = function (command, cmdRegex) {
 	console.log(objects);
 	return objects[1];
 };
+
+global.getObjectQuantity = function(messageContent, regex) {
+	let reg = new RegExp(regex);
+
+	let matchesArray = [...messageContent.matchAll(reg)][0];
+
+	const object = rinchanSQL.getObject(matchesArray[2]);
+	const quantity = matchesArray[1];
+
+	return {object:object, quantity:quantity};
+};
 //validate
 //command object
 //preloaded with objects quantities etc
@@ -150,6 +161,7 @@ client.on('message', (message) => {
 
 	const reg = '^<@' + RinChan.getId() + '>|^<@!' + RinChan.getId() + '>';
 	let rinTest = new RegExp(reg);
+	
 
 	if (message.mentions.has(client.user) && message.guild && rinTest.test(message.content)) {
 		let command = message.content.replace(/^<@![0-9]*>\s*|^<@[0-9]*>\s*/, '');
@@ -187,6 +199,8 @@ client.on('message', (message) => {
 			}
 		}
 	}
+
+	
 });
 
 function addModules() {

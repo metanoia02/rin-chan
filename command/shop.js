@@ -50,19 +50,8 @@ module.exports = {
         });
        },
 
-    getObjectQuantity(messageContent, regex) {
-        let reg = new RegExp(regex);
-
-        let matchesArray = [...messageContent.matchAll(reg)][0];
-
-        const object = rinchanSQL.getObject(matchesArray[2]);
-        const quantity = matchesArray[1];
-
-        return {object:object, quantity:quantity};
-    },
-
     buyObject(collectedContent, message) {
-        let order = this.getObjectQuantity(collectedContent, module.exports.phrases.buy);
+        let order = getObjectQuantity(collectedContent, module.exports.phrases.buy);
 
         const user  = rinchanSQL.getUser(message.author.id, message.guild.id);
         let orangeInventory = rinchanSQL.getInventory(user, 'orange');
@@ -95,7 +84,7 @@ module.exports = {
        let shop = rinchanSQL.getShopStock(object.name);
        let shopOranges = rinchanSQL.getShopStock('orange');
 
-       if(shop.quanity < (modifier*-1) && modifier < 0){
+       if(shop.quantity < (modifier*-1) && modifier < 0){
            throw new CommandException('Theres not enough stock', 'rinwha.png');
        }
        if(modifier > 0 && shopOranges.quantity < (modifier * object.value)) {
@@ -114,7 +103,7 @@ module.exports = {
     },
     
     sellObject(collectedContent,message) {
-        let order = this.getObjectQuantity(collectedContent, module.exports.phrases.sell);
+        let order = getObjectQuantity(collectedContent, module.exports.phrases.sell);
 
         const user  = rinchanSQL.getUser(message.author.id, message.guild.id);
         let orangeInventory = rinchanSQL.getInventory(user, 'orange');
