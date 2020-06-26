@@ -1,5 +1,5 @@
 const object = {
-	regex: '([a-z]+)',
+	regex: '([a-z ]+)',
 	string: '**object**',
 };
 
@@ -26,11 +26,31 @@ const percentage = {
 	string: '**percentage**',
 };
 
+const gumiUser = {
+	regex: '<!*@!*725019857099423755>',
+	string: 'GUMI'
+};
+
 module.exports = {
 	gumi: {
-		cmd: {},
+		cmd: {
+			bakeCake: [
+				'bake a cake', 'bake a birthday cake', 'bake a cake for GUMI', 'bake cake',
+			],
+			giveObject: [
+				['give an ', object, ' to ', gumiUser],
+				['give a ', object, ' to ', gumiUser],
+				['give 1 ', object, ' to ', gumiUser],
+				['give ', gumiUser, ' an ', object],
+				['give ', gumiUser, ' a ', object],
+			],
+			giveObjects: [
+				['give ', quantity, ' ', object, ' to ', gumiUser],
+				['give ', gumiUser, ' ', quantity, ' ', object],
+			],
+		},
 
-		description: [''],
+		description: ['Rin-chan will give things to GUMI.', 'As above.', 'Try to bake a cake for GUMI'],
 	},
 
 	utils: {
@@ -80,12 +100,9 @@ module.exports = {
 	orange: {
 		cmd: {
 			harvestOrange: [
-				'harvest oranges',
 				'harvest',
 				'look for oranges',
 				'find orange',
-				'find oranges',
-				'look for orange',
 				'find an orange',
 			],
 			//feedOrange: {commands: ['have an orange', 'give orange'], tags{strict:true},/////

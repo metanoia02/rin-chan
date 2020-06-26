@@ -1,4 +1,5 @@
 const Discord = require('discord.js');
+const CommandException = require('../utils/CommandException.js');
 
 module.exports = {
 	orangeGiveCooldown: 900000,
@@ -77,12 +78,18 @@ module.exports = {
 				let destInventory = rinchanSQL.getInventory(destUser, objectType);
 
 				if (usersArray[1] === message.client.user.id) {
-					message.channel.send("Thanks, I'll put them to good use");
+					if(object.name === 'orange') {
+						message.channel.send("Thanks, I'll put them to good use");
+						sourceInventory.quantity -= num;
+						destInventory.quantity += num;
+					} else {
+						message.channel.send('You keep that for now <:rinlove:726120311967449199>');
+					}
+				} else {
+					message.channel.send('Ok, you gave ' + objectNumString);
+					sourceInventory.quantity -= num;
+					destInventory.quantity += num;
 				}
-
-				sourceInventory.quantity -= num;
-				destInventory.quantity += num;
-				message.channel.send('Ok, you gave ' + objectNumString);
 
 				rinchanSQL.setInventory.run(sourceInventory);
 				rinchanSQL.setInventory.run(destInventory);
