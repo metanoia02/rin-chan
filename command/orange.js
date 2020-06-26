@@ -190,17 +190,17 @@ module.exports = {
 		if (user.tries > 0) {
 			if (0 < chance && chance <= 0.05) {
 				this.easterEgg(message, user, rinchan);
-				//user.tries = 0;
+				user.tries = 0;
 			} else if (0.05 < chance && chance <= 0.5) {
 				inventory.quantity++;
 				inventory.lastGet = now.getTime();
-				//user.tries--;
+				user.tries--;
 				this.foundOrange(message, user, rinchan);
 			} else if (0.5 < chance && chance <= 0.65) {
-				//user.tries--;
+				user.tries--;
 				this.foundCarrot(message, user, rinchan);
 			} else if (0.65 < chance && chance <= 1) {
-				//user.tries--;
+				user.tries--;
 				this.couldntFind(message, user, rinchan);
 			}
 

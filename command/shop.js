@@ -95,7 +95,7 @@ module.exports = {
        let shop = rinchanSQL.getShopStock(object.name);
        let shopOranges = rinchanSQL.getShopStock('orange');
 
-       if(shop.quanity < (modifier*-1) && modifier < 0){
+       if(shop.quantity < (modifier*-1) && modifier < 0){
            throw new CommandException('Theres not enough stock', 'rinwha.png');
        }
        if(modifier > 0 && shopOranges.quantity < (modifier * object.value)) {
