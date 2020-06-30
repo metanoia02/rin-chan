@@ -1,168 +1,160 @@
 const object = {
-	regex: '([a-z ]+)',
-	string: '**object**',
+  regex: '([a-z ]+)',
+  string: '**object**',
 };
 
 const user = {
-	regex: '<!*@!*[0-9]+>',
-	string: '**@user**',
-	filter: function (userMention) {
-		return true;
-	},
+  regex: '<!*@!*[0-9]+>',
+  string: '**@user**',
+  filter: function(userMention) {
+    return true;
+  },
 };
 
 const quantity = {
-	regex: '[0-9]+',
-	string: '**quantity**',
+  regex: '[0-9]+',
+  string: '**quantity**',
 };
 
 const tag = {
-	regex: '',
-	string: '**username#1234**',
+  regex: '',
+  string: '**username#1234**',
 };
 
 const percentage = {
-	regex: '[0-9]+%',
-	string: '**percentage**',
+  regex: '[0-9]+%',
+  string: '**percentage**',
 };
 
 const gumiUser = {
-	regex: '<!*@!*725019857099423755>',
-	string: 'GUMI'
+  regex: '<!*@!*725019857099423755>',
+  string: 'GUMI',
 };
 
+const triggerWords = [
+  {
+    test: (message) => {
+      return message.includes('orange') && !this.regex.test(message) && rinChan.getMaxHunger() - 2 > 3;
+    },
+    regex: /<:\w*orange\w*:[0-9]+>/gi,
+    response: 'Who said orange?! Gimme!',
+  },
+  {
+    test: (message) => {
+      return message.content.includes('🍊') && rinChan.getMaxHunger() - 2 > 3;
+    },
+    response: 'That\'s my orange! Gimme!',
+  },
+];
+
+// command object add
+
 module.exports = {
-	gumi: {
-		cmd: {
-			bakeCake: [
-				'bake a cake', 'bake a birthday cake', 'bake a cake for GUMI', 'bake cake',
-			],
-			giveObject: [
-				['give an ', object, ' to ', gumiUser],
-				['give a ', object, ' to ', gumiUser],
-				['give 1 ', object, ' to ', gumiUser],
-				['give ', gumiUser, ' an ', object],
-				['give ', gumiUser, ' a ', object],
-			],
-			giveObjects: [
-				['give ', quantity, ' ', object, ' to ', gumiUser],
-				['give ', gumiUser, ' ', quantity, ' ', object],
-			],
-		},
+  images: {
+    cmd: {
+      rinImage: ['show me an image of you', 'show rin image', 'rin image'],
+    },
 
-		description: ['Rin-chan will give things to GUMI.', 'As above.', 'Try to bake a cake for GUMI'],
-	},
+    description: ['Get a random image of Rin'],
+  },
 
-	utils: {
-		cmd: {
-			rinImage: ['show me an image of you', 'show rin image', 'rin image'],
-		},
+  contact: {
+    cmd: {
+      giveHug: [
+        ['hug ', user],
+        ['give ', user, ' a hug'],
+      ],
+      giveHeadpat: [
+        ['headpat ', user],
+        ['give a headpat to ', user],
+      ],
+      headpat: ['headpat', '<:rinheadpat:686915995373142028>'],
+    },
 
-		description: ['Get a random image of Rin'],
-	},
+    description: ['Get Rinchan to headpat a user', 'You may headpat Rin-chan.'],
+  },
 
-	contact: {
-		cmd: {
-			giveHug: [
-				['hug ', user],
-				['give ', user, ' a hug'],
-			],
-			giveHeadpat: [
-				['headpat ', user],
-				['give a headpat to ', user],
-			],
-			headpat: ['headpat', '<:rinheadpat:686915995373142028>'],
-		},
+  help: {
+    cmd: {
+      help: ['help', 'commands', 'what can you do'],
+    },
 
-		description: ['Get Rinchan to headpat a user', 'You may headpat Rin-chan.'],
-	},
+    description: ['Rin-chan lists her commands, you are here.'],
+  },
 
-	help: {
-		cmd: {
-			help: ['help', 'commands', 'what can you do'],
-		},
+  leaderboard: {
+    cmd: {
+      showLeaderboard: [
+        [object, ' scoreboard'],
+        [object, ' leaderboard'],
+      ],
+      leaderboard: ['leaderboard', 'scoreboard'],
+    },
 
-		description: ['Rin-chan lists her commands, you are here.'],
-	},
+    description: ['Display the ranking of any object.', 'As above.'],
+  },
 
-	leaderboard: {
-		cmd: {
-			showLeaderboard: [
-				[object, ' scoreboard'],
-				[object, ' leaderboard'],
-			],
-			leaderboard: ['leaderboard', 'scoreboard'],
-		},
+  orange: {
+    cmd: {
+      harvestOrange: ['harvest', 'look for oranges', 'find orange', 'find an orange'],
+      // feedOrange: {commands: ['have an orange', 'give orange'], tags{strict:true},/////
+      feedOrange: ['have an orange', 'give orange'],
+      hungry: ['are you hungry', 'hungry'],
+      giveObject: [
+        ['give an ', object, ' to ', user],
+        ['give a ', object, ' to ', user],
+        ['give 1 ', object, ' to ', user],
+        ['give ', user, ' an ', object],
+        ['give ', user, ' a ', object],
+      ],
+      giveObjects: [
+        ['give ', quantity, ' ', object, ' to ', user],
+        ['give ', user, ' ', quantity, ' ', object],
+      ],
+      stealOranges: ['steal oranges from ', 'steal from ', 'steal an orange from '],
+      stealLens: ['steal lens from ', 'steal a len from '],
+    },
 
-		description: ['Display the ranking of any object.', 'As above.'],
-	},
+    description: [
+      'Try and find an orange for Rin-chan.',
+      'Give an orange to Rin-Chan.',
+      'Rin-chan reports her state of hunger.',
+      'Give an object to mentioned user.',
+      'Give a number of objects to the mentioned user.',
+      'Try and make an orange heist. Use the targets username and tag eg. username#1234',
+      'Try to steal Lens.',
+    ],
+  },
 
-	orange: {
-		cmd: {
-			harvestOrange: [
-				'harvest',
-				'look for oranges',
-				'find orange',
-				'find an orange',
-			],
-			//feedOrange: {commands: ['have an orange', 'give orange'], tags{strict:true},/////
-			feedOrange: ['have an orange', 'give orange'],
-			hungry: ['are you hungry', 'hungry'],
-			giveObject: [
-				['give an ', object, ' to ', user],
-				['give a ', object, ' to ', user],
-				['give 1 ', object, ' to ', user],
-				['give ', user, ' an ', object],
-				['give ', user, ' a ', object],
-			],
-			giveObjects: [
-				['give ', quantity, ' ', object, ' to ', user],
-				['give ', user, ' ', quantity, ' ', object],
-			],
-			stealOranges: ['steal oranges from ', 'steal from ', 'steal an orange from '],
-			stealLens: ['steal lens from ', 'steal a len from '],
-		},
+  inventory: {
+    cmd: {
+      showInventory: ['show inventory', 'inventory'],
+    },
 
-		description: [
-			'Try and find an orange for Rin-chan.',
-			'Give an orange to Rin-Chan.',
-			'Rin-chan reports her state of hunger.',
-			'Give an object to mentioned user.',
-			'Give a number of objects to the mentioned user.',
-			'Try and make an orange heist. Use targets username and tag eg username#1234',
-			'Try to steal Lens.',
-		],
-	},
+    description: ['Show everything you have'],
+  },
 
-	inventory: {
-		cmd: {
-			showInventory: ['show inventory', 'inventory'],
-		},
+  greeting: {
+    cmd: {
+      sayHi: ['hi', 'hello', 'morning', 'afternoon', 'evening', 'night', 'good morning', 'good evening', 'good night'],
+      howAreYou: ['how are you'],
+    },
 
-		description: ['Show everything you have'],
-	},
+    description: ['Rin-chan responds based on the time of day(GMT).', 'Ask how Rin-chans doing.'],
+  },
 
-	greeting: {
-		cmd: {
-			sayHi: ['hi', 'hello', 'morning', 'afternoon', 'evening', 'night', 'good morning', 'good evening', 'good night'],
-			howAreYou: ['how are you'],
-		},
+  shop: {
+    cmd: {
+      goShopping: ['let\'s go shopping', 'go shopping'],
+    },
 
-		description: ['Rin-chan responds based on the time of day(GMT).', 'Ask how Rinchans doing.'],
-	},
+    modCmd: {
+      // restock: [['restock ', quantity, ' ', object]],
+      // makeSale: [['discount ', object, ' ', percentage]],
+    },
 
-	shop: {
-		cmd: {
-			goShopping: ["let's go shopping", 'go shopping'],
-		},
-
-		cmdMod: {
-			//restock: [['restock ', quantity, ' ', object]],
-			//makeSale: [['discount ', object, ' ', percentage]],
-		},
-
-		description: ['Go to the shop with Rin-chan. You can buy and exchange objects'],
-	},
+    description: ['Go to the shop with Rin-chan. You can buy and exchange objects'],
+  },
 };
 
 /*

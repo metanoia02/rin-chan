@@ -1,19 +1,29 @@
 const Discord = require('discord.js');
 
 module.exports = class CommandException {
-    constructor(message, emote = 'rinyabai.png') {
-        this.message = message;
-        this.emote = emote;
-    };
+  /**
+   *
+   * @param {string} message Message to display in embed.
+   * @param {string} emote Name of emote for embed. Located in ./images/reactions/
+   */
+  constructor(message, emote = 'rinyabai.png') {
+    this.message = message;
+    this.emote = emote;
+  }
 
-    getEmbed(commandName) {
-        const attachment = new Discord.MessageAttachment(`./images/emotes/${this.emote}`, this.emote);
+  /**
+   * Returns a Discord embed.
+   * @param {string} commandName Command name for title of embed.
+   * @return {Discord.MessageEmbed} Embed object.
+   */
+  getEmbed(commandName) {
+    const attachment = new Discord.MessageAttachment(`./images/emotes/${this.emote}`, this.emote);
 
-        return new Discord.MessageEmbed()
-            .setColor('#008000')
-            .setTitle(commandName)
-            .setDescription(this.message)
-            .attachFiles(attachment)
-            .setThumbnail(`attachment://${this.emote}`);
-    };
+    return new Discord.MessageEmbed()
+        .setColor('#008000')
+        .setTitle(commandName)
+        .setDescription(this.message)
+        .attachFiles(attachment)
+        .setThumbnail(`attachment://${this.emote}`);
+  }
 };

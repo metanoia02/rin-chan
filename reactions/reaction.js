@@ -1,67 +1,70 @@
+const rinChan = require('../rinChan/rinChan.js');
+const utils = require('../utils/utils.js');
+
 module.exports = class Reaction {
-	constructor(filePath) {
-		this.config = require(filePath);
-	}
+  constructor(filePath) {
+    this.config = require(filePath);
+  }
 
-	getReaction(rinchan, user) {
-		let answers = [];
-		let modifiers = this.config.modifiers;
+  getReaction(user) {
+    let answers = [];
+    const modifiers = this.config.modifiers;
 
-		if (this.config.hasOwnProperty('responses')) {
-			answers = this.config.responses.filter((response) => {
-				let moodFulfilled = true;
-				let hungerFulfilled = true;
-				let affectionFulfilled = true;
+    if (this.config.hasOwnProperty('responses')) {
+      answers = this.config.responses.filter((response) => {
+        let moodFulfilled = true;
+        let hungerFulfilled = true;
+        let affectionFulfilled = true;
 
-				if (response.hasOwnProperty('mood')) {
-					moodFulfilled = this.checkFulfilled(response.mood, rinchan.getMood().value);
-				}
-				if (response.hasOwnProperty('hunger')) {
-					hungerFulfilled = this.checkFulfilled(response.hunger, rinchan.getHunger());
-				}
-				if (response.hasOwnProperty('affection') && user) {
-					affectionFulfilled = this.checkFulfilled(response.affection, user.affection);
-				}
+        if (response.hasOwnProperty('mood')) {
+          moodFulfilled = this.checkFulfilled(response.mood, rinChan.getMood().value);
+        }
+        if (response.hasOwnProperty('hunger')) {
+          hungerFulfilled = this.checkFulfilled(response.hunger, rinChan.getHunger());
+        }
+        if (response.hasOwnProperty('affection') && user) {
+          affectionFulfilled = this.checkFulfilled(response.affection, user.affection);
+        }
 
-				return moodFulfilled && hungerFulfilled && affectionFulfilled;
-			});
-		}
+        return moodFulfilled && hungerFulfilled && affectionFulfilled;
+      });
+    }
 
-		let answer = {};
-		let reaction = {};
+    let answer = {};
+    const reaction = {};
 
-		if (answers.length === 0) {
-			reaction.string = arrayRandom(this.config.default);
-		} else {
-			answer = arrayRandom(answers);
+    if (answers.length === 0) {
+      reaction.string = utils.arrayRandom(this.config.default);
+    } else {
+      answer = utils.arrayRandom(answers);
 
-			reaction.string = arrayRandom(answer.response);
-		}
+      reaction.string = utils.arrayRandom(answer.response);
+    }
 
-		if (this.config.hasOwnProperty('followUp')) {
-			reaction.string += ' ' + arrayRandom(this.config.followUp);
-		}
+    if (this.config.hasOwnProperty('followUp')) {
+      reaction.string += ' ' + utils.arrayRandom(this.config.followUp);
+    }
 
-		if (answer.hasOwnProperty('image')) {
-			reaction.image = this.config.images.path + answer.image;
-			reaction.imageName = answer.image;
-		} else if (this.config.hasOwnProperty('images')) {
-			reaction.imageName = Math.floor(Math.random() * this.config.images.quantity) + 1 + '.jpg';
-			reaction.image = this.config.images.path + reaction.imageName;
-		}
-		return reaction;
-	}
+    if (answer.hasOwnProperty('image')) {
+      reaction.image = this.config.images.path + answer.image;
+      reaction.imageName = answer.image;
+    } else if (this.config.hasOwnProperty('images')) {
+      reaction.imageName = Math.floor(Math.random() * this.config.images.quantity) + 1 + '.jpg';
+      reaction.image = this.config.images.path + reaction.imageName;
+    }
+    return reaction;
+  }
 
-	checkFulfilled(modifier, checkValue) {
-		if (typeof modifier === 'object') {
-			return checkValue >= modifier.min && checkValue <= modifier.max;
-		} else {
-			return modifier === checkValue;
-		}
-	}
+  checkFulfilled(modifier, checkValue) {
+    if (typeof modifier === 'object') {
+      return checkValue >= modifier.min && checkValue <= modifier.max;
+    } else {
+      return modifier === checkValue;
+    }
+  }
 };
 
-//todo max min from rinchan
+// todo max min from rinChan
 
 /*
 mood 0-5
@@ -86,7 +89,6 @@ affection 0-5
     80
     100
 
-    
 
 */
 
@@ -99,7 +101,7 @@ mood 0-5
     good
     amazing*/
 
-//modifier = [mood,hunger,affection]
+// modifier = [mood,hunger,affection]
 
-//midnight random mood
-//hunger level decrease mood by 1 each hour less than 3
+// midnight random mood
+// hunger level decrease mood by 1 each hour less than 3
