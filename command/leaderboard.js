@@ -114,6 +114,6 @@ module.exports = {
       return b.quantity - a.quantity;
     });
 
-    return board.slice(0, 19);
+    return board.slice(0, 20);
   },
 };

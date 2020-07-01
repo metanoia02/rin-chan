@@ -196,18 +196,18 @@ module.exports = {
     const inventory = database.getInventory(user, 'orange');
 
     const now = new Date();
-    const chance = Math.random();
+    const chance = Math.floor(Math.random() * 100) + 1;
 
     if (user.tries > 0) {
-      if (0 < chance && chance <= 0.05) {
+      if (0 < chance && chance <= 5) {
         this.easterEgg(message, user);
         user.tries = 0;
-      } else if (0.05 < chance && chance <= 0.6) {
+      } else if (5 < chance && chance <= 60) {
         inventory.quantity++;
         inventory.lastGet = now.getTime();
         user.tries--;
         this.foundOrange(message, user);
-      } else if (0.6 < chance && chance <= 1) {
+      } else if (60 < chance && chance <= 100) {
         user.tries--;
         this.couldntFind(message, user);
       }
