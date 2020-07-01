@@ -1,6 +1,7 @@
 const Discord = require('discord.js');
-const database = require('../utils/sql.js');
 const utils = require('../utils/utils.js');
+const database = require('../utils/sql.js');
+const nodeHtmlToImage = require('node-html-to-image');
 
 module.exports = {
   leaderboard(message, command, cmdRegex) {
@@ -16,11 +17,11 @@ module.exports = {
       message.channel
           .awaitMessages(filter, {max: 1, time: 30000, errors: ['time']})
           .then((collected) => {
-            try {
-              const object = database.getObject(collected.first().content);
+            const object = database.getObject(collected.first().content);
+            if (!object) {
+              message.channel.send('What is that? <:rinwha:600747717081432074>');
+            } else {
               message.channel.send(this.objectLeaderboard(object, message)).catch(console.error);
-            } catch (err) {
-              message.channel.send(err.getEmbed('Leaderboard')).catch(console.error);
             }
           })
           .catch((collected) => {
@@ -32,31 +33,77 @@ module.exports = {
   objectLeaderboard(object, message) {
     const board = this.getLeaderboard(object.name);
 
-    const leaderboard = board.reduce(
-        function(acc, user, index) {
-          if (user.quantity > 0) {
-            const usr = message.guild.members.cache.get(user.userId.substr(19));
-            if (usr) {
-              acc.rankEmbedString += index + 1 + '. ' + utils.escapeMarkdown(usr.displayName) + ' ' + user.quantity + '\n';
-            }
-          }
-          return acc;
-        },
-        {rankEmbedString: '', nicknameEmbedString: '', objectEmbedString: ''},
-    );
+    let imageHtml = `
+    <html>
+    <head>
+        <style>
+        body{
+            background-color: #2f3136;
+            color: #d9dadb;
+            width:400px;
+            font-family: Whitney,Helvetica Neue,Helvetica,Arial,sans-serif;
+            font-size:20px;
+        }
+        table {
+            width:100%;
+            padding:5px;
+            text-align:center;
+        }
+        th {
+            font-size:24px;
+        }
+        </style>
+    </head>
+    <body>
+    <table>
+    <tr>
+        <th>Rank</th>
+        <th>User</th>
+        <th>${utils.capitalizeFirstLetter(object.plural)}</th>
+    </tr>`;
 
-    return new Discord.MessageEmbed()
-        .setColor('#FFA500')
-        .setTitle(`${utils.capitalizeFirstLetter(object.name)} Leaderboard`)
-        .addFields({name: '\u200b', value: leaderboard.rankEmbedString, inline: true});
+    board.forEach((ele, index) => {
+      if (ele.quantity > 0) {
+        const usr = message.guild.members.cache.get(ele.userId.substr(19));
+        if (usr) {
+          imageHtml += `
+          <tr>
+            <td>${index + 1}</td>
+            <td>${utils.escapeMarkdown(usr.displayName)}</td>
+            <td>${ele.quantity}</td>
+          </tr>`;
+        }
+      }
+    });
+
+    imageHtml += `
+      </table>
+      </body>
+      </html>`;
+
+    nodeHtmlToImage({
+      output: './images/embeds/leaderboard.png',
+      html: imageHtml,
+      transparent: true,
+    }).then(() => {
+      const attachment = new Discord.MessageAttachment('./images/embeds/leaderboard.png', 'leaderboard.png');
+      const leaderboardEmbed = new Discord.MessageEmbed()
+          .setColor('#0099ff')
+          .setTitle(`${utils.capitalizeFirstLetter(object.name)} Leaderboard`)
+          .attachFiles(attachment)
+          .setImage('attachment://leaderboard.png');
+
+      message.channel.send(leaderboardEmbed).catch(console.error);
+    });
   },
 
   showLeaderboard(message, command, cmdRegex) {
-    try {
-      const object = database.getObject(utils.getObjectType(command, cmdRegex));
-      message.channel.send(this.objectLeaderboard(object, message)).catch(console.error);
-    } catch (err) {
-      message.channel.send(err.getEmbed('Leaderboard')).catch(console.error);
+    const object = database.getObject(utils.getObjectType(command, cmdRegex));
+
+    if (!object) {
+      message.channel.send('What is that? <:rinwha:600747717081432074>');
+    } else {
+      this.objectLeaderboard(object, message);
     }
   },
 
@@ -67,6 +114,6 @@ module.exports = {
       return b.quantity - a.quantity;
     });
 
-    return board;
+    return board.slice(0, 19);
   },
 };
