@@ -52,7 +52,7 @@ module.exports = {
 
   validateSingleUserAction(message, commandName) {
     // check if user exists, check if self, check if bot, check if rinChan
-    const usersArray = getUserIdArr(message.content);
+    const usersArray = this.getUserIdArr(message.content);
 
     if (usersArray.length === 1) {
       throw new CommandException('You need to mention a user', 'rinwha.png');

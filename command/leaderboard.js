@@ -36,6 +36,7 @@ module.exports = {
     let imageHtml = `
     <html>
     <head>
+		<meta charset="UTF-8">
         <style>
         body{
             background-color: #2f3136;
@@ -52,6 +53,12 @@ module.exports = {
         th {
             font-size:24px;
         }
+img {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+}
+
         </style>
     </head>
     <body>
@@ -69,9 +76,10 @@ module.exports = {
           imageHtml += `
           <tr>
             <td>${index + 1}</td>
-            <td>${utils.escapeMarkdown(usr.displayName)}</td>
+            <td><div style="color:${usr.displayHexColor};"><img src="${usr.user.avatarURL()}" />  ${decodeURI(utils.escapeMarkdown(usr.displayName))}</div></td>
             <td>${ele.quantity}</td>
           </tr>`;
+        console.log(utils.escapeMarkdown(usr.displayName));
         }
       }
     });
