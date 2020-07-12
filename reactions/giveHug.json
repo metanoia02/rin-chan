@@ -1,13 +1,12 @@
 {
-    "images":
-    { 
-        "path": "./images/hug/",
-        "quantity": 6
-    },
+  "images": {
+    "path": "./images/hug/",
+    "quantity": 6
+  },
 
-    "responses": [
-        {
-            "response": [" You got a hug from "]
-        }
-    ]
+  "responses": [
+    {
+      "response": [" You got a hug from "]
+    }
+  ]
 }

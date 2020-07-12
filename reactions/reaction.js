@@ -1,14 +1,23 @@
 const rinChan = require('../rinChan/rinChan.js');
 const utils = require('../utils/utils.js');
+const Discord = require('discord.js');
 
 module.exports = class Reaction {
-  constructor(filePath) {
+  /**
+   *
+   * @param {*} filePath
+   */
+  constructor(filePath, commandName) {
     this.config = require(filePath);
+    this.commandName = commandName;
   }
 
+  /**
+   *
+   * @param {*} user
+   */
   getReaction(user) {
     let answers = [];
-    const modifiers = this.config.modifiers;
 
     if (this.config.hasOwnProperty('responses')) {
       answers = this.config.responses.filter((response) => {
@@ -23,7 +32,7 @@ module.exports = class Reaction {
           hungerFulfilled = this.checkFulfilled(response.hunger, rinChan.getHunger());
         }
         if (response.hasOwnProperty('affection') && user) {
-          affectionFulfilled = this.checkFulfilled(response.affection, user.affection);
+          affectionFulfilled = this.checkFulfilled(response.affection, user.getAffection());
         }
 
         return moodFulfilled && hungerFulfilled && affectionFulfilled;
@@ -55,6 +64,32 @@ module.exports = class Reaction {
     return reaction;
   }
 
+  /**
+   *
+   * @param {*} user
+   */
+  getEmbed(user) {
+    const reaction = this.getReaction(user);
+
+    const attachment = new Discord.MessageAttachment(reaction.image, reaction.imageName);
+    const embed = new Discord.MessageEmbed()
+      .setColor(this.config.embedColour)
+      .setTitle(this.commandName)
+      .setDescription(reaction.string)
+      .attachFiles(attachment)
+      .setThumbnail(`attachment://${reaction.imageName}`);
+
+    if (user.hasDiscordMember()) {
+      embed.setFooter(`${user.getDiscordMember().displayName}`, user.getDiscordUser().avatarURL());
+    }
+    return embed;
+  }
+
+  /**
+   *
+   * @param {*} modifier
+   * @param {*} checkValue
+   */
   checkFulfilled(modifier, checkValue) {
     if (typeof modifier === 'object') {
       return checkValue >= modifier.min && checkValue <= modifier.max;

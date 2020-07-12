@@ -1,12 +1,25 @@
 const database = require('../utils/sql.js');
 const utils = require('../utils/utils.js');
+const User = require('../utils/User.js');
 
 module.exports = {
-  init() {},
+  config: {
+    training: [
+      {locale: 'en', string: 'show inventory'},
+      {locale: 'en', string: 'show my inventory'},
+      {locale: 'en', string: 'inventory'},
+    ],
 
-  showInventory(message, command) {
-    const user = database.getUser(message.author.id, message.guild.id);
-    const inventory = database.showInventory.all(user.id);
+    intent: 'showInventory',
+    commandName: 'Inventory',
+    description: 'Show everything you have',
+
+    scope: 'channel',
+  },
+
+  run(message, args) {
+    const user = new User(message);
+    const inventory = user.getInventory();
 
     let output = 'Sure, you currently have\n';
 

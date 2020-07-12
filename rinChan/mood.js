@@ -3,8 +3,8 @@ module.exports = {
   moodSwing: 5,
 
   randomMood(mood) {
-    const modifier = Math.floor((swing - 1) / 2);
-    let newMood = Math.floor(Math.random() * 5) - modifier;
+    const modifier = Math.floor((this.moodSwing - 1) / 2);
+    let newMood = Math.floor(Math.random() * this.moodSwing) - modifier;
 
     if (newMood < 0) {
       newMood = 0;

@@ -8,12 +8,17 @@ module.exports = {
     this._configJson = configJson;
 
     this._client = client;
+    this._discordUser = client.user;
 
     this.fs = require('fs');
     this._config = this.readFile(configJson);
 
     this._hungerModule.setIcon(this._client, this.getHunger());
     this.setCollecting(false);
+  },
+
+  getDiscordUser() {
+    return this._discordUser;
   },
 
   readFile(path) {
@@ -83,11 +88,11 @@ module.exports = {
 const schedule = require('node-schedule');
 
 // eslint-disable-next-line no-unused-vars
-const hungerInterval = schedule.scheduleJob('0 * * * *', function() {
+const hungerInterval = schedule.scheduleJob('0 * * * *', function () {
   module.exports.setHunger(module.exports.getHunger() + 1);
 });
 
 // eslint-disable-next-line no-unused-vars
-const randomMood = schedule.scheduleJob('0 0 * * *', function() {
+const randomMood = schedule.scheduleJob('0 0 * * *', function () {
   module.exports._setMood(module.exports._moodModule.randomMood(module.exports.getMood()));
 });

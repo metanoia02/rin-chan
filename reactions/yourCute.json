@@ -1,42 +1,39 @@
 {
-    "images": 
-    { 
-        "path": "./images/cute/", 
-        "quantity": 8
+  "images": {
+    "path": "./images/cute/",
+    "quantity": 8
+  },
+
+  "modifiers": ["mood", "affection", "hunger"],
+
+  "default": ["That's really nice of you...", "Thanks"],
+
+  "responses": [
+    {
+      "affection": { "min": 50, "max": 9999 },
+      "mood": { "min": 4, "max": 5 },
+      "hunger": { "min": 3, "max": 5 },
+
+      "response": ["I love you!"],
+      "image": "1.jpg"
     },
 
-    "modifiers": ["mood", "affection", "hunger"],
+    {
+      "affection": { "min": 10, "max": 9999 },
+      "mood": { "min": 3, "max": 5 },
+      "hunger": { "min": 2, "max": 5 },
 
-    "default": ["That's really nice of you...", "Thanks"],
+      "response": ["You really think so?"],
+      "image": "7.jpg"
+    },
 
-    "responses": [
-        {
-            "affection": {"min": 50,"max": 9999},
-            "mood": {"min": 4,"max": 5},
-            "hunger": {"min": 3,"max": 5},
+    {
+      "affection": { "min": 20, "max": 9999 },
+      "mood": { "min": 3, "max": 5 },
+      "hunger": { "min": 2, "max": 5 },
 
-            "response": ["I love you!"],
-            "image": "1.jpg"
-        },
-
-        {
-            "affection": {"min": 10,"max": 9999},
-            "mood": {"min": 3,"max": 5},
-            "hunger": {"min": 2,"max": 5},
-    
-            "response": ["You really think so?"],
-            "image": "7.jpg"
-        },
-
-        {
-            "affection": {"min": 20,"max": 9999},
-            "mood": {"min": 3,"max": 5},
-            "hunger": {"min": 2,"max": 5},
-    
-            "response": ["Only because you give me so many oranges!"],
-            "image": "8.jpg"
-        }
-
-
-    ]
+      "response": ["Only because you give me so many oranges!"],
+      "image": "8.jpg"
+    }
+  ]
 }

@@ -12,6 +12,8 @@ module.exports = {
   rules: {
     'linebreak-style': 0,
     'max-len': ['error', {code: 120}],
+    'indent': 0,
+    'comma-dangle': 0,
     'spellcheck/spell-checker': [
       'warn',
       {
@@ -36,6 +38,7 @@ module.exports = {
           'Rin-chan',
           'gimme',
           'sql',
+          'leaderboard',
         ],
       },
     ],

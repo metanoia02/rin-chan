@@ -2,11 +2,6 @@ const CommandException = require('./CommandException.js');
 const database = require('./sql.js');
 
 module.exports = {
-  /**
-   * Get an array of discord user ID from a string
-   * @param {string} command Command string
-   * @return {array} User ID array
-   */
   getUserIdArr(command) {
     const userIdRegex = new RegExp(/<!*@!*([0-9]+)>/, 'g');
 
@@ -15,6 +10,19 @@ module.exports = {
     return result.map((ele) => {
       return ele[1];
     });
+  },
+  /**
+   * Update database with boosters
+   * @param {Discord.guild} guild
+   */
+  updateBoosts(guild) {
+    const members = guild.members.cache.filter((user) => user.premiumSince !== null);
+
+    members.reduce((acc, element) => {
+      const user = database.getUser(element.id, guild.id);
+      user.isBooster = 1;
+      database.setUser.run(user);
+    }, '');
   },
 
   /**
@@ -26,47 +34,18 @@ module.exports = {
     return string.charAt(0).toUpperCase() + string.slice(1);
   },
 
-  getObjectType(command, cmdRegex) {
-    const objects = cmdRegex.exec(command);
-    return objects[1];
-  },
-
-  getObjectQuantity(messageContent, regex) {
-    const reg = new RegExp(regex);
-
-    const matchesArray = [...messageContent.matchAll(reg)][0];
-
-    const object = database.getObject(matchesArray[2]);
-    const quantity = matchesArray[1];
-
-    return {object: object, quantity: quantity};
-  },
-  // validate
-  // command object
-  // preloaded with objects quantities etc
-
+  /**
+   * Add escape characters to all discord markdown
+   * @param {string} string
+   * @return {string} Escaped string
+   */
   escapeMarkdown(string) {
     const markdownRegex = new RegExp('([*|_~`>])', 'g');
     return string.replace(markdownRegex, '\\$1');
   },
 
-  validateSingleUserAction(message, commandName) {
-    // check if user exists, check if self, check if bot, check if rinChan
-    const usersArray = getUserIdArr(message.content);
-
-    if (usersArray.length === 1) {
-      throw new CommandException('You need to mention a user', 'rinwha.png');
-    } else if (!message.guild.member(usersArray[1])) {
-      throw new CommandException('They aren\'t in the server', 'rinconfuse.png');
-    } else if (usersArray.length !== 2) {
-      throw new CommandException('Mention only one user', 'rinwha.png');
-    }
-
-    return true;
-  },
-
   /**
-   *
+   * Checks for messages with over 10 mentions and mutes and insults author
    * @param {Discord.message} message
    * @return {boolean} is mention spam
    */
@@ -89,6 +68,30 @@ module.exports = {
     return false;
   },
 
+  /**
+   * Default handler for errors, runs CommandException in channel given or logs in console
+   * @param {Object} err
+   * @param {string} commandName
+   * @param {Discord.channel} channel Channel or User to send errors
+   */
+  handleError(err, commandName, channel) {
+    if (err instanceof CommandException) {
+      channel.send(err.getEmbed(commandName)).catch(console.error);
+    } else {
+      if (channel.guild) {
+        const diaryChannel = channel.guild.channels.cache.find((ch) => ch.name === 'rinchans-diary');
+        if (diaryChannel) {
+          diaryChannel.send(err.stack);
+          console.log(err);
+        } else {
+          console.log(err);
+        }
+      } else {
+        console.log(err);
+      }
+    }
+  },
+
   getCooldown(cooldown, lastTime) {
     // less than a minute / seconds
     const now = new Date();
@@ -104,25 +107,12 @@ module.exports = {
     return duration;
   },
 
+  /**
+   * Just returns a random element from an array
+   * @param {Array} array
+   * @return {any} Single element from input array
+   */
   arrayRandom(array) {
     return array[Math.floor(Math.random() * array.length)];
-  },
-
-  convertCommand(commandArr, regex) {
-    if (typeof commandArr === 'string') {
-      return commandArr;
-    } else {
-      return commandArr.reduce((acc, ele) => {
-        if (typeof ele === 'string') {
-          return (acc += ele);
-        } else {
-          if (regex === true) {
-            return (acc += ele.regex);
-          } else {
-            return (acc += ele.string);
-          }
-        }
-      }, '');
-    }
   },
 };

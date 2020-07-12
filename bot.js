@@ -2,56 +2,40 @@
 const rinChan = require('./rinChan/rinChan.js');
 const database = require('./utils/sql.js');
 const utils = require('./utils/utils.js');
-
 const config = require('./config.js');
-const token = require('./token.json');
+const moduleManager = require('./moduleManager.js');
+const objectManager = require('./utils/objectManager.js');
 
+const DEVMODE = process.env.NODE_ENV === 'development';
 const client = new Discord.Client();
 
-let modules = {};
-
-client.login(token.login);
+client.login(config.token);
 
 client.once('ready', () => {
   database.init();
-  modules = addModules();
+  objectManager.init();
+  moduleManager.init().then(() => {
+    if (DEVMODE) {
+      rinChan.init('./rinChan/rinChan.debug.json', client);
+    } else {
+      rinChan.init('./rinChan/rinChan.json', client);
+    }
+    rinChan.setId(client.user.id);
+    client.user.setActivity('Miku', {type: 'LISTENING'});
 
-  rinChan.init('./rinChan/rinChan.json', client);
-  rinChan.setId(client.user.id);
-  updateBoosts(client.guilds.cache.first());
+    utils.updateBoosts(client.guilds.cache.first());
 
-  client.user.setActivity('GUMI', {type: 'LISTENING'});
-
-  console.log('Ready!');
+    console.log('Ready!');
+  });
 });
 
-/*
-event listener
-const triggerWords = ['orange'];
-const filter some=>etc
-*/
-
-client.on('guildMemberUpdate', function(oldMember, newMember) {
+client.on('guildMemberUpdate', function (oldMember, newMember) {
   const user = database.getUser(newMember.id, newMember.guild.id);
   user.isBooster = newMember.premiumSince !== null ? 1 : 0;
   database.setUser.run(user);
 });
 
-/**
- * Update database with boosters
- * @param {Discord.guild} guild
- */
-function updateBoosts(guild) {
-  const members = guild.members.cache.filter((user) => user.premiumSince !== null);
-
-  members.reduce((acc, element) => {
-    const user = database.getUser(element.id, guild.id);
-    user.isBooster = 1;
-    database.setUser.run(user);
-  }, '');
-}
-
-client.on('message', (message) => {
+client.on('message', async (message) => {
   if (utils.mentionSpamDetect(message)) {
     return null;
   }
@@ -59,68 +43,19 @@ client.on('message', (message) => {
   const reg = '^<@' + rinChan.getId() + '>|^<@!' + rinChan.getId() + '>';
   const rinTest = new RegExp(reg);
 
-  if (message.mentions.has(client.user) && message.guild && rinTest.test(message.content)) {
-    let command = message.content.replace(/^<@![0-9]*>\s*|^<@[0-9]*>\s*/, '');
-    command = command.replace(/\s\s+/g, ' ');
-
-    for (const k in config) {
-      if (config.hasOwnProperty(k)) {
-        for (const c in config[k].cmd) {
-          if (config[k].cmd.hasOwnProperty(c)) {
-            for (let v = 0; v < config[k].cmd[c].length; v++) {
-              const cmdRegex = new RegExp(utils.convertCommand(config[k].cmd[c][v], true), 'i');
-              if (cmdRegex.test(command)) {
-                modules[k][c](message, command, cmdRegex);
-                return;
-              }
-            }
-          }
-        }
+  if (!message.author.bot) {
+    if (message.mentions.has(client.user) && message.guild && rinTest.test(message.content)) {
+      if (message.content.length < 23) {
+        message.channel.send('Yes?');
+      } else if (!(await moduleManager.runCommand(message))) {
+        message.channel.send('<:rinwha:600747717081432074>');
       }
-    }
-
-    if (message.content.length < 23) {
-      message.channel.send('Yes?');
-      return;
-    } else {
-      message.channel.send('<:rinwha:600747717081432074>');
-      return;
-    }
-  } else {
-    for (const k in modules) {
-      if (modules.hasOwnProperty(k)) {
-        if (typeof modules[k].handler == 'function' && rinChan.getCollecting() === false) {
-          if (modules[k].handler(message, rinChan)) {
-            return;
-          }
-        }
-      }
+    } else if (!rinChan.getCollecting()) {
+      const trigger = config.triggerWords.find((element) => element.test(message.content));
+      if (trigger) message.channel.send(trigger.response);
     }
   }
 });
-
-/**
- * @return {object} Modules from command folder
- */
-function addModules() {
-  console.log('Adding modules...');
-
-  const modules = {};
-
-  for (const mod in config) {
-    if (config.hasOwnProperty(mod)) {
-      modules[mod] = require(`./command/${mod}.js`);
-      console.log(`Added ${mod}`);
-
-      if (typeof modules[mod].init == 'function') {
-        if (modules[mod].init()) {
-          return;
-        }
-      }
-    }
-  }
-  return modules;
-}
 
 client.on('guildMemberAdd', (member) => {
   const channel = member.guild.channels.cache.find((ch) => ch.name === 'lounge');

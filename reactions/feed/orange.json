@@ -1,0 +1,28 @@
+{
+  "images": {
+    "path": "./images/emotes/"
+  },
+
+  "embedColour": "#FF4500",
+
+  "responses": [
+    {
+      "hunger": 5,
+
+      "response": ["I'm starving! What took you so long"],
+      "image": "rinangrey.png"
+    },
+    {
+      "hunger": 1,
+
+      "response": ["Thanks, I can't eat another bite"],
+      "image": "rinstuffed.png"
+    },
+    {
+      "hunger": {"min": 2, "max": 4},
+
+      "response": ["Another delicious orange!"],
+      "image": "orangebliss.png"
+    }
+  ]
+}

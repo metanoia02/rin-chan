@@ -18,5 +18,5 @@ module.exports = {
       response: `That's my orange! Gimme!`,
     },
   ],
-  token: 'Njg3MDUwMTgyNTA4MDE5NzQy.XmgIFg.Fag695gNm6hAt_04eludbA3XW_8',
-};
+  token: '',
+}; 

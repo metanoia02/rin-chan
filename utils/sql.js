@@ -6,13 +6,13 @@ module.exports = {
   init() {
     this.queryUser = sql.prepare('SELECT * FROM user WHERE user = ? AND guild = ?');
     this.setUser = sql.prepare(
-        'INSERT OR REPLACE INTO user (id, user, guild, affection, tries, lastGive, lastSteal, lastHarvest, isBooster, carrotsGiven) VALUES (@id, @user, @guild, @affection, @tries, @lastGive, @lastSteal, @lastHarvest, @isBooster, @carrotsGiven);',
+      'INSERT OR REPLACE INTO user (id, user, guild, affection, tries, lastGive, lastSteal, lastHarvest, isBooster, carrotsGiven) VALUES (@id, @user, @guild, @affection, @tries, @lastGive, @lastSteal, @lastHarvest, @isBooster, @carrotsGiven);'
     );
     this.getAllUsers = sql.prepare('SELECT * FROM user');
 
     this.queryInventory = sql.prepare('SELECT * FROM inventory WHERE userId = ? AND objectName = ?');
     this.setInventory = sql.prepare(
-        'REPLACE INTO inventory(userId, objectName, quantity, lastGet, id) VALUES (@userId, @objectName, @quantity, @lastGet, @id);',
+      'REPLACE INTO inventory(userId, objectName, quantity, lastGet, id) VALUES (@userId, @objectName, @quantity, @lastGet, @id);'
     );
 
     this.showInventory = sql.prepare('SELECT * FROM inventory WHERE userId = ?');
@@ -31,10 +31,6 @@ module.exports = {
 
   getObject(objectString) {
     const object = this.queryObject.get(objectString, objectString);
-
-    if (!object) {
-      throw new CommandException('What is that?', 'rinwha.png');
-    }
     return object;
   },
 
