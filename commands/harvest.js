@@ -65,8 +65,8 @@ module.exports = {
   easterEgg(message, user) {
     const now = new Date();
 
-    user.changeObjectQuantity('len', 1);
-    user.setObjectLastGet('len');
+    user.changeObjectQuantity('Len', 1);
+    user.setObjectLastGet('Len');
 
     const imageName = Math.floor(Math.random() * this.config.lenImages.quantity) + 1 + '.jpg';
 

@@ -7,3 +7,5 @@ node_modules
 /images/embeds/shop.png
 model.nlp
 rinChan/rinChan.json
+package-lock.json
+rinChan/rinChan.debug.json
