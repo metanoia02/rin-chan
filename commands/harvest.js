@@ -124,6 +124,8 @@ const updateTriesInterval = schedule.scheduleJob('0 * * * * *', function () {
     if (thisUser.getTries() < maxTries) {
       if (now.getTime() - thisUser.getLastHarvest() > module.exports.config.orangeHarvestCooldown) {
         thisUser.changeTries(1);
+      	const now = new Date();
+      	thisUser.setLastHarvest(now.getTime());
       }
     }
   });
