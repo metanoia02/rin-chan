@@ -4,6 +4,7 @@ const utils = require('../utils/utils.js');
 const User = require('../utils/User.js');
 const rinChan = require('../rinChan/rinChan.js');
 const Discord = require('discord.js');
+const CommandException = require('../utils/CommandException.js');
 
 module.exports = {
   config: {
@@ -62,7 +63,7 @@ module.exports = {
       throw new CommandException('Excuse me?', 'rinwhat.png');
     }
 
-    if (sourceUser.getAffection() < cost) {
+    if (sourceUser.getObjectQuantity('orange') < cost) {
       throw new CommandException(`To do that I'll need a 'donation' of ${cost} oranges`, 'rinpout.png');
     } else {
       sourceUser.changeObjectQuantity('orange', -cost);

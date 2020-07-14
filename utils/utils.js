@@ -44,24 +44,6 @@ module.exports = {
     return string.replace(markdownRegex, '\\$1');
   },
 
-<<<<<<< HEAD
-=======
-  validateSingleUserAction(message, commandName) {
-    // check if user exists, check if self, check if bot, check if rinChan
-    const usersArray = this.getUserIdArr(message.content);
-
-    if (usersArray.length === 1) {
-      throw new CommandException('You need to mention a user', 'rinwha.png');
-    } else if (!message.guild.member(usersArray[1])) {
-      throw new CommandException('They aren\'t in the server', 'rinconfuse.png');
-    } else if (usersArray.length !== 2) {
-      throw new CommandException('Mention only one user', 'rinwha.png');
-    }
-
-    return true;
-  },
-
->>>>>>> 030d79edc00dfaa4e08e1c57bb7fe002a709b09d
   /**
    * Checks for messages with over 10 mentions and mutes and insults author
    * @param {Discord.message} message
