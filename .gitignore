@@ -6,6 +6,6 @@ node_modules
 /images/embeds/leaderboard.png
 /images/embeds/shop.png
 model.nlp
-rinChan/rinChan.json
 package-lock.json
 rinChan/rinChan.debug.json
+rinChan/rinChan.json

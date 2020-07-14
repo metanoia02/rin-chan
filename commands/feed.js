@@ -7,10 +7,8 @@ const commandUtils = require('../utils/commandUtils.js');
 
 module.exports = {
   config: {
-    training: [
-      {locale: 'en', string: 'have an %object%'},
-      {locale: 'en', string: 'give %object%'},
-    ],
+    training: [{locale: 'en', string: 'have an %object%'}],
+    training: [{locale: 'en', string: `here's an %object%`}],
 
     intent: 'feedObject',
     commandName: 'Feed Rin-chan',

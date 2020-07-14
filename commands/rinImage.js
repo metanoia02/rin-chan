@@ -7,6 +7,7 @@ module.exports = {
       {locale: 'en', string: 'rin image'},
       {locale: 'en', string: 'show rin image'},
       {locale: 'en', string: 'image of you'},
+      {locale: 'en', string: 'look for images'},
     ],
 
     intent: 'rinImage',

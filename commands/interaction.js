@@ -46,7 +46,8 @@ module.exports = {
       interaction.reaction.getReaction(sourceUser),
       destUser,
       sourceUser,
-      interaction.cost
+      interaction.cost,
+      interaction.thumbnail
     );
 
     if (spamChannel) {

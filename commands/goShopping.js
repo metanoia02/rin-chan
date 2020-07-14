@@ -11,7 +11,7 @@ module.exports = {
   config: {
     training: [
       {locale: 'en', string: 'go shopping'},
-      {locale: 'en', string: 'lets go shopping'},
+      {locale: 'en', string: `let's go shopping`},
     ],
 
     intent: 'goShopping',

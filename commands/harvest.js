@@ -8,8 +8,11 @@ const database = require('../utils/sql.js');
 module.exports = {
   config: {
     training: [
-      {locale: 'en', string: 'harvest'},
+      {locale: 'en', string: 'harvest oranges'},
       {locale: 'en', string: 'look for oranges'},
+      {locale: 'en', string: 'find oranges'},
+      {locale: 'en', string: 'find an orange'},
+      {locale: 'en', string: 'locate oranges'},
     ],
 
     intent: 'harvest',
