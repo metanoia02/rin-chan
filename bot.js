@@ -44,7 +44,7 @@ client.on('message', async (message) => {
   const rinTest = new RegExp(reg);
 
   if (!message.author.bot) {
-    if (message.mentions.has(client.user) && message.guild /*&& rinTest.test(message.content)*/) {
+    if (message.mentions.has(client.user) && message.guild && rinTest.test(message.content)) {
       if (message.content.length < 23) {
         message.channel.send('Yes?');
       } else if (!(await moduleManager.runCommand(message))) {
