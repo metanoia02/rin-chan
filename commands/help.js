@@ -25,7 +25,9 @@ module.exports = {
 
     for (const file of commandFiles) {
       const command = require(`./${file}`);
-      this.commandList += command.config.commandName + ': ' + command.config.description + '\n';
+      if (!command.config.permissions) {
+        this.commandList += command.config.commandName + ': ' + command.config.description + '\n';
+      }
     }
 
     this.commandList += '\n__**Available objects:**__\n';

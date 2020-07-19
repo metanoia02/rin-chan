@@ -23,6 +23,7 @@ client.once('ready', () => {
     }
     rinChan.setId(client.user.id);
     client.user.setActivity('Miku', {type: 'LISTENING'});
+    client.guilds.cache.first().members.cache.get(client.user.id).setNickname('Rin-chan');
 
     utils.updateBoosts(client.guilds.cache.first());
 
@@ -45,10 +46,12 @@ client.on('message', async (message) => {
 
   if (!message.author.bot) {
     if (message.mentions.has(client.user) && message.guild && rinTest.test(message.content)) {
-      if (message.content.length < 23) {
-        message.channel.send('Yes?');
-      } else if (!(await moduleManager.runCommand(message))) {
-        message.channel.send('<:rinwha:600747717081432074>');
+      if (!rinChan.getCollecting()) {
+        if (message.content.length < 23) {
+          message.channel.send('Yes?');
+        } else if (!(await moduleManager.runCommand(message))) {
+          message.channel.send('<:rinwha:600747717081432074>');
+        }
       }
     } else if (!rinChan.getCollecting()) {
       const trigger = config.triggerWords.find((element) => element.test(message.content));
@@ -72,14 +75,6 @@ client.on('guildMemberRemove', (member) => {
   if (!channel) return;
 
   channel.send(`Cya ${member.user.username}`, {files: ['./images/leave/leave.gif']});
-});
 
-client.on('exit', (exitCode) => {
-  database.close();
-
-  const channel = client.guild.channels.cache.find((ch) => ch.name === 'bot-spam');
-
-  if (!channel) return;
-
-  channel.send(`I'll be right back!`);
+  //remove oranges at some point :rincatshrug:
 });

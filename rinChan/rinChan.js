@@ -77,7 +77,7 @@ module.exports = {
   },
 
   getCollecting() {
-    return this._config.id;
+    return this._config.collecting;
   },
   setCollecting(newCollecting) {
     this._config.collecting = newCollecting;

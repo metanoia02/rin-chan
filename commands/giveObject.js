@@ -8,6 +8,12 @@ module.exports = {
       {locale: 'en', string: 'give %user% %number% %object%'},
       {locale: 'en', string: 'give %user% an %object%'},
       {locale: 'en', string: 'give %user% a %object%'},
+      {locale: 'en', string: 'give a %object% to %user%'},
+
+      {locale: 'en', string: 'give %tag% %number% %object%'},
+      {locale: 'en', string: 'give %tag% an %object%'},
+      {locale: 'en', string: 'give %tag% a %object%'},
+      {locale: 'en', string: 'give a %object% to %tag%'},
     ],
 
     intent: 'giveObject',

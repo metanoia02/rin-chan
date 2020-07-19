@@ -27,6 +27,12 @@ module.exports = {
     this.setShopStock = sql.prepare('REPLACE INTO shop (objectName, quantity) VALUES (@objectName, @quantity);');
 
     this.getStock = sql.prepare('SELECT * FROM shop');
+
+    this.getTopAffection = sql.prepare('SELECT user FROM user ORDER BY affection DESC');
+  },
+
+  close() {
+    sql.close();
   },
 
   getObject(objectString) {

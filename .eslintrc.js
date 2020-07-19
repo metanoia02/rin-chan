@@ -39,6 +39,7 @@ module.exports = {
           'gimme',
           'sql',
           'leaderboard',
+          'gif',
         ],
       },
     ],

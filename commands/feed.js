@@ -11,6 +11,7 @@ module.exports = {
       {locale: 'en', string: 'have an %object%'},
       {locale: 'en', string: 'give %object%'},
       {locale: 'en', string: `here's an %object%`},
+      {locale: 'en', string: `eat an %object%`},
     ],
 
     intent: 'feedObject',

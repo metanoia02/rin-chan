@@ -182,9 +182,9 @@ module.exports = class User {
   }
   /**
    *
-   * @param {*} newBooster
+   * @param {Boolean} newBooster
    */
   setIsBooster(newIsBooster) {
-    this._setProperty('isBooster', newBooster ? 1 : 0);
+    this._setProperty('isBooster', newIsBooster ? 1 : 0);
   }
 };

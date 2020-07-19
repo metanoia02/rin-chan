@@ -16,6 +16,7 @@
     "node-nlp": "^4.8.0",
     "node-schedule": "^1.3.2",
     "prettier": "^2.0.5",
+    "random-org": "^2.1.0",
     "sqlite3": "^4.2.0",
     "uws": "^100.0.1"
   },
