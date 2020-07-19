@@ -95,6 +95,10 @@ module.exports = {
   getCooldown(cooldown, lastTime) {
     // less than a minute / seconds
     const now = new Date();
+    if (now.getTime() - cooldown > lastTime) {
+      return 'less than a minute';
+    }
+
     let duration = Math.floor((lastTime + cooldown - now.getTime()) / 3600000) + ' hours';
     if (duration === '0 hours') {
       duration = Math.round((lastTime + cooldown - now.getTime()) / 60000) + ' minutes';

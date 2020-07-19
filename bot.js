@@ -5,6 +5,7 @@ const utils = require('./utils/utils.js');
 const config = require('./config.js');
 const moduleManager = require('./moduleManager.js');
 const objectManager = require('./utils/objectManager.js');
+const User = require('./utils/User.js');
 
 const DEVMODE = process.env.NODE_ENV === 'development';
 const client = new Discord.Client();
@@ -30,9 +31,8 @@ client.once('ready', () => {
 });
 
 client.on('guildMemberUpdate', function (oldMember, newMember) {
-  const user = database.getUser(newMember.id, newMember.guild.id);
-  user.isBooster = newMember.premiumSince !== null ? 1 : 0;
-  database.setUser.run(user);
+  const user = new User(undefined, newMember.id, newMember.guild.id);
+  user.setIsBooster(newMember.premiumSince !== null ? 1 : 0);
 });
 
 client.on('message', async (message) => {

@@ -120,12 +120,12 @@ const updateTriesInterval = schedule.scheduleJob('0 * * * * *', function () {
 
   users.forEach((user) => {
     const thisUser = new User(undefined, user.user, user.guild);
-    const maxTries = thisUser.getIsBooster() === 0 ? 3 : 4;
+    const maxTries = thisUser.getIsBooster() ? 4 : 3;
     if (thisUser.getTries() < maxTries) {
       if (now.getTime() - thisUser.getLastHarvest() > module.exports.config.orangeHarvestCooldown) {
         thisUser.changeTries(1);
-      	const now = new Date();
-      	thisUser.setLastHarvest(now.getTime());
+        const now = new Date();
+        thisUser.setLastHarvest(now.getTime());
       }
     }
   });

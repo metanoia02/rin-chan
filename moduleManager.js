@@ -42,7 +42,7 @@ module.exports = {
   },
 
   async runCommand(message) {
-    let command = message.content;
+    let command = message.content.replace(/^<@![0-9]*>\s*|^<@[0-9]*>\s*/, '');
     command = command.replace(/\s\s+/g, ' ');
 
     const result = await manager.process(command);
