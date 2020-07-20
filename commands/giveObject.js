@@ -36,7 +36,7 @@ module.exports = {
     const objectNumString = num > 1 ? num + ' ' + objectString : objectString;
 
     if (sourceUser.getObjectQuantity(object.getName()) >= num) {
-      if (num === 0) {
+      if (num < 1) {
         message.channel.send('Fine, no ' + objectString + ' for them');
       } else if (destUser.getId() == message.author.id) {
         message.channel.send('You cant give ' + objectString + ' to yourself!');
