@@ -1,9 +1,6 @@
 const User = require('../utils/User.js');
 const CommandException = require('../utils/CommandException.js');
-const Reaction = require('../reactions/reaction.js');
 const rinChan = require('../rinChan/rinChan.js');
-const objectManager = require('../utils/objectManager.js');
-const commandUtils = require('../utils/commandUtils.js');
 const random = require('../utils/random.js');
 const database = require('../utils/sql.js');
 const utils = require('../utils/utils.js');
@@ -13,11 +10,12 @@ module.exports = {
     training: [
       {locale: 'en', string: 'rate'},
       {locale: 'en', string: 'rate %user%'},
+      {locale: 'en', string: 'rate %tag%'},
     ],
 
     intent: 'rate',
-    commandName: '',
-    description: 'Rate user or anything else.',
+    commandName: 'Rating',
+    description: 'Rate a user or anything else.',
 
     scope: 'channel',
   },
@@ -25,6 +23,8 @@ module.exports = {
   run(message, args) {
     if (args.mentions.length === 1) {
       this.rateUser(args.mentions[0].getDiscordMember(), message);
+    } else if (args.tags.length === 1) {
+      this.rateUser(args.tags[0].getDiscordMember(), message);
     } else {
       const filter = (response) => {
         return response.author.id === message.author.id;
@@ -34,7 +34,7 @@ module.exports = {
 
       message.channel.send(`What or who should I rate?`).then(() => {
         message.channel
-          .awaitMessages(filter, {max: 1, time: 15000, errors: ['time']})
+          .awaitMessages(filter, {max: 1, time: 30000, errors: ['time']})
           .then((collected) => {
             if (collected.first().mentions.members.size === 1) {
               this.rateUser(collected.first().mentions.members.first(), message);
@@ -68,19 +68,24 @@ module.exports = {
     let rating = 0;
 
     if (topUser.getId() === thisUser.getId()) {
-      rating = 100;
+      rating = 100.0;
     } else {
       rating = (thisUser.getAffection() / topUser.getAffection()) * 100;
     }
 
-    message.channel.send(`I would rate ${thisUser.getDiscordUser()} ${rating}%`);
+    message.channel.send(`I would rate ${thisUser.getDiscordMember().displayName} ${rating.toFixed(2)}%`);
   },
 
   rateRandom(toRate, message) {
     //check if object
-
-    random.generateIntegers({min: 1, max: 1000, n: 1}).then(function (result) {
-      message.channel.send(`I would rate '${toRate.trim()}' ${result.random.data[0] / 10}%`);
-    });
+    if (toRate.toLowerCase().includes('orange')) {
+      message.channel.send(`I would rate '${toRate.trim()}' 100.00%`);
+    } else if (toRate.toLowerCase().includes('len')) {
+      message.channel.send(`I would rate '${toRate.trim()}' roadroller%`);
+    } else {
+      random.generateIntegers({min: 1, max: 10000, n: 1}).then(function (result) {
+        message.channel.send(`I would rate '${toRate.trim()}' ${(result.random.data[0] / 100).toFixed(2)}%`);
+      });
+    }
   },
 };

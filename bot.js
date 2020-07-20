@@ -46,10 +46,10 @@ client.on('message', async (message) => {
 
   if (!message.author.bot) {
     if (message.mentions.has(client.user) && message.guild && rinTest.test(message.content)) {
-      if (!rinChan.getCollecting()) {
-        if (message.content.length < 23) {
-          message.channel.send('Yes?');
-        } else if (!(await moduleManager.runCommand(message))) {
+      if (message.content.length < 23 && !rinChan.getCollecting()) {
+        message.channel.send('Yes?');
+      } else if (message.content.length > 23) {
+        if (!(await moduleManager.runCommand(message))) {
           message.channel.send('<:rinwha:600747717081432074>');
         }
       }

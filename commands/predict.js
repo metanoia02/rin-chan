@@ -59,7 +59,7 @@ module.exports = {
       )
       .then(() => {
         message.channel
-          .awaitMessages(filter, {max: 1, time: 15000, errors: ['time']})
+          .awaitMessages(filter, {max: 1, time: 30000, errors: ['time']})
           .then((collected) => {
             const user = new User(message);
             if (user.getObjectQuantity('orange') < this.config.price) {

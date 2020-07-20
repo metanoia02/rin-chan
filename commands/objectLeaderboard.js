@@ -25,6 +25,7 @@ module.exports = {
       const filter = (response) => {
         return response.author.id === message.author.id;
       };
+
       rinChan.setCollecting(true);
 
       message.channel.send('Choose one object for the leaderboard').then(() => {
@@ -40,12 +41,12 @@ module.exports = {
             } else {
               message.channel.send('Another time perhaps');
             }
+            rinChan.setCollecting(false);
           });
       });
     } else {
       this.objectLeaderboard(args.objects[0], message);
     }
-    rinChan.setCollecting(true);
   },
 
   objectLeaderboard(object, message) {
@@ -121,7 +122,7 @@ module.exports = {
         .attachFiles(attachment)
         .setImage('attachment://leaderboard.png');
 
-      message.channel.send(leaderboardEmbed).catch(console.error);
+      message.channel.send(leaderboardEmbed).then(() => rinChan.setCollecting(false));
     });
   },
 };
