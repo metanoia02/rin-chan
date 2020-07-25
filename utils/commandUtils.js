@@ -40,7 +40,7 @@ module.exports = {
     } else if (args.mentions.length !== 1) {
       throw new CommandException('Mention only one user', 'rinwha.png');
     }
-  },
+  }, //check for two usercollection choice return new args?
 
   validateSingleTagAction(args) {
     if (args.tags.length === 0) {

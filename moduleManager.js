@@ -1,5 +1,8 @@
 const {NlpManager} = require('node-nlp');
-const manager = new NlpManager({languages: ['en']});
+const manager = new NlpManager({
+  languages: ['en'],
+  ner: {useDuckling: true, ducklingUrl: 'http://192.168.1.139:8000/parse'},
+});
 const Discord = require('discord.js');
 const fs = require('fs');
 const database = require('./utils/sql.js');
@@ -9,9 +12,8 @@ const CommandException = require('./utils/CommandException.js');
 
 module.exports = {
   async init() {
-    manager.addLanguage(['en']);
     manager.addRegexEntity('user', 'en', /<!*@!*[0-9]+>/gi);
-    manager.addRegexEntity('tag', 'en', /\S{2,}#[0-9]{4}/gi);
+    manager.addRegexEntity('tag', 'en', /\S+#[0-9]{4}/gi);
 
     const objects = database.getAllObjects.all();
     objects.forEach((element) => {
@@ -46,7 +48,7 @@ module.exports = {
     command = command.replace(/\s\s+/g, ' ');
 
     const result = await manager.process(command);
-    console.log(result);
+    console.log(JSON.stringify(result, null, 2));
 
     if (this.commands.has(result.intent)) {
       const commandModule = this.commands.get(result.intent);

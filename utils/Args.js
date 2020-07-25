@@ -11,46 +11,49 @@ module.exports = class Args {
    */
   constructor(command, result, message) {
     this.command = command;
+    this.result = result;
 
-    this.mentions = result.entities.reduce((acc, element) => {
-      if (element.entity === 'user') {
-        const id = element.sourceText.match(/\d+/)[0];
-        acc.push(new User(message, id, message.guild.id));
-      }
-      return acc;
-    }, []);
-
-    this.objects = result.entities.reduce((acc, element) => {
-      if (element.entity === 'object') {
-        acc.push(objectManager.get(element.sourceText));
-      }
-      return acc;
-    }, []);
-
-    this.interactions = result.entities.reduce((acc, element) => {
-      if (element.entity === 'interaction') {
-        acc.push(element.option);
-      }
-      return acc;
-    }, []);
-
-    this.quantities = result.entities.reduce((acc, element) => {
-      if (element.entity === 'number') {
-        acc.push(element.sourceText);
-      }
-      return acc;
-    }, []);
-
-    this.tags = result.entities.reduce((acc, element) => {
-      if (element.entity === 'tag') {
-        const user = message.client.users.cache.find((user) => user.tag == element.sourceText);
-        if (user) {
-          acc.push(new User(message, user.id, message.guild.id));
-        } else {
-          throw new CommandException('Who are they?', 'rinwha.png');
+    if (result.entities.length > 0) {
+      this.mentions = result.entities.reduce((acc, element) => {
+        if (element.entity === 'user') {
+          const id = element.sourceText.match(/\d+/)[0];
+          acc.push(new User(message, id, message.guild.id));
         }
-      }
-      return acc;
-    }, []);
+        return acc;
+      }, []);
+
+      this.objects = result.entities.reduce((acc, element) => {
+        if (element.entity === 'object') {
+          acc.push(objectManager.get(element.option));
+        }
+        return acc;
+      }, []);
+
+      this.interactions = result.entities.reduce((acc, element) => {
+        if (element.entity === 'interaction') {
+          acc.push(element.option);
+        }
+        return acc;
+      }, []);
+
+      this.quantities = result.entities.reduce((acc, element) => {
+        if (element.entity === 'number') {
+          acc.push(element.sourceText);
+        }
+        return acc;
+      }, []);
+
+      this.tags = result.entities.reduce((acc, element) => {
+        if (element.entity === 'tag') {
+          const user = message.client.users.cache.find((user) => user.tag.includes(element.sourceText));
+          if (user) {
+            acc.push(new User(message, user.id, message.guild.id));
+          } else {
+            throw new CommandException('Who are they?', 'rinwha.png');
+          }
+        }
+        return acc;
+      }, []);
+    }
   }
 };

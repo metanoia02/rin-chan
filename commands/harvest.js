@@ -4,14 +4,17 @@ const utils = require('../utils/utils.js');
 const Discord = require('discord.js');
 const schedule = require('node-schedule');
 const database = require('../utils/sql.js');
+const rinChan = require('../rinChan/rinChan.js');
 
 module.exports = {
   config: {
     training: [
       {locale: 'en', string: 'harvest'},
-      {locale: 'en', string: 'look for oranges'},
-      {locale: 'en', string: 'find an orange'},
-      {locale: 'en', string: 'locate an orange'},
+      {locale: 'en', string: 'look for %object%'},
+      {locale: 'en', string: 'find an %object%'},
+      {locale: 'en', string: 'locate an %object%'},
+
+      // {locale: 'ja', string: `%object%を探す`},
     ],
 
     intent: 'harvest',
@@ -38,10 +41,15 @@ module.exports = {
         this.easterEgg(message, user);
         user.setTries(0);
       } else if (5 < chance && chance <= 60) {
-        user.changeObjectQuantity('orange', 1);
-        user.setObjectLastGet('orange');
-        user.changeTries(-1);
-        this.foundOrange(message, user);
+        const chanceSteal = Math.floor(Math.random() * 100) + 1;
+        if (rinChan.getHunger > 3 && chanceSteal > 50) {
+          // steal orange
+        } else {
+          user.changeObjectQuantity('orange', 1);
+          user.setObjectLastGet('orange');
+          user.changeTries(-1);
+          this.foundOrange(message, user);
+        }
       } else if (60 < chance && chance <= 100) {
         user.changeTries(-1);
         this.couldntFind(message, user);
@@ -55,7 +63,7 @@ module.exports = {
       const imTiredEmbed = new Discord.MessageEmbed()
         .setColor('#FF0000')
         .setTitle('Harvest')
-        .setDescription("I'm tired!")
+        .setDescription(`I'm tired!`)
         .attachFiles(attachment)
         .setThumbnail('attachment://rinded.png')
         .addField('You can try again in:', duration, true);
@@ -64,9 +72,12 @@ module.exports = {
     }
   },
 
-  easterEgg(message, user) {
-    const now = new Date();
+  stealOrange(message, user) {
+    // rinchan hunger change
+    // send message i found one but i got hungry on the way back, sorry
+  },
 
+  easterEgg(message, user) {
     user.changeObjectQuantity('Len', 1);
     user.setObjectLastGet('Len');
 
@@ -104,7 +115,7 @@ module.exports = {
     const couldntFindEmbed = new Discord.MessageEmbed()
       .setColor('#FF0000')
       .setTitle('Harvest')
-      .setDescription("Couldn't find anything")
+      .setDescription(`Couldn't find anything`)
       .attachFiles(attachment)
       .setThumbnail('attachment://rinyabai.png');
 

@@ -1,5 +1,6 @@
 const database = require('./sql.js');
 const CommandException = require('./CommandException.js');
+const language = require('node-nlp/src/language');
 
 module.exports = class RinObject {
   /**
@@ -24,6 +25,13 @@ module.exports = class RinObject {
   }
   getFilling() {
     return this._obj.filling;
+  }
+  getNameTranslation(languageCode) {
+    if (this._obj.hasOwnProperty(languageCode)) {
+      return this._obj[languageCode];
+    } else {
+      throw new Error('Invalid language');
+    }
   }
 
   //todo add setters

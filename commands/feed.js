@@ -2,7 +2,6 @@ const User = require('../utils/User.js');
 const CommandException = require('../utils/CommandException.js');
 const Reaction = require('../reactions/reaction.js');
 const rinChan = require('../rinChan/rinChan.js');
-const objectManager = require('../utils/objectManager.js');
 const commandUtils = require('../utils/commandUtils.js');
 
 module.exports = {
@@ -12,6 +11,8 @@ module.exports = {
       {locale: 'en', string: 'give %object%'},
       {locale: 'en', string: `here's an %object%`},
       {locale: 'en', string: `eat an %object%`},
+
+      //{locale: 'ja', string: `%object%どうぞ`},
     ],
 
     intent: 'feedObject',
