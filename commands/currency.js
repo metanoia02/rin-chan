@@ -6,8 +6,8 @@ const request = require('request');
 module.exports = {
   config: {
     training: [
-      {locale: 'en', string: 'what is %currency% in %currencyConversion%'},
-      {locale: 'en', string: '%currency% in %currencyConversion%'},
+      {locale: 'en', string: 'what is %currency% in %inTrim%'},
+      {locale: 'en', string: '%currency% in %inTrim%'},
     ],
 
     intent: 'currency',
@@ -17,9 +17,7 @@ module.exports = {
     scope: 'channel',
   },
 
-  init(manager) {
-    manager.addAfterCondition('en', 'currencyConversion', 'in', 'trim');
-  },
+  init(manager) {},
 
   run(message, args) {
     const initialEntity = args.result.entities.find((entity) => entity.entity == 'currency');
@@ -27,7 +25,7 @@ module.exports = {
     const initialValue = initialEntity.resolution.value;
     const initialUnit = initialEntity.resolution.unit;
 
-    const conversionCurrency = args.result.entities.find((entity) => entity.entity == 'currencyConversion').sourceText;
+    const conversionCurrency = args.result.entities.find((entity) => entity.entity == 'inTrim').sourceText;
     if (!conversionCurrency) throw new CommandException(`Couldn't find a currency to convert to.`, 'rinconfuse.png');
     if (initialUnit.length != 3 || conversionCurrency.length != 3) {
       throw new CommandException(`Please use three letter currency codes.`, 'rinwha.png');

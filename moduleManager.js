@@ -12,8 +12,13 @@ const CommandException = require('./utils/CommandException.js');
 
 module.exports = {
   async init() {
+    //discord entities
     manager.addRegexEntity('user', 'en', /<!*@!*[0-9]+>/gi);
     manager.addRegexEntity('tag', 'en', /\S+#[0-9]{4}/gi);
+
+    //trims
+    manager.addAfterCondition('en', 'toTrim', 'to', 'trim');
+    manager.addAfterCondition('en', 'inTrim', 'in', 'trim');
 
     const objects = database.getAllObjects.all();
     objects.forEach((element) => {

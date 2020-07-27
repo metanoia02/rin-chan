@@ -42,8 +42,8 @@ module.exports = {
         user.setTries(0);
       } else if (5 < chance && chance <= 60) {
         const chanceSteal = Math.floor(Math.random() * 100) + 1;
-        if (rinChan.getHunger > 3 && chanceSteal > 50) {
-          // steal orange
+        if (rinChan.getHunger() > 3 && chanceSteal > 50) {
+          this.stealOrange(message, user);
         } else {
           user.changeObjectQuantity('orange', 1);
           user.setObjectLastGet('orange');
@@ -73,8 +73,18 @@ module.exports = {
   },
 
   stealOrange(message, user) {
-    // rinchan hunger change
-    // send message i found one but i got hungry on the way back, sorry
+    rinChan.setHunger(rinChan.getHunger() - 1);
+    user.changeTries(-1);
+
+    const attachment = new Discord.MessageAttachment('./images/emotes/rintehe.png', 'rintehe.png');
+    const stealEmbed = new Discord.MessageEmbed()
+      .setColor('#FF0000')
+      .setTitle('Harvest')
+      .setDescription(`I found one! But I got hungry on the way back.`)
+      .attachFiles(attachment)
+      .setThumbnail('attachment://rintehe.png');
+
+    message.channel.send(stealEmbed).catch(console.error);
   },
 
   easterEgg(message, user) {

@@ -1,4 +1,5 @@
 const database = require('../utils/sql.js');
+const forever = require('forever');
 
 module.exports = {
   config: {
@@ -20,7 +21,7 @@ module.exports = {
     if (channel) {
       await channel.send(`I'll be right back!`);
     }
-
+    forever.stop(0);
     process.exit(1);
   },
 };
