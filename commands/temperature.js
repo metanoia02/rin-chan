@@ -10,6 +10,9 @@ module.exports = {
       {locale: 'en', string: '%temperature% to %toTrim%'},
 
       {locale: 'en', string: '%temperature% in %inTrim%'},
+
+      {locale: 'en', string: 'what is %temperature% in %inTrim%'},
+      {locale: 'en', string: ' %temperature%%currency% in %inTrim%'},
     ],
 
     intent: 'temperatureConversion',
@@ -19,23 +22,38 @@ module.exports = {
     scope: 'channel',
   },
 
+  init() {
+    this.config.units = new Discord.Collection();
+    this.config.units.set('f', 'f');
+    this.config.units.set('c', 'c');
+    this.config.units.set('celsius', 'c');
+    this.config.units.set('fahrenheit', 'f');
+  },
+
   run(message, args) {
     const initialEntity = args.result.entities.find((entity) => entity.entity == 'temperature');
     if (!initialEntity) throw new CommandException(`Couldn't find a temperature to convert.`, 'rinconfuse.png');
     const initialValue = initialEntity.resolution.value;
     const initialUnit = initialEntity.resolution.unit;
 
-    const conversionTemperature = args.result.entities
-      .find((entity) => entity.entity == 'toTrim' || entity.entity == 'inTrim')
-      .sourceText.replace(/\W+/gi, '');
+    const conversionTemperature = this.config.units.get(
+      args.result.entities
+        .find((entity) => entity.entity == 'toTrim' || entity.entity == 'inTrim')
+        .sourceText.replace(/\W+/gi, '')
+        .toLowerCase()
+    );
     if (!conversionTemperature) {
       throw new CommandException(`Couldn't find a temperature to convert to.`, 'rinconfuse.png');
     }
 
     if (initialUnit.toLowerCase() == 'celsius' && conversionTemperature.toLowerCase() == 'f') {
-      message.channel.send((initialValue * 1.8 + 32).toFixed(1) + ' ℉');
+      let fahrenheit = (initialValue * 1.8 + 32).toFixed(1);
+      if (fahrenheit < -459.67) fahrenheit = -459.67;
+      message.channel.send(fahrenheit + ' ℉');
     } else if (initialUnit.toLowerCase() == 'fahrenheit' && conversionTemperature.toLowerCase() == 'c') {
-      message.channel.send(((initialValue - 32) / 1.8).toFixed(1) + ' ℃');
+      let celsius = ((initialValue - 32) / 1.8).toFixed(1);
+      if (celsius < -273.15) celsius = -273.15;
+      message.channel.send(celsius + ' ℃');
     } else {
       throw new CommandException('Invalid temperature unit.', 'rinnotimpressed.png');
     }
