@@ -25,7 +25,9 @@ module.exports = {
     const initialValue = initialEntity.resolution.value;
     const initialUnit = initialEntity.resolution.unit;
 
-    const conversionCurrency = args.result.entities.find((entity) => entity.entity == 'inTrim').sourceText;
+    const conversionCurrency = args.result.entities
+      .find((entity) => entity.entity == 'inTrim')
+      .sourceText.replace(/\W+/gi, '');
     if (!conversionCurrency) throw new CommandException(`Couldn't find a currency to convert to.`, 'rinconfuse.png');
     if (initialUnit.length != 3 || conversionCurrency.length != 3) {
       throw new CommandException(`Please use three letter currency codes.`, 'rinwha.png');
