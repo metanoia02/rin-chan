@@ -21,11 +21,11 @@ module.exports = {
   },
 
   run(message, args) {
-    if (args.mentions.length === 1) {
+    if (args.mentions && args.mentions.length === 1) {
       this.rateUser(args.mentions[0].getDiscordMember(), message);
-    } else if (args.tags.length === 1) {
+    } else if (args.tags && args.tags.length === 1) {
       this.rateUser(args.tags[0].getDiscordMember(), message);
-    } else {
+    } else if (args.command.length < 5) {
       const filter = (response) => {
         return response.author.id === message.author.id;
       };
@@ -52,6 +52,8 @@ module.exports = {
             }
           });
       });
+    } else {
+      this.rateRandom(args.command.substring(args.command.indexOf('rate') + 5).trim(), message);
     }
   },
 
