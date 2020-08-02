@@ -45,7 +45,7 @@ module.exports = {
   validateSingleTagAction(args) {
     if (args.tags.length > 1) {
       throw new CommandException('Tag only one user', 'rinwha.png');
-    } else if (args.tags.length != 0) {
+    } else if (args.tags.length != 1) {
       throw new CommandException('You need use a users tag e.g. rin#0202', 'rinwha.png');
     }
   },
