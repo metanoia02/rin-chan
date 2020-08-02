@@ -31,36 +31,36 @@ module.exports = {
    * @param {Discord.message} message Undefined if in DM
    */
   validateSingleUserAction(args, message) {
-    if (args.mentions.length === 0) {
+    if (args.mentions.length > 1) {
+      throw new CommandException('Mention only one user', 'rinwha.png');
+    } else if (args.mentions.length != 1) {
       throw new CommandException('You need to mention a user', 'rinwha.png');
     } else if (message) {
       if (!args[0].getDiscordUser()) {
         throw new CommandException(`They aren't in the server`, 'rinconfuse.png');
       }
-    } else if (args.mentions.length !== 1) {
-      throw new CommandException('Mention only one user', 'rinwha.png');
     }
   }, //check for two usercollection choice return new args?
 
   validateSingleTagAction(args) {
-    if (args.tags.length === 0) {
-      throw new CommandException('You need use a users tag e.g. rin#0202', 'rinwha.png');
-    } else if (args.tags.length !== 1) {
+    if (args.tags.length > 1) {
       throw new CommandException('Tag only one user', 'rinwha.png');
+    } else if (args.tags.length != 0) {
+      throw new CommandException('You need use a users tag e.g. rin#0202', 'rinwha.png');
     }
   },
 
   validateSingleObjectAction(args) {
-    if (args.objects.length === 0) throw new CommandException(`What object?`, 'rinconfuse.png');
     if (args.objects.length > 1) {
       throw new CommandException(`Which one?`, 'rinconfuse.png');
     }
+    if (args.objects.length != 1) throw new CommandException(`What object?`, 'rinconfuse.png');
   },
 
   validateSingleInteraction(args) {
-    if (args.interactions.length === 0) throw new CommandException(`What should I do?`, 'rinconfuse.png');
     if (args.interactions.length > 1) {
       throw new CommandException(`Which one?`, 'rinconfuse.png');
     }
+    if (args.interactions.length != 1) throw new CommandException(`What should I do?`, 'rinconfuse.png');
   },
 };

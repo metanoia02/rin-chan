@@ -52,11 +52,12 @@ module.exports = {
     );
 
     if (spamChannel) {
-      spamChannel.send(embed).catch(console.error);
+      spamChannel.send(`${destUser.getDiscordMember()}`).then((msg) => msg.delete());
+      spamChannel.send(embed);
     } else {
-      message.channel.send(embed).catch(console.error);
+      message.channel.send(embed);
     }
-    message.delete().catch(console.error);
+    message.delete();
   },
 
   giveUser(message, commandName, reaction, targetUser, sourceUser, cost, thumbnail = false) {

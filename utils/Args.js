@@ -12,6 +12,11 @@ module.exports = class Args {
   constructor(command, result, message) {
     this.command = command;
     this.result = result;
+    this.mentions = [];
+    this.objects = [];
+    this.interactions = [];
+    this.quantities = [];
+    this.tags = [];
 
     if (result.entities.length > 0) {
       this.mentions = result.entities.reduce((acc, element) => {

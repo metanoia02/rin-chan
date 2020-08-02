@@ -21,10 +21,10 @@ module.exports = {
   },
 
   run(message, args) {
-    if (args.mentions && args.mentions.length === 1) {
-      this.rateUser(args.mentions[0].getDiscordMember(), message);
-    } else if (args.tags && args.tags.length === 1) {
-      this.rateUser(args.tags[0].getDiscordMember(), message);
+    const rateUser = args.mentions[0] || args.tags[0];
+
+    if (rateUser) {
+      this.rateUser(rateUser, message);
     } else if (args.command.length < 5) {
       const filter = (response) => {
         return response.author.id === message.author.id;
@@ -37,9 +37,10 @@ module.exports = {
           .awaitMessages(filter, {max: 1, time: 30000, errors: ['time']})
           .then((collected) => {
             if (collected.first().mentions.members.size === 1) {
-              this.rateUser(collected.first().mentions.members.first(), message);
+              const user = new User(message, collected.first().mentions.member.first().id, message.guild.id);
+              this.rateUser(user, message);
             } else {
-              this.rateRandom(collected.first().content, message);
+              this.rateRandom(collected.first().content.trim(), message);
             }
             rinChan.setCollecting(false);
           })
@@ -57,25 +58,23 @@ module.exports = {
     }
   },
 
-  rateUser(member, message) {
-    if (member.id == rinChan.getId()) {
+  rateUser(user, message) {
+    if (user.getId() == rinChan.getId()) {
       throw new CommandException(`Probably about 1000%`, 'rintriumph.png');
     }
-    // get leaderboard
-    const topUserId = database.getTopAffection.all()[0];
 
+    const topUserId = database.getTopAffection.all()[0];
     const topUser = new User(message, topUserId.user, message.guild.id);
-    const thisUser = new User(message, member.id, message.guild.id);
 
     let rating = 0;
 
-    if (topUser.getId() === thisUser.getId()) {
+    if (topUser.getId() === user.getId()) {
       rating = 100.0;
     } else {
-      rating = (thisUser.getAffection() / topUser.getAffection()) * 100;
+      rating = (user.getAffection() / topUser.getAffection()) * 100;
     }
 
-    message.channel.send(`I would rate ${thisUser.getDiscordMember().displayName} ${rating.toFixed(2)}%`);
+    message.channel.send(`I would rate ${user.getDiscordMember().displayName} ${rating.toFixed(2)}%`);
   },
 
   rateRandom(toRate, message) {
