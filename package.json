@@ -5,6 +5,7 @@
   "main": "bot.js",
   "author": "metanoia",
   "dependencies": {
+    "axios": "^0.20.0",
     "better-sqlite3": "^5.4.3",
     "booru": "^2.2.3",
     "cjs": "0.0.11",
@@ -23,7 +24,8 @@
     "random-org": "^2.1.0",
     "request": "^2.88.2",
     "sqlite3": "^4.2.0",
-    "uws": "^100.0.1"
+    "uws": "^100.0.1",
+    "xml2js": "^0.4.23"
   },
   "devDependencies": {
     "eslint": "^7.3.1",

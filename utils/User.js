@@ -4,7 +4,7 @@ const CommandException = require('./CommandException.js');
 
 module.exports = class User {
   /**
-   *
+   * @param {Discord.Message} message
    * @param {string} userId
    * @param {string} guildId
    */
@@ -29,6 +29,9 @@ module.exports = class User {
     }
   }
 
+  /**
+   * @return {string} Discord nickname or if not available the username
+   */
   getNickname() {
     if (this._discordMember) {
       return this._discordMember.displayName;
@@ -89,6 +92,9 @@ module.exports = class User {
     database.setInventory.run(inventory);
   }
 
+  /**
+   * @return {Array} Array of all inventory objects
+   */
   getInventory() {
     return database.showInventory.all(this._user.id);
   }
@@ -113,24 +119,38 @@ module.exports = class User {
   getAffection() {
     return this._user.affection;
   }
+  /**
+   *
+   * @param {integer} newAffection New affection
+   */
   setAffection(newAffection) {
-    this._setProperty('affection', 0);
+    this._setProperty('affection', newAffection);
   }
 
+  /**
+   * @return {Discord.User} Discord user object
+   */
   getDiscordUser() {
     return this._discordUser;
   }
 
+  /**
+   * @return {Discord.GuildMember} Discord member object
+   */
   getDiscordMember() {
     if (this._discordMember) return this._discordMember;
     throw new Error('No member for user available');
   }
+  /**
+   * Checks if a discord member object is available for this user
+   * @return {Boolean} Member exists or not
+   */
   hasDiscordMember() {
     return this._discordMember ? true : false;
   }
 
   /**
-   *
+   * @return {Number} User tries left
    */
   getTries() {
     return this._user.tries;
@@ -151,40 +171,70 @@ module.exports = class User {
     this._setProperty('tries', this.getTries() + modifier);
   }
 
+  /**
+   * @return {Number} Time of last give in milliseconds
+   */
   getLastGive() {
     return this._user.lastGive;
   }
+  /**
+   * Set a new last give time at current time
+   */
   setLastGive() {
     const currentTime = new Date();
     this._setProperty('lastGive', currentTime.getTime());
   }
 
+  /**
+   * @return {Number} Last steal time in milliseconds
+   */
   getLastSteal() {
     return this._user.lastSteal;
   }
+  /**
+   * Set last steal time to current time
+   */
   setLastSteal() {
     const currentTime = new Date();
     this._setProperty('lastSteal', currentTime.getTime());
   }
 
+  /**
+   * @return {Number} Last harvest time in milliseconds
+   */
   getLastHarvest() {
     return this._user.lastHarvest;
   }
+  /**
+   *
+   * @param {Number} newLastHarvest New last harvest time in milliseconds
+   */
   setLastHarvest(newLastHarvest) {
     this._setProperty('lastHarvest', newLastHarvest);
   }
 
   /**
-   *
+   * @return {Boolean} User is booster
    */
   getIsBooster() {
     return Boolean(this._user.isBooster);
   }
   /**
-   *
-   * @param {Boolean} newBooster
+   * @param {Boolean} newIsBooster
    */
   setIsBooster(newIsBooster) {
     this._setProperty('isBooster', newIsBooster ? 1 : 0);
   }
+  /*
+  checkLevel() {
+    // get current xp
+    // check against level table
+    // make changes if needed
+  }
+  getXp() {
+    return this._user.xp;
+  }
+  addXp(addedXp, message) {
+    this._setProperty('xp', this.getXp() + addedXp);
+  }*/
 };

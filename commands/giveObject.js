@@ -25,10 +25,9 @@ module.exports = {
 
   run(message, args) {
     commandUtils.validateSingleObjectAction(args);
-    commandUtils.validateSingleUserAction(args);
 
     const sourceUser = new User(message);
-    const destUser = args.mentions[0];
+    const destUser = args.mentions[0] || args.tags[0];
     const object = args.objects[0];
     const num = args.quantities[0] ? parseInt(args.quantities[0]) : 1;
 

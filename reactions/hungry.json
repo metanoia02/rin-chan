@@ -1,6 +1,6 @@
 {
   "images": {
-    "path": "./images/emotes/"
+    "path": "./images/hungry/"
   },
 
   "modifiers": ["hunger"],
@@ -19,7 +19,13 @@
       "image": "rinangrey.png"
     },
     {
-      "hunger": { "max": 4, "min": 1 },
+      "hunger": 5,
+
+      "response": ["WHERE ARE MY ORANGES"],
+      "image": "where.png"
+    },
+    {
+      "hunger": {"max": 4, "min": 1},
 
       "response": ["Dont you have one more orange?"],
       "image": "oharin.png"

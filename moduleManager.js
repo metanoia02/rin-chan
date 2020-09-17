@@ -12,13 +12,18 @@ const CommandException = require('./utils/CommandException.js');
 
 module.exports = {
   async init() {
-    //discord entities
+    // discord entities
     manager.addRegexEntity('user', 'en', /<!*@!*[0-9]+>/gi);
     manager.addRegexEntity('tag', 'en', /\S+#[0-9]{4}/gi);
 
-    //trims
+    // trims
     manager.addAfterCondition('en', 'toTrim', 'to', 'trim');
     manager.addAfterCondition('en', 'inTrim', 'in', 'trim');
+
+    // vocaloid entities
+    database.getVocaloids().forEach((ele) => {
+      manager.addNamedEntityText('vocaloid', ele.name, ['en'], ele.alts);
+    });
 
     const objects = database.getAllObjects.all();
     objects.forEach((element) => {

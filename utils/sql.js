@@ -28,11 +28,29 @@ module.exports = {
 
     this.getStock = sql.prepare('SELECT * FROM shop');
 
+    this.queryVocaloids = sql.prepare('SELECT * FROM vocaloids');
+    this.queryVocaloid = sql.prepare('SELECT * FROM vocaloids WHERE name = ?');
+    this.queryAlts = sql.prepare('SELECT * FROM vocaloidAlts WHERE vocaloidName =?');
+
     this.getTopAffection = sql.prepare('SELECT user FROM user ORDER BY affection DESC');
   },
 
   close() {
     sql.close();
+  },
+
+  getVocaloids() {
+    return this.queryVocaloids.all().reduce((acc, ele) => {
+      acc.push({
+        name: ele.name,
+        alts: this.queryAlts.all(ele.name).map((ele) => ele.alt),
+      });
+      return acc;
+    }, []);
+  },
+
+  getVocaloid(name) {
+    return this.queryVocaloid.get(name);
   },
 
   getObject(objectString) {
