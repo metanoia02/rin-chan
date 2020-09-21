@@ -31,7 +31,7 @@ module.exports = {
     this.findOrangeReact = new Reaction('../reactions/findOrange.json');
   },
 
-  run(message, args) {
+  async run(message, args) {
     const user = new User(message);
     const chance = Math.floor(Math.random() * 100) + 1;
     const now = new Date();

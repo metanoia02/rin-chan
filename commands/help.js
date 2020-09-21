@@ -39,7 +39,7 @@ module.exports = {
     }, '');
   },
 
-  run(message, args) {
+  async run(message, args) {
     message.author.send(this.commandList);
   },
 };

@@ -11,8 +11,6 @@ module.exports = {
       {locale: 'en', string: 'give %object%'},
       {locale: 'en', string: `here's an %object%`},
       {locale: 'en', string: `eat an %object%`},
-
-      //{locale: 'ja', string: `%object%どうぞ`},
     ],
 
     intent: 'feedObject',
@@ -29,7 +27,7 @@ module.exports = {
     this.orangeReaction = new Reaction('../reactions/feed/orange.json', this.config.commandName);
   },
 
-  run(message, args) {
+  async run(message, args) {
     commandUtils.validateSingleObjectAction(args);
 
     const object = args.objects[0];

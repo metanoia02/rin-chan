@@ -1,7 +1,7 @@
 const Discord = require('discord.js');
 const axios = require('axios');
-const xml2js = require('xml2js');
 const CommandException = require('../utils/CommandException.js');
+const xml2js = require('xml2js').parseString;
 
 module.exports = {
   config: {
@@ -26,51 +26,46 @@ module.exports = {
     description: 'Get a random image of Rin or any Vocaloids',
 
     tagBlacklist: '+-underwear+-rope+-nude+-undressing',
+    apiString: 'http://safebooru.org/index.php?page=dapi&s=post&q=index&limit=1',
 
     scope: 'channel',
   },
 
-  run(message, args) {
+  async run(message, args) {
     if (args.vocaloids.length < 1) throw new CommandException(`Who?`, 'rintehe.png');
 
-    let imageTags = args.vocaloids.reduce((acc, ele) => {
-      return (acc += ele.searchString + '+');
-    }, '');
+    let imageTags = args.vocaloids.map((ele) => ele.searchString).join('+');
 
-    if (args.vocaloids.length === 1) imageTags += 'solo';
+    if (args.vocaloids.length === 1) imageTags += '+solo';
     imageTags += this.config.tagBlacklist;
 
-    axios
-      .get(`http://safebooru.org/index.php?page=dapi&s=post&q=index&limit=1&tags=${imageTags}`)
-      .then((response) => {
-        xml2js.parseString(response.data, (err, result) => {
-          const randomId = Math.floor(Math.random() * result.posts.$.count) + 1;
-          axios
-            .get(`http://safebooru.org/index.php?page=dapi&s=post&q=index&limit=1&pid=${randomId}&tags=${imageTags}`)
-            .then((response) => {
-              xml2js.parseString(response.data, (err, result) => {
-                const imageUrl = result.posts.post[0].$.file_url;
-                console.log(response);
+    const idResponse = await axios.get(`${this.config.apiString}&tags=${imageTags}`);
+    const randomId = await this.randomPost(idResponse.data);
+    const image = await axios.get(`${this.config.apiString}&pid=${randomId}&tags=${imageTags}&json=1`);
 
-                const imageEmbed = new Discord.MessageEmbed()
-                  .setColor('#008000')
-                  .setTitle(`Image`)
-                  .setURL(`https://safebooru.org/index.php?page=post&s=view&id=${result.posts.post[0].$.id}`)
-                  .setImage(imageUrl)
-                  .setFooter(`Safebooru`, `attachment://safebooru.png`);
+    if (!image.data[0]) throw new CommandException(`Couldn't find any images...`, 'rinded.png');
 
-                message.channel.send(imageEmbed);
-              });
-            })
-            .catch((error) => {
-              console.log(error);
-            });
-        });
-      })
-      .catch((error) => {
-        console.log(error);
+    const imageUrl = `https://safebooru.org//images/${image.data[0].directory}/${image.data[0].image}`;
+
+    const imageEmbed = new Discord.MessageEmbed()
+      .setColor('#008000')
+      .setTitle(`Source`)
+      .setURL(`https://safebooru.org/index.php?page=post&s=view&id=${image.data[0].id}`)
+      .setImage(imageUrl)
+      .setFooter(`Safebooru`, `attachment://safebooru.png`);
+
+    message.channel.send(imageEmbed);
+  },
+
+  randomPost(string) {
+    return new Promise((resolve, reject) => {
+      xml2js(string, (err, result) => {
+        if (err) {
+          return reject(err);
+        } else {
+          return resolve(Math.floor(Math.random() * result.posts.$.count) + 1);
+        }
       });
-
-    console.log(args);
+    });
   },
 };

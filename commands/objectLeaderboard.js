@@ -20,7 +20,7 @@ module.exports = {
     scope: 'channel',
   },
 
-  run(message, args) {
+  async run(message, args) {
     if (args.objects.length != 1) {
       const filter = (response) => {
         return response.author.id === message.author.id;

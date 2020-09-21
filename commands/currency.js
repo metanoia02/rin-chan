@@ -19,7 +19,7 @@ module.exports = {
 
   init(manager) {},
 
-  run(message, args) {
+  async run(message, args) {
     const initialEntity = args.result.entities.find((entity) => entity.entity == 'currency');
     if (!initialEntity) throw new CommandException(`Couldn't find a currency to convert.`, 'rinconfuse.png');
     const initialValue = initialEntity.resolution.value;

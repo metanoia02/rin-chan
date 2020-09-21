@@ -23,7 +23,7 @@ module.exports = {
     scope: 'channel',
   },
 
-  run(message, args) {
+  async run(message, args) {
     commandUtils.validateSingleObjectAction(args);
 
     const sourceUser = new User(message);

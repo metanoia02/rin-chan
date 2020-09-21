@@ -48,7 +48,7 @@ module.exports = {
 
   init() {},
 
-  run(message, args) {
+  async run(message, args) {
     const filter = (response) => {
       return response.author.id === message.author.id;
     };

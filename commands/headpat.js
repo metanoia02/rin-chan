@@ -20,7 +20,7 @@ module.exports = {
 
   init() {},
 
-  run(message, args) {
+  async run(message, args) {
     const user = new User(message);
     const currentTime = new Date();
 

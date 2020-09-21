@@ -19,7 +19,7 @@ module.exports = {
     this.reaction = new Reaction('../reactions/hungry.json', this.config.commandName);
   },
 
-  run(message, args) {
+  async run(message, args) {
     const embed = this.reaction.getEmbed(new User(message));
 
     message.channel.send(embed).catch(console.error);

@@ -30,7 +30,7 @@ module.exports = {
     this.config.units.set('fahrenheit', 'f');
   },
 
-  run(message, args) {
+  async run(message, args) {
     const initialEntity = args.result.entities.find((entity) => entity.entity == 'temperature');
     if (!initialEntity) throw new CommandException(`Couldn't find a temperature to convert.`, 'rinconfuse.png');
     const initialValue = initialEntity.resolution.value;

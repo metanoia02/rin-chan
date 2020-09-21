@@ -32,7 +32,7 @@ module.exports = {
     });
   },
 
-  run(message, args) {
+  async run(message, args) {
     commandUtils.validateSingleUserAction(args);
     commandUtils.validateSingleInteraction(args);
 

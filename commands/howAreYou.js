@@ -21,7 +21,7 @@ module.exports = {
     this.cheerUpImages = {path: './images/cheerup/', quantity: 6};
   },
 
-  run(message, args) {
+  async run(message, args) {
     const filter = (reaction, user) => {
       return (
         (user.id === message.author.id && reaction.emoji.name === '✅') ||

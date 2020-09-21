@@ -25,6 +25,7 @@ module.exports = {
       manager.addNamedEntityText('vocaloid', ele.name, ['en'], ele.alts);
     });
 
+    //object entities
     const objects = database.getAllObjects.all();
     objects.forEach((element) => {
       manager.addNamedEntityText('object', element.name, ['en'], [element.name, element.plural]);
@@ -73,7 +74,7 @@ module.exports = {
             throw new CommandException('Insufficient permissions', 'rinangrey.png');
           }
           console.log(args);
-          commandModule.run(message, args);
+          await commandModule.run(message, args);
         } else if (result.sentiment.vote === 'negative') {
           throw new CommandException(`Ok I won't`, 'smugrin.png');
           // negative function for each module?

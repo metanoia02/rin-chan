@@ -20,7 +20,7 @@ module.exports = {
     orangeStealCooldown: 86400000,
   },
 
-  run(message, args) {
+  async run(message, args) {
     commandUtils.validateSingleTagAction(args);
     commandUtils.validateSingleObjectAction(args);
 

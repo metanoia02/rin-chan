@@ -17,7 +17,7 @@ module.exports = {
     scope: 'channel',
   },
 
-  run(message, args) {
+  async run(message, args) {
     const user = new User(message);
     const inventory = user.getInventory();
 

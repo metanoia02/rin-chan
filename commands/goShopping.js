@@ -27,7 +27,7 @@ module.exports = {
     },
   },
 
-  run(message, args) {
+  async run(message, args) {
     message.channel.send(`Ok let's go! <:smolrin:707284808333787197>`);
 
     const filter = (response) => {

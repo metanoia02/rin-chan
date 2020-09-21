@@ -20,7 +20,7 @@ module.exports = {
     scope: 'channel',
   },
 
-  run(message, args) {
+  async run(message, args) {
     const rateUser = args.mentions[0] || args.tags[0];
 
     if (rateUser) {

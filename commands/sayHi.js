@@ -20,7 +20,7 @@ module.exports = {
     scope: 'channel',
   },
 
-  run(message, args) {
+  async run(message, args) {
     const d = new Date();
     const n = d.getHours();
 
