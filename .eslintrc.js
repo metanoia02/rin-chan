@@ -40,6 +40,7 @@ module.exports = {
           'sql',
           'leaderboard',
           'gif',
+          'xp',
         ],
       },
     ],

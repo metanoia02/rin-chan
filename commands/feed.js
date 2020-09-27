@@ -59,6 +59,8 @@ module.exports = {
     user.setLastGive();
     rinChan.setHunger(rinChan.getHunger() - 1);
     rinChan.setLastFed(currentTime.getTime());
+
+    user.addXp(1, message);
   },
 
   checkGiveSpam(sourceUser) {

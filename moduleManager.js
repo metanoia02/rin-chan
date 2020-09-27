@@ -25,7 +25,7 @@ module.exports = {
       manager.addNamedEntityText('vocaloid', ele.name, ['en'], ele.alts);
     });
 
-    //object entities
+    // object entities
     const objects = database.getAllObjects.all();
     objects.forEach((element) => {
       manager.addNamedEntityText('object', element.name, ['en'], [element.name, element.plural]);

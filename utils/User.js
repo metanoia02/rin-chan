@@ -1,6 +1,8 @@
 const database = require('./sql.js');
 const objectManager = require('./objectManager.js');
 const CommandException = require('./CommandException.js');
+const config = require('../config');
+const Discord = require('discord.js');
 
 module.exports = class User {
   /**
@@ -225,16 +227,55 @@ module.exports = class User {
   setIsBooster(newIsBooster) {
     this._setProperty('isBooster', newIsBooster ? 1 : 0);
   }
-  /*
-  checkLevel() {
-    // get current xp
-    // check against level table
-    // make changes if needed
-  }
+
+  // level stuffs
+  /**
+   * @return {Number} users current xp
+   */
   getXp() {
     return this._user.xp;
   }
+
+  /**
+   * Returns calculated level index
+   * @return {config.levels}
+   */
+  getLevel() {
+    return config.levels.findIndex((ele) => this.getXp() >= ele.xp);
+  }
+
+  /**
+   * @return {Number} Users current xp
+   */
+  getXp() {
+    return this._user.xp;
+  }
+  /**
+   * Adds xp to user and updates level if needed
+   * @param {Number} addedXp
+   * @param {Discord.Message} message
+   */
   addXp(addedXp, message) {
+    if (addedXp < 0) throw new Error(`Can not remove experience.`);
     this._setProperty('xp', this.getXp() + addedXp);
-  }*/
+
+    const calculatedLevelIndex = this.getLevel();
+
+    if (!this.getDiscordMember().roles.cache.has(config.levels[calculatedLevelIndex].role)) {
+      const newLevel = config.levels[calculatedLevelIndex];
+      this.getDiscordMember().roles.remove(config.levels[calculatedLevelIndex + 1].role, 'Level up');
+      this.getDiscordMember().roles.add(newLevel.role, 'Level up');
+
+      const attachment = new Discord.MessageAttachment(`./images/emotes/rinverywow.png`, 'rinverywow.png');
+
+      message.channel.send(
+        new Discord.MessageEmbed()
+          .setColor('#FFD700')
+          .setTitle('Level up!')
+          .setDescription(`You reached the rank of ${newLevel.name}.`)
+          .attachFiles(attachment)
+          .setThumbnail(`attachment://rinverywow.png`)
+      );
+    }
+  }
 };

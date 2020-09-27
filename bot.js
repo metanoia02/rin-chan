@@ -52,6 +52,7 @@ client.on('message', async (message) => {
         if (!(await moduleManager.runCommand(message))) {
           message.channel.send('<:rinwha:600747717081432074>');
         }
+        new User(message).addXp(1, message);
       }
     } else if (!rinChan.getCollecting()) {
       const trigger = config.triggerWords.find((element) => element.test(message.content));
@@ -76,5 +77,5 @@ client.on('guildMemberRemove', (member) => {
 
   channel.send(`Cya ${member.user.username}`, {files: ['./images/leave/leave.gif']});
 
-  //remove oranges at some point :rincatshrug:
+  // remove oranges at some point :rincatshrug:
 });

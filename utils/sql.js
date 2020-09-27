@@ -6,7 +6,7 @@ module.exports = {
   init() {
     this.queryUser = sql.prepare('SELECT * FROM user WHERE user = ? AND guild = ?');
     this.setUser = sql.prepare(
-      'INSERT OR REPLACE INTO user (id, user, guild, affection, tries, lastGive, lastSteal, lastHarvest, isBooster, carrotsGiven) VALUES (@id, @user, @guild, @affection, @tries, @lastGive, @lastSteal, @lastHarvest, @isBooster, @carrotsGiven);'
+      'INSERT OR REPLACE INTO user (id, user, guild, affection, tries, lastGive, lastSteal, lastHarvest, isBooster, carrotsGiven, xp) VALUES (@id, @user, @guild, @affection, @tries, @lastGive, @lastSteal, @lastHarvest, @isBooster, @carrotsGiven, @xp);'
     );
     this.getAllUsers = sql.prepare('SELECT * FROM user');
 
@@ -73,6 +73,7 @@ module.exports = {
         lastHarvest: 0,
         isBooster: 0,
         carrotsGiven: 0,
+        xp: 0,
       };
     }
     return user;
