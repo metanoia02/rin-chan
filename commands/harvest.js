@@ -55,7 +55,7 @@ module.exports = {
         this.couldntFind(message, user);
       }
 
-      if (now.getTime() - user.getLastHarvest() < this.coonfig.orangeHarvestCooldown) {
+      if (now.getTime() - user.getLastHarvest() < this.config.orangeHarvestCooldown) {
         user.setLastHarvest(user.getLastHarvest());
       } else {
         user.setLastHarvest(now.getTime());
