@@ -89,7 +89,11 @@ const schedule = require('node-schedule');
 
 // eslint-disable-next-line no-unused-vars
 const hungerInterval = schedule.scheduleJob('0 * * * *', function () {
-  module.exports.setHunger(module.exports.getHunger() + 1);
+  const randomDelay = Math.floor(Math.random() * 3600000) + 1;
+
+  setTimeout(() => {
+    module.exports.setHunger(module.exports.getHunger() + 1);
+  }, randomDelay);
 });
 
 // eslint-disable-next-line no-unused-vars

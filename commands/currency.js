@@ -1,7 +1,7 @@
 const CommandException = require('../utils/CommandException');
 const fx = require('money');
 const Discord = require('discord.js');
-const request = require('request');
+const axios = require('axios');
 
 module.exports = {
   config: {
@@ -33,35 +33,16 @@ module.exports = {
       throw new CommandException(`Please use three letter currency codes.`, 'rinwha.png');
     }
 
-    request('https://api.exchangeratesapi.io/latest', {json: true}, (err, res, body) => {
-      if (err) {
-        return console.log(err);
-      }
+    const currencyTable = await axios.get('https://api.exchangeratesapi.io/latest');
 
-      fx.rates = body.rates;
-      fx.base = body.base;
+    fx.rates = currencyTable.data.rates;
+    fx.base = currencyTable.data.base;
 
-      try {
-        const convertedValue = fx(initialValue)
-          .from(initialUnit.toUpperCase())
-          .to(conversionCurrency.toUpperCase())
-          .toFixed(2);
+    const convertedValue = fx(initialValue)
+      .from(initialUnit.toUpperCase())
+      .to(conversionCurrency.toUpperCase())
+      .toFixed(2);
 
-        message.channel.send(convertedValue + ' ' + conversionCurrency);
-      } catch (err) {
-        console.log(err);
-
-        const attachment = new Discord.MessageAttachment(`./images/emotes/rinded.png`, 'rinded.png');
-
-        message.channel.send(
-          new Discord.MessageEmbed()
-            .setColor('#008000')
-            .setTitle('Currency')
-            .setDescription('Error converting the currency.')
-            .attachFiles(attachment)
-            .setThumbnail(`attachment://rinded.png`)
-        );
-      }
-    });
+    message.channel.send(convertedValue + ' ' + conversionCurrency.toUpperCase());
   },
 };

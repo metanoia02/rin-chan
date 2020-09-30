@@ -55,7 +55,8 @@ module.exports = {
         this.couldntFind(message, user);
       }
 
-      user.setLastHarvest(now.getTime());
+      harvestOffset = now.getTime() - user.getLastHarvest();
+      user.setLastHarvest(now.getTime() - harvestOffset);
     } else {
       const duration = utils.getCooldown(this.config.orangeHarvestCooldown, user.getLastHarvest());
 
@@ -134,7 +135,7 @@ module.exports = {
 };
 
 // eslint-disable-next-line no-unused-vars
-const updateTriesInterval = schedule.scheduleJob('0 * * * * *', function () {
+const updateTriesInterval = schedule.scheduleJob('0 * * * * *', function() {
   const users = database.getAllUsers.all();
   const now = new Date();
 

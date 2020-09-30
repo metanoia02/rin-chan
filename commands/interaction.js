@@ -61,7 +61,7 @@ module.exports = {
   },
 
   giveUser(message, commandName, reaction, targetUser, sourceUser, cost, thumbnail = false) {
-    if (targetUser.getId() === rinChan.getId()) {
+    if (targetUser.getId() == rinChan.getId()) {
       throw new CommandException('Excuse me?', 'rinwhat.png');
     }
 

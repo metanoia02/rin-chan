@@ -6,8 +6,6 @@ const config = require('./config.js');
 const moduleManager = require('./moduleManager.js');
 const objectManager = require('./utils/objectManager.js');
 const User = require('./utils/User.js');
-
-const DEVMODE = process.env.NODE_ENV === 'development';
 const client = new Discord.Client();
 
 client.login(config.token);
@@ -16,11 +14,7 @@ client.once('ready', () => {
   database.init();
   objectManager.init();
   moduleManager.init().then(() => {
-    if (DEVMODE) {
-      rinChan.init('./rinChan/rinChan.debug.json', client);
-    } else {
-      rinChan.init('./rinChan/rinChan.json', client);
-    }
+    rinChan.init('./rinChan/rinChan.json', client);
     rinChan.setId(client.user.id);
     client.user.setActivity('Miku', {type: 'LISTENING'});
     client.guilds.cache.first().members.cache.get(client.user.id).setNickname('Rin-chan');
@@ -31,7 +25,7 @@ client.once('ready', () => {
   });
 });
 
-client.on('guildMemberUpdate', function (oldMember, newMember) {
+client.on('guildMemberUpdate', function(oldMember, newMember) {
   const user = new User(undefined, newMember.id, newMember.guild.id);
   user.setIsBooster(newMember.premiumSince !== null ? 1 : 0);
 });
@@ -51,8 +45,9 @@ client.on('message', async (message) => {
       } else if (message.content.length > 23) {
         if (!(await moduleManager.runCommand(message))) {
           message.channel.send('<:rinwha:600747717081432074>');
+        } else {
+          new User(message).addXp(1, message);
         }
-        new User(message).addXp(1, message);
       }
     } else if (!rinChan.getCollecting()) {
       const trigger = config.triggerWords.find((element) => element.test(message.content));
@@ -66,16 +61,34 @@ client.on('guildMemberAdd', (member) => {
 
   if (!channel) return;
 
-  channel.send(`Welcome to my server, ${member.user.username}`, {
-    files: ['./images/welcome/welcome.gif'],
-  });
+  const attachment = new Discord.MessageAttachment(`./images/welcome/welcome.gif`, 'welcome.gif');
+
+  channel.send(
+    new Discord.MessageEmbed()
+      .setColor('#FFD700')
+      .setTitle(`Welcome to my server, ${member}`)
+      .attachFiles(attachment)
+      .setThumbnail(`attachment://welcome.gif`)
+  );
 });
 
 client.on('guildMemberRemove', (member) => {
   const channel = member.guild.channels.cache.find((ch) => ch.name === 'lounge');
   if (!channel) return;
 
-  channel.send(`Cya ${member.user.username}`, {files: ['./images/leave/leave.gif']});
+  const attachment = new Discord.MessageAttachment(`./images/leave/leave.gif`, 'leave.gif');
 
-  // remove oranges at some point :rincatshrug:
+  channel.send(
+    new Discord.MessageEmbed()
+      .setColor('#FFD700')
+      .setTitle(`Cya ${member}`)
+      .setDescription(`I'll be taking those ${orangeString}`)
+      .attachFiles(attachment)
+      .setThumbnail(`attachment://leave.gif`)
+  );
+
+  const removedUser = new User(undefined, member.id, member.guild.id);
+
+  sourceUser.changeObjectQuantity(object.getName(), -num);
+  destUser.changeObjectQuantity(object.getName(), num);
 });
