@@ -25,7 +25,7 @@ client.once('ready', () => {
   });
 });
 
-client.on('guildMemberUpdate', function(oldMember, newMember) {
+client.on('guildMemberUpdate', function (oldMember, newMember) {
   const user = new User(undefined, newMember.id, newMember.guild.id);
   user.setIsBooster(newMember.premiumSince !== null ? 1 : 0);
 });
@@ -66,9 +66,10 @@ client.on('guildMemberAdd', (member) => {
   channel.send(
     new Discord.MessageEmbed()
       .setColor('#FFD700')
-      .setTitle(`Welcome to my server, ${member}`)
+      .setTitle(`Welcome to my server,`)
+      .setDescription(`${member}`)
       .attachFiles(attachment)
-      .setThumbnail(`attachment://welcome.gif`)
+      .setImage(`attachment://welcome.gif`)
   );
 });
 
@@ -78,17 +79,24 @@ client.on('guildMemberRemove', (member) => {
 
   const attachment = new Discord.MessageAttachment(`./images/leave/leave.gif`, 'leave.gif');
 
-  channel.send(
-    new Discord.MessageEmbed()
-      .setColor('#FFD700')
-      .setTitle(`Cya ${member}`)
-      .setDescription(`I'll be taking those ${orangeString}`)
-      .attachFiles(attachment)
-      .setThumbnail(`attachment://leave.gif`)
-  );
+  const leaveEmbed = new Discord.MessageEmbed()
+    .setColor('#FFD700')
+    .attachFiles(attachment)
+    .setImage(`attachment://leave.gif`);
 
   const removedUser = new User(undefined, member.id, member.guild.id);
+  const orangeQuantity = removedUser.getObjectQuantity('orange');
 
-  sourceUser.changeObjectQuantity(object.getName(), -num);
-  destUser.changeObjectQuantity(object.getName(), num);
+  if (orangeQuantity > 0) {
+    const orangeString = orangeQuantity > 1 ? 'those oranges.' : 'that orange.';
+
+    removedUser.changeObjectQuantity('orange', -orangeQuantity);
+    new User(undefined, rinChan.getId(), member.guild.id).changeObjectQuantity('orange', orangeQuantity);
+
+    leaveEmbed.setDescription(`Cya ${member}, I'll be taking ${orangeString}`);
+  } else {
+    leaveEmbed.setDescription(`Cya ${member}`);
+  }
+
+  channel.send(leaveEmbed);
 });

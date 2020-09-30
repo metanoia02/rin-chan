@@ -8,6 +8,8 @@ module.exports = {
     training: [
       {locale: 'en', string: 'what is %currency% in %inTrim%'},
       {locale: 'en', string: '%currency% in %inTrim%'},
+
+      {locale: 'en', string: '%currency% to %toTrim%'},
     ],
 
     intent: 'currency',
@@ -26,7 +28,7 @@ module.exports = {
     const initialUnit = initialEntity.resolution.unit;
 
     const conversionCurrency = args.result.entities
-      .find((entity) => entity.entity == 'inTrim')
+      .find((entity) => entity.entity == 'inTrim' || entity.entity == 'toTrim')
       .sourceText.replace(/\W+/gi, '');
     if (!conversionCurrency) throw new CommandException(`Couldn't find a currency to convert to.`, 'rinconfuse.png');
     if (initialUnit.length != 3 || conversionCurrency.length != 3) {
