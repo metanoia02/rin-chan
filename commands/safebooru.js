@@ -39,6 +39,19 @@ module.exports = {
     if (args.vocaloids.length === 1) imageTags += '+solo';
     imageTags += this.config.tagBlacklist;
 
+    const titleString = args.vocaloids
+      .map((ele) => ele.displayName)
+      .reduce((acc, ele, index) => {
+        if (index === 0) {
+          acc += `${ele}`;
+        } else if (index === args.vocaloids.length - 1) {
+          acc += ` and ${ele} Image`;
+        } else {
+          acc += `, ${ele}`;
+        }
+        return acc;
+      }, '');
+
     const idResponse = await axios.get(`${this.config.apiString}&tags=${imageTags}`);
     const randomId = await this.randomPost(idResponse.data);
     const image = await axios.get(`${this.config.apiString}&pid=${randomId}&tags=${imageTags}&json=1`);
@@ -49,7 +62,7 @@ module.exports = {
 
     const imageEmbed = new Discord.MessageEmbed()
       .setColor('#008000')
-      .setTitle(`Source`)
+      .setTitle(titleString)
       .setURL(`https://safebooru.org/index.php?page=post&s=view&id=${image.data[0].id}`)
       .setImage(imageUrl)
       .setFooter(`Safebooru`, `attachment://safebooru.png`);
@@ -63,7 +76,7 @@ module.exports = {
         if (err) {
           return reject(err);
         } else {
-          return resolve(Math.floor(Math.random() * result.posts.$.count) + 1);
+          return resolve(Math.floor(Math.random() * result.posts.$.count));
         }
       });
     });
