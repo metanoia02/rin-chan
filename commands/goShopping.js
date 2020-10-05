@@ -59,7 +59,7 @@ module.exports = {
         });
 
         collector.on('end', (collected) => {
-          message.author.send("I'm bored lets go");
+          message.author.send(`I'm bored lets go`);
         });
       });
     });
@@ -84,11 +84,11 @@ module.exports = {
     const objectString = order.quantity > 1 ? order.object.getPlural() : order.object.getName();
 
     if (order.object.getName() === 'orange') {
-      throw new CommandException("What's the point of that?", 'rinconfuse.png');
+      throw new CommandException(`What's the point of that?`, 'rinconfuse.png');
     }
 
     if (user.getObjectQuantity('orange') < price) {
-      throw new CommandException("You don't have enough oranges for that.", 'rinwha.png');
+      throw new CommandException(`You don't have enough oranges for that.`, 'rinwha.png');
     }
 
     this.shopChangeObject(order.object, -order.quantity);
@@ -115,7 +115,7 @@ module.exports = {
     }
 
     if (order.object.getName() === 'orange') {
-      throw new CommandException("What's the point of that?", 'rinconfuse.png');
+      throw new CommandException(`What's the point of that?`, 'rinconfuse.png');
     }
 
     this.shopChangeObject(order.object, order.quantity);
@@ -132,10 +132,10 @@ module.exports = {
     const shopOranges = database.getShopStock('orange');
 
     if (shop.quantity < modifier * -1 && modifier < 0) {
-      throw new CommandException("There's not enough stock", 'rinwha.png');
+      throw new CommandException(`There's not enough stock`, 'rinwha.png');
     }
     if (modifier > 0 && shopOranges.quantity < modifier * object.getValue()) {
-      throw new CommandException("The shop doesn't have enough oranges to make the purchase.", 'rinwha.png');
+      throw new CommandException(`The shop doesn't have enough oranges to make the purchase.`, 'rinwha.png');
     }
 
     shop.quantity += parseInt(modifier);

@@ -113,7 +113,13 @@ module.exports = class User {
    */
   changeAffection(modifier) {
     if (modifier == 0) throw new Error('Modifier was 0');
-    this._setProperty('affection', this.getAffection() + modifier);
+    if (this.getAffection() + modifier > 100) {
+      this._setProperty('affection', 100);
+    } else if (this.getAffection() + modifier < 0) {
+      this._setProperty('affection', 0);
+    } else {
+      this._setProperty('affection', this.getAffection() + modifier);
+    }
   }
   /**
    * @return {number}
@@ -126,6 +132,7 @@ module.exports = class User {
    * @param {integer} newAffection New affection
    */
   setAffection(newAffection) {
+    if (newAffection > 100) throw new Error('Cannot set affection over 100');
     this._setProperty('affection', newAffection);
   }
 
@@ -255,7 +262,7 @@ module.exports = class User {
    * @param {Number} addedXp
    * @param {Discord.Message} message
    */
-  addXp(addedXp, message) {
+  async addXp(addedXp, message) {
     if (addedXp < 0) throw new Error(`Can not remove experience.`);
     this._setProperty('xp', this.getXp() + addedXp);
 

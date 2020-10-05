@@ -39,18 +39,19 @@ module.exports = {
     if (args.vocaloids.length === 1) imageTags += '+solo';
     imageTags += this.config.tagBlacklist;
 
-    const titleString = args.vocaloids
+    let titleString = args.vocaloids
       .map((ele) => ele.displayName)
       .reduce((acc, ele, index) => {
         if (index === 0) {
           acc += `${ele}`;
         } else if (index === args.vocaloids.length - 1) {
-          acc += ` and ${ele} Image`;
+          acc += ` and ${ele}`;
         } else {
           acc += `, ${ele}`;
         }
         return acc;
       }, '');
+    titleString += ' Image';
 
     const idResponse = await axios.get(`${this.config.apiString}&tags=${imageTags}`);
     const randomId = await this.randomPost(idResponse.data);

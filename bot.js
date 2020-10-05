@@ -46,7 +46,7 @@ client.on('message', async (message) => {
         if (!(await moduleManager.runCommand(message))) {
           message.channel.send('<:rinwha:600747717081432074>');
         } else {
-          new User(message).addXp(1, message);
+          await new User(message).addXp(1, message);
         }
       }
     } else if (!rinChan.getCollecting()) {
@@ -78,7 +78,6 @@ client.on('guildMemberRemove', (member) => {
   if (!channel) return;
 
   const attachment = new Discord.MessageAttachment(`./images/leave/leave.gif`, 'leave.gif');
-
   const leaveEmbed = new Discord.MessageEmbed()
     .setColor('#FFD700')
     .attachFiles(attachment)

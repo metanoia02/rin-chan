@@ -24,6 +24,7 @@ module.exports = class Reaction {
         let moodFulfilled = true;
         let hungerFulfilled = true;
         let affectionFulfilled = true;
+        let boostFulfilled = true;
 
         if (response.hasOwnProperty('mood')) {
           moodFulfilled = this.checkFulfilled(response.mood, rinChan.getMood().value);
@@ -34,8 +35,11 @@ module.exports = class Reaction {
         if (response.hasOwnProperty('affection') && user) {
           affectionFulfilled = this.checkFulfilled(response.affection, user.getAffection());
         }
+        if (response.hasOwnProperty('boost') === true && user) {
+          boostFulfilled = response.boost && user.getIsBooster();
+        }
 
-        return moodFulfilled && hungerFulfilled && affectionFulfilled;
+        return moodFulfilled && hungerFulfilled && affectionFulfilled && boostFulfilled;
       });
     }
 

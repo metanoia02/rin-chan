@@ -1,6 +1,6 @@
 const User = require('../utils/User.js');
 const commandUtils = require('../utils/commandUtils.js');
-const utils = require('../utils/utils.js');
+const CommandException = require('../utils/CommandException.js');
 
 module.exports = {
   config: {
@@ -36,13 +36,13 @@ module.exports = {
 
     if (sourceUser.getObjectQuantity(object.getName()) >= num) {
       if (num < 1) {
-        message.channel.send('Fine, no ' + objectString + ' for them');
+        throw new CommandException(`Fine, no ${objectString} for them`, 'rinsmug.png');
       } else if (destUser.getId() == message.author.id) {
-        message.channel.send('You cant give ' + objectString + ' to yourself!');
+        throw new CommandException(`You cant give ${objectString} to yourself!`, 'rinconfuse.png');
       } else if (
         message.client.users.cache.get(destUser.getDiscordUser().bot && message.client.user.id != destUser.getId())
       ) {
-        message.channel.send('Why would that bot need ' + objectString + '...');
+        throw new CommandException(`Why would that bot need ${objectString}...`, 'rinwha.png');
       } else {
         if (destUser.getId() == message.client.user.id) {
           if (object.getName() === 'orange') {

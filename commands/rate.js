@@ -63,29 +63,18 @@ module.exports = {
       throw new CommandException(`Probably about 1000%`, 'rintriumph.png');
     }
 
-    const topUserId = database.getTopAffection.all()[0];
-    const topUser = new User(message, topUserId.user, message.guild.id);
-
-    let rating = 0;
-
-    if (topUser.getId() === user.getId()) {
-      rating = 100.0;
-    } else {
-      rating = (user.getAffection() / topUser.getAffection()) * 100;
-    }
-
-    message.channel.send(`I would rate ${user.getDiscordMember().displayName} ${rating.toFixed(2)}%`);
+    message.channel.send(`I would rate ${user.getDiscordMember().displayName} ${user.getAffection()}%`);
   },
 
   rateRandom(toRate, message) {
-    //check if object
+    // check if object
     if (toRate.toLowerCase().includes('orange')) {
-      message.channel.send(`I would rate '${toRate.trim()}' 100.00%`);
+      message.channel.send(`I would rate '${toRate.trim()}' 100%`);
     } else if (toRate.toLowerCase().includes('len')) {
       message.channel.send(`I would rate '${toRate.trim()}' roadroller%`);
     } else {
-      random.generateIntegers({min: 1, max: 10000, n: 1}).then(function (result) {
-        message.channel.send(`I would rate '${toRate.trim()}' ${(result.random.data[0] / 100).toFixed(2)}%`);
+      random.generateIntegers({min: 1, max: 100, n: 1}).then(function (result) {
+        message.channel.send(`I would rate '${toRate.trim()}' ${result.random.data[0]}%`);
       });
     }
   },

@@ -13,8 +13,6 @@ module.exports = {
       {locale: 'en', string: 'look for %object%'},
       {locale: 'en', string: 'find an %object%'},
       {locale: 'en', string: 'locate an %object%'},
-
-      // {locale: 'ja', string: `%object%を探す`},
     ],
 
     intent: 'harvest',
@@ -28,7 +26,8 @@ module.exports = {
   },
 
   init() {
-    this.findOrangeReact = new Reaction('../reactions/findOrange.json');
+    this.findOrangeReact = new Reaction('../reactions/harvest/findOrange.json', this.config.commandName);
+    this.imTiredReact = new Reaction('../reactions/harvest/imTired.json', this.config.commandName);
   },
 
   async run(message, args) {
@@ -55,24 +54,13 @@ module.exports = {
         this.couldntFind(message, user);
       }
 
-      if (now.getTime() - user.getLastHarvest() < this.config.orangeHarvestCooldown) {
-        user.setLastHarvest(user.getLastHarvest());
-      } else {
+      if (now.getTime() - user.getLastHarvest() > this.config.orangeHarvestCooldown) {
         user.setLastHarvest(now.getTime());
       }
     } else {
       const duration = utils.getCooldown(this.config.orangeHarvestCooldown, user.getLastHarvest());
-
-      const attachment = new Discord.MessageAttachment('./images/emotes/rinded.png', 'rinded.png');
-      const imTiredEmbed = new Discord.MessageEmbed()
-        .setColor('#FF0000')
-        .setTitle('Harvest')
-        .setDescription(`I'm tired!`)
-        .attachFiles(attachment)
-        .setThumbnail('attachment://rinded.png')
-        .addField('You can try again in:', duration, true);
-
-      message.channel.send(imTiredEmbed).catch(console.error);
+      const imTiredEmbed = this.imTiredReact.getEmbed(user).addField('You can try again in:', duration, true);
+      message.channel.send(imTiredEmbed);
     }
   },
 
@@ -111,17 +99,7 @@ module.exports = {
   },
 
   foundOrange(message, user) {
-    const reaction = this.findOrangeReact.getReaction(user);
-
-    const attachment = new Discord.MessageAttachment(reaction.image, reaction.imageName);
-    const foundOrangeEmbed = new Discord.MessageEmbed()
-      .setColor('#FFA500')
-      .setTitle('Harvest')
-      .setDescription(reaction.string)
-      .attachFiles(attachment)
-      .setThumbnail(`attachment://${reaction.imageName}`);
-
-    message.channel.send(foundOrangeEmbed).catch(console.error);
+    message.channel.send(this.findOrangeReact.getEmbed(user));
   },
 
   couldntFind(message, user) {
@@ -133,7 +111,7 @@ module.exports = {
       .attachFiles(attachment)
       .setThumbnail('attachment://rinyabai.png');
 
-    message.channel.send(couldntFindEmbed).catch(console.error);
+    message.channel.send(couldntFindEmbed);
   },
 };
 

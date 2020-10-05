@@ -2,6 +2,7 @@ const User = require('../utils/User.js');
 const commandUtils = require('../utils/commandUtils.js');
 const utils = require('../utils/utils.js');
 const Discord = require('discord.js');
+const CommandException = require('../utils/CommandException.js');
 
 module.exports = {
   config: {
@@ -33,28 +34,28 @@ module.exports = {
   },
 
   stealLens(message, sourceUser, stealUser) {
-    message.channel.send("He's too heavy to carry!");
+    message.channel.send(`He's too heavy to carry!`);
   },
 
   stealOranges(message, sourceUser, stealUser) {
     const now = new Date();
 
     if (stealUser.getId() == message.client.user.id) {
-      message.channel.send('Step back from my oranges!');
+      throw new CommandException('Step back from my oranges!', 'ringun.png');
     } else if (stealUser.getId() == message.author.id) {
-      message.channel.send("Don't tempt me!");
+      throw new CommandException(`Don't temp me!`, 'creeprin.png');
     } else if (now.getTime() - sourceUser.getLastSteal() > this.config.orangeStealCooldown) {
       if (stealUser.getObjectQuantity('orange') < 5) {
-        message.channel.send("They aren't a good target");
+        throw new CommandException(`They aren't a good target.`, 'rinshrug.png');
       } else if (sourceUser.getAffection() > stealUser.getAffection()) {
         const chance = Math.floor(Math.random() * 100) + 1;
         if (chance >= 90) {
           sourceUser.getAffection() > 9 ? sourceUser.changeAffection(-10) : sourceUser.setAffection(0);
 
           const stolenOranges =
-            stealUser.getObjectQuantity('orange') / 10 > 10
-              ? 10
-              : Math.round(stealUser.getObjectQuantity('orange') / 10);
+            stealUser.getObjectQuantity('orange') / 10 > 10 ?
+              10 :
+              Math.round(stealUser.getObjectQuantity('orange') / 10);
 
           sourceUser.changeObjectQuantity('orange', stolenOranges);
           stealUser.changeObjectQuantity('orange', -stolenOranges);

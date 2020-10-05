@@ -42,6 +42,7 @@ module.exports = {
     if (this.checkGiveSpam(user) || rinChan.getHunger() >= 4) {
       const functionName = this.config.feedableObjects.find((ele) => ele.objectName === object.getName()).func;
       this[functionName](message, user, object);
+      await user.addXp(1, message);
     } else {
       throw new CommandException(`Hang on, I'm still eating...`, 'rinchill.png');
     }
@@ -50,17 +51,17 @@ module.exports = {
   feedOrange(message, user, object) {
     const currentTime = new Date();
 
-    if (rinChan.getHunger() === 0) throw new CommandException(`I'm stuffed, I cant eat another one`, 'rinstuffed.png');
+    if (rinChan.getHunger() === 0) {
+      throw new CommandException(`I'm stuffed, I cant eat another one`, 'rinstuffed.png');
+    }
 
     message.channel.send(this.orangeReaction.getEmbed(user));
 
     user.changeObjectQuantity(object.getName(), -1);
-    user.changeAffection(1);
+    user.changeAffection(5);
     user.setLastGive();
     rinChan.setHunger(rinChan.getHunger() - 1);
     rinChan.setLastFed(currentTime.getTime());
-
-    user.addXp(1, message);
   },
 
   checkGiveSpam(sourceUser) {

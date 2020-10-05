@@ -1,7 +1,4 @@
 const CommandException = require('../utils/CommandException.js');
-const Reaction = require('../reactions/reaction.js');
-
-const utils = require('../utils/utils.js');
 const User = require('../utils/User.js');
 
 module.exports = {

@@ -1,6 +1,5 @@
 const CommandException = require('../utils/CommandException');
 const fx = require('money');
-const Discord = require('discord.js');
 const axios = require('axios');
 
 module.exports = {
