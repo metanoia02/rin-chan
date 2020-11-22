@@ -1,0 +1,44 @@
+<html>
+
+<head>
+    <style>
+        body {
+            background-color: #2f3136;
+            color: #d9dadb;
+            width: 400px;
+            font-family: Whitney, Helvetica Neue, Helvetica, Arial, sans-serif;
+            font-size: 20px;
+        }
+
+        table {
+            width: 100%;
+            padding: 5px;
+            text-align: center;
+        }
+
+        th {
+            font-size: 24px;
+        }
+    </style>
+</head>
+
+<body>
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Stock</th>
+        </tr>
+        {{#each stock as |ele|}}
+            {{#> childEntry}}
+                <tr>
+                    <td>{{ele.name}}</td>
+                    <td>{{ele.value}}</td>
+                    <td>{{ele.quantity}}</td>
+                </tr>
+            {{/childEntry}}
+        {{/each}}
+    </table>
+</body>
+
+</html>
