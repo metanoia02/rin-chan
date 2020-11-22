@@ -1,5 +1,6 @@
 const CommandException = require('./CommandException.js');
 const database = require('./sql.js');
+const config = require('../config');
 
 module.exports = {
   getUserIdArr(command) {
@@ -57,7 +58,7 @@ module.exports = {
       });
       message.delete();
 
-      const channel = message.guild.channels.cache.find((ch) => ch.name === 'rinchans-diary');
+      const channel = message.guild.channels.cache.find((ch) => ch.name === config.diaryChannel);
       if (!channel) return true;
 
       channel.send(`<@&588521716481785859> Muted ${message.author} for mention spam.`);
@@ -67,9 +68,13 @@ module.exports = {
     return false;
   },
 
+  clamp(min, max, value) {
+    return Math.max(min, Math.min(max, value))
+  },
+
   /**
    * Default handler for errors, runs CommandException in channel given or logs in console
-   * @param {Object} err
+   * @param {Entity} err
    * @param {string} commandName
    * @param {Discord.channel} channel Channel or User to send errors
    */
@@ -78,7 +83,7 @@ module.exports = {
       channel.send(err.getEmbed(commandName)).catch(console.error);
     } else {
       if (channel.guild) {
-        const diaryChannel = channel.guild.channels.cache.find((ch) => ch.name === 'rinchans-diary');
+        const diaryChannel = channel.guild.channels.cache.find((ch) => ch.name === config.diaryChannel);
         if (diaryChannel) {
           diaryChannel.send(err.stack);
           console.log(err);
@@ -92,22 +97,9 @@ module.exports = {
   },
 
   getCooldown(cooldown, lastTime) {
-    // less than a minute / seconds
     const now = new Date();
-    if (now.getTime() - cooldown > lastTime) {
-      return 'less than a minute';
-    }
-
-    let duration = Math.floor((lastTime + cooldown - now.getTime()) / 3600000) + ' hours';
-    if (duration === '0 hours') {
-      duration = Math.round((lastTime + cooldown - now.getTime()) / 60000) + ' minutes';
-    }
-    const regex = new RegExp(/^1\s/);
-    if (regex.test(duration)) {
-      duration = duration.substr(0, duration.length - 1);
-    }
-
-    return duration;
+    const duration =  Math.ceil((lastTime + cooldown - now.getTime()) / 60000) 
+    return duration + duration > 1 ? ' minutes.' : ' minute.';
   },
 
   /**
