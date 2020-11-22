@@ -1,0 +1,36 @@
+{
+  "images": {
+    "path": "./images/emotes/"
+  },
+  
+  "embedColour": "#00FF00",
+
+  "responses": [
+    {
+      "mood": { "min": 0, "max": 1 },
+
+      "response": ["Somehow I didn't get caught."],
+      "image": "rinoh.png"
+    },
+
+    {
+      "mood": { "min": 3, "max": 5 },
+
+      "response": ["Mission Success!!!!"],
+      "image": "rindon.png"
+    },
+    
+    {
+      "response": ["I did it!"],
+      "image": "smolrin.png"
+    },
+
+
+    {
+      "boost": true,
+
+      "response": ["Cleared out that hoarder."],
+      "image": "rintriump.png"
+    }
+  ]
+}

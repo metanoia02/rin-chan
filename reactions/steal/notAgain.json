@@ -1,0 +1,47 @@
+{
+  "images": {
+    "path": "./images/emotes/"
+  },
+  
+  "embedColour": "#000000",
+
+  "responses": [
+    {
+      "mood": { "min": 0, "max": 1 },
+
+      "response": ["Like I'll try that one again"],
+      "image": "rindepressed.png"
+    },
+    {
+      "mood": { "min": 0, "max": 1 },
+
+      "response": ["Go steal them yourself next time!"],
+      "image": "rinangrey.png"
+    },
+
+    {
+      "mood": { "min": 3, "max": 5 },
+
+      "response": ["We should wait a while before trying again."],
+      "image": "rinchill.png"
+    },
+    {
+      "mood": { "min": 3, "max": 5 },
+
+      "response": ["Its too soon to try again..."],
+      "image": "rinyabai.png"
+    },
+    {
+      "boost": true,
+
+      "response": ["I'm still planning."],
+      "image": "rintehe.png"
+    },
+    {
+      "boost": true,
+
+      "response": ["Stop asking I'm not ready yet."],
+      "image": "rinpout.png"
+    }
+  ]
+}
