@@ -2,6 +2,7 @@ const Discord = require('discord.js');
 const axios = require('axios');
 const CommandException = require('../utils/CommandException.js');
 const xml2js = require('xml2js').parseString;
+const config = require('../config');
 
 module.exports = {
   config: {
@@ -32,19 +33,19 @@ module.exports = {
   },
 
   async run(message, args) {
-    if (args.vocaloids.length < 1) throw new CommandException(`Who?`, 'rintehe.png');
+    if (args.searchable.length < 1) throw new CommandException(`Who?`, 'rintehe.png');
 
-    let imageTags = args.vocaloids.map((ele) => ele.searchString).join('+');
+    let imageTags = args.searchable.map((ele) => ele.searchTerm).join('+');
 
-    if (args.vocaloids.length === 1) imageTags += '+solo';
+    if (args.searchable.length === 1) imageTags += '+solo';
     imageTags += this.config.tagBlacklist;
 
-    let titleString = args.vocaloids
-      .map((ele) => ele.displayName)
+    let titleString = args.searchable
+      .map((ele) => ele.name)
       .reduce((acc, ele, index) => {
         if (index === 0) {
           acc += `${ele}`;
-        } else if (index === args.vocaloids.length - 1) {
+        } else if (index === args.searchable.length - 1) {
           acc += ` and ${ele}`;
         } else {
           acc += `, ${ele}`;
@@ -68,7 +69,35 @@ module.exports = {
       .setImage(imageUrl)
       .setFooter(`Safebooru`, `attachment://safebooru.png`);
 
-    message.channel.send(imageEmbed);
+    const filter = (reaction, user) => {
+      return (
+        (user.id === message.author.id && reaction.emoji.name === '❌') ||
+        (user.member.roles.cache.has(config.modRole) && reaction.emoji.name === '❌')
+      );
+    };
+
+    message.channel.send(imageEmbed).then((sentMessage) => {
+      sentMessage
+        .react('❌')
+        .then(() =>
+          sentMessage
+            .awaitReactions(filter, {max: 1, time: 30000, errors: ['time']})
+            .then((collected) => {
+              sentMessage.delete();
+              message.delete();
+              const diaryChannel = message.guild.channels.cache.find((ch) => ch.name === config.diaryChannel);
+              if(diaryChannel) {
+                diaryChannel.send(`${message.author} deleted the following embed:`);
+                diaryChannel.send(imageEmbed);
+              } else {
+                throw new Error('Diary channel invalid');
+              }
+            })
+            .catch(() => {
+              if(!sentMessage.deleted) sentMessage.reactions.cache.find((reaction) => reaction.emoji.name === '❌').remove();
+            })
+        );
+    });
   },
 
   randomPost(string) {
