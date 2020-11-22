@@ -5,7 +5,6 @@ const entityManager = require('../utils/entityManager.js');
 const rinChan = require('../rinChan/rinChan.js');
 const CommandException = require('../utils/CommandException.js');
 const fs = require('fs');
-const config = require('../config');
 const handlebars = require('handlebars');
 const puppeteer = require('puppeteer');
 

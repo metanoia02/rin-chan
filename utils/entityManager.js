@@ -20,6 +20,17 @@ module.exports = {
     return this._entities.some((obj) => obj.id === entityId);
   },
 
+  find(entityAlt) {
+    const entity = this._entities.find((ent) => {
+      return ent.alts.some((alt) => alt.alt.toLowerCase() == entityAlt.toLowerCase());
+    });
+
+    if (!entity) {
+      throw new CommandException('What is that?', 'rinwha.png');
+    }
+    return entity;
+  },
+
   getAll() {
     return this._entities;
   },

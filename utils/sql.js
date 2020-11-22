@@ -45,11 +45,11 @@ module.exports = {
     sql.close();
   },
 
-  getShopStock() {
+  getAllShopStock() {
     const stock = this.queryStock.all();
 
     return stock.reduce((acc, ele) => {
-      const entityName = this.queryEntity.run(ele.entityId).name;
+      const entityName = this.queryEntity.get(ele.entityId).name;
       acc.push({id: ele.entityId, name: entityName, quantity: ele.quantity});
       return acc;
     }, []);
@@ -94,7 +94,7 @@ module.exports = {
     } else {
       return undefined;
     }
-  },
+  }, 
 
   getShopStock(entityId) {
     if (this.queryEntity.get(entityId)) {
