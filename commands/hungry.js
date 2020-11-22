@@ -5,7 +5,8 @@ module.exports = {
   config: {
     training: [
       {locale: 'en', string: 'hungry'},
-      {locale: 'en', string: 'are you hungry?'},
+      {locale: 'en', string: 'are you hungry'},
+      {locale: 'en', string: 'do you want an orange'},
     ],
 
     intent: 'hungry',
@@ -22,6 +23,6 @@ module.exports = {
   async run(message, args) {
     const embed = this.reaction.getEmbed(new User(message));
 
-    message.channel.send(embed).catch(console.error);
+    message.channel.send(embed);
   },
 };

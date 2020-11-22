@@ -1,0 +1,18 @@
+{
+  "embedColour": "#FF4500",
+
+  "images": {
+    "path": "./images/emotes/"
+  },
+
+  "responses": [
+    {
+      "response": ["You're welcome"],
+      "image": "rinlove.png"
+    },
+    {
+      "response": ["No problem"],
+      "image": "rinlove.png"
+    }
+  ]
+}

@@ -7,6 +7,8 @@ module.exports = {
       {locale: 'en', string: 'how are you'},
       {locale: 'en', string: 'how are you doing'},
       {locale: 'en', string: 'how do you feel'},
+      {locale: 'en', string: 'are you ok'},
+      {locale: 'en', string: 'are you okay'},
     ],
 
     intent: 'howAreYou',

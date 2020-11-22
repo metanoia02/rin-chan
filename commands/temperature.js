@@ -1,7 +1,5 @@
 const CommandException = require('../utils/CommandException');
-const fx = require('money');
 const Discord = require('discord.js');
-const request = require('request');
 
 module.exports = {
   config: {

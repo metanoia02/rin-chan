@@ -1,3 +1,5 @@
+const utils = require('../utils/utils');
+
 module.exports = {
   moods: ['Angry', 'Sad', 'Neutral', 'Ok', 'Good', 'Amazing'],
   moodSwing: 5,
@@ -6,11 +8,7 @@ module.exports = {
     const modifier = Math.floor((this.moodSwing - 1) / 2);
     let newMood = Math.floor(Math.random() * this.moodSwing) - modifier;
 
-    if (newMood < 0) {
-      newMood = 0;
-    } else if (newMood > 5) {
-      newMood = 5;
-    }
+    newMood = utils.clamp(0,5,newMood);
 
     return {value: newMood, moodString: this.moods[newMood]};
   },

@@ -10,9 +10,9 @@ module.exports = {
   config: {
     training: [
       {locale: 'en', string: 'harvest'},
-      {locale: 'en', string: 'look for %object%'},
-      {locale: 'en', string: 'find an %object%'},
-      {locale: 'en', string: 'locate an %object%'},
+      {locale: 'en', string: 'look for %Entity%'},
+      {locale: 'en', string: 'find an %Entity%'},
+      {locale: 'en', string: 'locate an %Entity%'},
     ],
 
     intent: 'harvest',
@@ -38,19 +38,14 @@ module.exports = {
     if (user.getTries() > 0) {
       if (0 < chance && chance <= 5) {
         this.easterEgg(message, user);
-        user.setTries(0);
       } else if (5 < chance && chance <= 60) {
         const chanceSteal = Math.floor(Math.random() * 100) + 1;
         if (rinChan.getHunger() > 3 && chanceSteal > 50) {
           this.stealOrange(message, user);
         } else {
-          user.changeObjectQuantity('orange', 1);
-          user.setObjectLastGet('orange');
-          user.changeTries(-1);
           this.foundOrange(message, user);
         }
       } else if (60 < chance && chance <= 100) {
-        user.changeTries(-1);
         this.couldntFind(message, user);
       }
 
@@ -80,8 +75,9 @@ module.exports = {
   },
 
   easterEgg(message, user) {
-    user.changeObjectQuantity('Len', 1);
-    user.setObjectLastGet('Len');
+    user.changeEntityQuantity('kagamineLen', 1);
+    user.setEntityLastGet('kagamineLen');
+    user.setTries(0);
 
     const imageName = Math.floor(Math.random() * this.config.lenImages.quantity) + 1 + '.jpg';
 
@@ -99,10 +95,16 @@ module.exports = {
   },
 
   foundOrange(message, user) {
+    user.changeEntityQuantity('orange', 1);
+    user.setEntityLastGet('orange');
+    user.changeTries(-1);
+
     message.channel.send(this.findOrangeReact.getEmbed(user));
   },
 
   couldntFind(message, user) {
+    user.changeTries(-1);
+
     const attachment = new Discord.MessageAttachment('./images/emotes/rinyabai.png', 'rinyabai.png');
     const couldntFindEmbed = new Discord.MessageEmbed()
       .setColor('#FF0000')

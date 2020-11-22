@@ -5,18 +5,19 @@ const database = require('../utils/sql.js');
 const utils = require('../utils/utils.js');
 const rinChan = require('../rinChan/rinChan.js');
 const User = require('../utils/User.js');
-const objectManager = require('../utils/objectManager.js');
+const entityManager = require('../utils/entityManager');
 
 module.exports = {
   config: {
     training: [
       {locale: 'en', string: 'go shopping'},
       {locale: 'en', string: `let's go shopping`},
+      {locale: 'en', string: `shopping`},
     ],
 
     intent: 'goShopping',
     commandName: 'Go Shopping',
-    description: 'Go to the shop with Rin-chan. You can buy and exchange objects',
+    description: 'Go to the shop with Rin-chan. You can buy and exchange Entitys',
 
     scope: 'DM',
 
@@ -46,9 +47,9 @@ module.exports = {
             const leaveRegex = new RegExp(this.config.phrases.leave);
 
             if (buyRegex.test(collected.content)) {
-              this.buyObject(collected.content, message);
+              this.buyEntity(collected.content, message);
             } else if (sellRegex.test(collected.content)) {
-              this.sellObject(collected.content, message);
+              this.sellEntity(collected.content, message);
             } else if (leaveRegex.test(collected.content)) {
               collector.stop();
               rinChan.setCollecting(false);
@@ -65,81 +66,79 @@ module.exports = {
     });
   },
 
-  getObjectQuantity(messageContent, regex) {
+  getEntityQuantity(messageContent, regex) {
     const reg = new RegExp(regex);
 
     const matchesArray = [...messageContent.matchAll(reg)][0];
 
-    const object = objectManager.get(matchesArray[2]);
+    const Entity = entityManager.get(matchesArray[2]);
     const quantity = matchesArray[1];
 
-    return {object: object, quantity: quantity};
+    return {Entity: Entity, quantity: quantity};
   },
 
-  buyObject(collectedContent, message) {
-    const order = this.getObjectQuantity(collectedContent, this.config.phrases.buy);
+  buyEntity(collectedContent, message) {
+    const order = this.getEntityQuantity(collectedContent, this.config.phrases.buy);
     const user = new User(message);
-    const price = order.quantity * order.object.getValue();
+    const price = order.quantity * order.Entity.value;
 
-    const objectString = order.quantity > 1 ? order.object.getPlural() : order.object.getName();
+    const EntityString = order.quantity > 1 ? order.Entity.plural : order.Entity.name;
 
-    if (order.object.getName() === 'orange') {
+    if (order.Entity.id === 'orange') {
       throw new CommandException(`What's the point of that?`, 'rinconfuse.png');
     }
 
-    if (user.getObjectQuantity('orange') < price) {
+    if (user.getEntityQuantity('orange') < price) {
       throw new CommandException(`You don't have enough oranges for that.`, 'rinwha.png');
     }
 
-    this.shopChangeObject(order.object, -order.quantity);
+    this.shopChangeEntity(order.Entity, -order.quantity);
 
-    user.changeObjectQuantity(order.object.getName(), parseInt(order.quantity));
-    user.changeObjectQuantity('orange', -parseInt(price));
+    user.changeEntityQuantity(order.Entity.id, parseInt(order.quantity));
+    user.changeEntityQuantity('orange', -parseInt(price));
 
-    message.author.send('Ok you bought ' + order.quantity + ' ' + objectString);
+    message.author.send('Ok you bought ' + order.quantity + ' ' + EntityString);
     this.sendShopEmbed(message);
   },
 
-  sellObject(collectedContent, message) {
-    const order = this.getObjectQuantity(collectedContent, this.config.phrases.sell);
+  sellEntity(collectedContent, message) {
+    const order = this.getEntityQuantity(collectedContent, this.config.phrases.sell);
 
     const user = new User(message);
-    // const orangeInventory = database.getInventory(user, 'orange');
-    // const sellInventory = database.getInventory(user, order.object.name);
-    const price = order.quantity * order.object.getValue();
+    const price = order.quantity * order.Entity.value * 0.5;
 
-    const objectString = order.quantity > 1 ? order.object.getPlural() : order.object.getName();
+    const EntityString = order.quantity > 1 ? order.Entity.plural : order.Entity.name;
 
-    if (user.getObjectQuantity(order.object.getName()) < order.quantity) {
-      throw new CommandException(`You don't have ${order.quantity} ${objectString}.`, 'rinwha.png');
+    if (user.getEntityQuantity(order.Entity.id) < order.quantity) {
+      throw new CommandException(`You don't have ${order.quantity} ${EntityString}.`, 'rinwha.png');
     }
 
-    if (order.object.getName() === 'orange') {
+    if (order.Entity.id === 'orange') {
       throw new CommandException(`What's the point of that?`, 'rinconfuse.png');
     }
 
-    this.shopChangeObject(order.object, order.quantity);
+    this.shopChangeEntity(order.Entity, order.quantity);
 
-    user.changeObjectQuantity('orange', parseInt(price));
-    user.changeObjectQuantity(order.object.getName(), -parseInt(order.quantity));
+    user.changeEntityQuantity('orange', parseInt(price));
+    user.changeEntityQuantity(order.Entity.id, -parseInt(order.quantity));
 
-    message.author.send('Ok you sold ' + order.quantity + ' ' + objectString);
+    message.author.send('Ok you sold ' + order.quantity + ' ' + EntityString);
     this.sendShopEmbed(message);
   },
 
-  shopChangeObject(object, modifier) {
-    const shop = database.getShopStock(object.getName());
+  shopChangeEntity(Entity, modifier) {
+    const shop = database.getShopStock(Entity.id);
     const shopOranges = database.getShopStock('orange');
 
     if (shop.quantity < modifier * -1 && modifier < 0) {
       throw new CommandException(`There's not enough stock`, 'rinwha.png');
     }
-    if (modifier > 0 && shopOranges.quantity < modifier * object.getValue()) {
+    if (modifier > 0 && shopOranges.quantity < modifier * Entity.value) {
       throw new CommandException(`The shop doesn't have enough oranges to make the purchase.`, 'rinwha.png');
     }
 
     shop.quantity += parseInt(modifier);
-    shopOranges.quantity += parseInt(object.getValue() * (modifier * -1));
+    shopOranges.quantity += parseInt(Entity.value * (modifier * -1));
 
     database.setShopStock.run(shopOranges);
     database.setShopStock.run(shop);
@@ -178,16 +177,16 @@ module.exports = {
           <th>Stock</th>
       </tr>`;
 
-    const stock = database.getStock.all();
+    const stock = database.getShopStock();
 
     stock.forEach((ele) => {
       embedString += `
           <tr>
-              <td>${utils.capitalizeFirstLetter(ele.objectName)}</td>
-              <td>${database.getObject(ele.objectName).value}</td>
+              <td>${utils.capitalizeFirstLetter(ele.name)}</td>
+              <td>${entityManager.get(ele.name).value}</td>
               <td>${ele.quantity}</td>
           </tr>`;
-    });
+    }); 
 
     embedString += `
       </table>
@@ -210,7 +209,7 @@ module.exports = {
         .attachFiles(attachment)
         .attachFiles(thumbnail)
         .setImage('attachment://shop.png')
-        .setFooter(`Say buy or sell <quantity> <item name> eg. buy 2 lens. To leave say finished.`);
+        .setFooter(`Say buy or sell <quantity> <item name> eg. buy 2 lens. To leave say finished. This shop buys back items for 50% of their value.`);
 
       message.author.send(embed);
     });

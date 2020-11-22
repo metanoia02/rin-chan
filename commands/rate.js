@@ -2,7 +2,6 @@ const User = require('../utils/User.js');
 const CommandException = require('../utils/CommandException.js');
 const rinChan = require('../rinChan/rinChan.js');
 const random = require('../utils/random.js');
-const database = require('../utils/sql.js');
 const utils = require('../utils/utils.js');
 
 module.exports = {
@@ -67,7 +66,7 @@ module.exports = {
   },
 
   rateRandom(toRate, message) {
-    // check if object
+    // check if Entity
     if (toRate.toLowerCase().includes('orange')) {
       message.channel.send(`I would rate '${toRate.trim()}' 100%`);
     } else if (toRate.toLowerCase().includes('len')) {

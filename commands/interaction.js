@@ -40,7 +40,6 @@ module.exports = {
     const sourceUser = new User(message);
     const interaction = this.config.interactions.find((action) => action.name === args.interactions[0]);
 
-    const spamChannel = message.guild.channels.cache.find((ch) => ch.name === 'bot-spam');
     const embed = this.giveUser(
       message,
       utils.capitalizeFirstLetter(interaction.name),
@@ -51,12 +50,8 @@ module.exports = {
       interaction.thumbnail
     );
 
-    if (spamChannel) {
-      spamChannel.send(`${destUser.getDiscordMember()}`).then((msg) => msg.delete());
-      spamChannel.send(embed);
-    } else {
       message.channel.send(embed);
-    }
+
     message.delete();
   },
 
@@ -65,12 +60,12 @@ module.exports = {
       throw new CommandException('Excuse me?', 'rinwhat.png');
     }
 
-    if (sourceUser.getObjectQuantity('orange') < cost) {
+    if (sourceUser.getEntityQuantity('orange') < cost) {
       throw new CommandException(`To do that I'll need a 'donation' of ${cost} oranges`, 'rinpout.png');
     } else {
-      sourceUser.changeObjectQuantity('orange', -cost);
+      sourceUser.changeEntityQuantity('orange', -cost);
       const rinchan = new User(message, rinChan.getId(), message.guild.id);
-      rinchan.changeObjectQuantity('orange', cost);
+      rinchan.changeEntityQuantity('orange', cost);
     }
 
     const attachment = new Discord.MessageAttachment(reaction.image, reaction.imageName);

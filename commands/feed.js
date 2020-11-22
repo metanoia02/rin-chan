@@ -7,19 +7,18 @@ const commandUtils = require('../utils/commandUtils.js');
 module.exports = {
   config: {
     training: [
-      {locale: 'en', string: 'have an %object%'},
-      {locale: 'en', string: 'give %object%'},
-      {locale: 'en', string: `here's an %object%`},
-      {locale: 'en', string: `eat an %object%`},
+      {locale: 'en', string: 'have an %entity%'},
+      {locale: 'en', string: 'give %entity%'},
+      {locale: 'en', string: `here's an %entity%`},
+      {locale: 'en', string: `eat an %entity%`},
     ],
 
-    intent: 'feedObject',
+    intent: 'feed',
     commandName: 'Feed Rin-chan',
     description: 'Give an orange or other orange based foods to Rin-Chan.',
 
     scope: 'channel',
 
-    feedableObjects: [{objectName: 'orange', func: 'feedOrange'}],
     orangeGiveCooldown: 300000,
   },
 
@@ -28,27 +27,28 @@ module.exports = {
   },
 
   async run(message, args) {
-    commandUtils.validateSingleObjectAction(args);
-
-    const object = args.objects[0];
-    if (!this.config.feedableObjects.some((obj) => obj.objectName == object.getName())) {
+    if (args.feedable.length == 0) {
       throw new CommandException(`I don't fancy one of those right now`, 'rinlove.png');
+    } else if (args.feedable.length !== 1) {
+      throw new CommandException(`Which one?`, 'rinconfuse.png');
     }
 
+    const entity = args.feedable[0];
     const user = new User(message);
-    if (user.getObjectQuantity(object.getName()) < 1) {
-      throw new CommandException(`You don't have any ${object.getPlural()}!`, 'rinconfuse.png');
+
+    if (user.getEntityQuantity(entity.id) < 1) {
+      throw new CommandException(`You don't have any ${entity.plural}!`, 'rinconfuse.png');
     }
     if (this.checkGiveSpam(user) || rinChan.getHunger() >= 4) {
-      const functionName = this.config.feedableObjects.find((ele) => ele.objectName === object.getName()).func;
-      this[functionName](message, user, object);
+      const functionName = entity.id;
+      this[functionName](message, user, entity);
       await user.addXp(1, message);
     } else {
       throw new CommandException(`Hang on, I'm still eating...`, 'rinchill.png');
     }
   },
 
-  feedOrange(message, user, object) {
+  orange(message, user, entity) {
     const currentTime = new Date();
 
     if (rinChan.getHunger() === 0) {
@@ -57,7 +57,7 @@ module.exports = {
 
     message.channel.send(this.orangeReaction.getEmbed(user));
 
-    user.changeObjectQuantity(object.getName(), -1);
+    user.changeEntityQuantity(entity.id, -1);
     user.changeAffection(5);
     user.setLastGive();
     rinChan.setHunger(rinChan.getHunger() - 1);

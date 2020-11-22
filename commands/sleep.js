@@ -22,6 +22,5 @@ module.exports = {
       await channel.send(`I'll be right back!`);
     }
     forever.stop(0);
-    process.exit(1);
   },
 };
