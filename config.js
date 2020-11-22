@@ -1,9 +1,7 @@
-const rinChan = require('./rinChan/rinChan.js');
-
 module.exports = {
   triggerWords: [
     {
-      test: function (message) {
+      test: function (message, rinChan) {
         return (
           message.includes('orange') && !this.regex.test(message) && rinChan.getHunger() > rinChan.getMaxHunger() - 2
         );
@@ -12,13 +10,13 @@ module.exports = {
       response: 'Who said orange?! Gimme!',
     },
     {
-      test: function (message) {
+      test: function (message, rinChan) {
         return message.includes('🍊') && rinChan.getMaxHunger() - 2 > 3;
       },
       response: `That's my orange! Gimme!`,
     },
     {
-      test: function (message) {
+      test: function (message, rinChan) {
         if (
           (this.active && message.toLowerCase().includes('good night')) ||
           (this.active && message.toLowerCase().includes('goodnight'))
@@ -34,8 +32,6 @@ module.exports = {
       active: true,
     },
   ],
-  token: '',
-  randomkey: '',
 
   levels: [
     {name: 'Mandarin', role: '743539341808369685', xp: 3000},
@@ -53,4 +49,6 @@ module.exports = {
 
   mutedRole: '620609193228894208',
   botChannel: '590205616581115918',
+  modRole: '588521716481785859',
+  diaryChannel: 'rinchans-diary'
 };

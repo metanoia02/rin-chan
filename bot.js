@@ -7,8 +7,9 @@ const moduleManager = require('./moduleManager.js');
 const entityManager = require('./utils/entityManager.js');
 const User = require('./utils/User.js');
 const client = new Discord.Client();
+const tokens = require('./tokens');
 
-client.login(config.token);
+client.login(tokens.token);
 
 client.once('ready', () => {
   database.init();
@@ -50,7 +51,7 @@ client.on('message', async (message) => {
         }
       }
     } else if (!rinChan.getCollecting()) {
-      const trigger = config.triggerWords.find((element) => element.test(message.content));
+      const trigger = config.triggerWords.find((element) => element.test(message.content, rinChan));
       if (trigger) message.channel.send(trigger.response);
     }
   }
