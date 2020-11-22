@@ -73,7 +73,7 @@ module.exports = {
     }, []);
 
     //compile template
-    const htmlFile = fs.readFileSync('./commands/leaderboard.html', 'utf8');
+    const htmlFile = fs.readFileSync('./commands/templates/leaderboard.html', 'utf8');
     const template = handlebars.compile(htmlFile);
     const result = template(content);
 

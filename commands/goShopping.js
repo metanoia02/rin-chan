@@ -154,7 +154,7 @@ module.exports = {
       return acc;
     }, []);
 
-    const htmlFile = fs.readFileSync('./commands/shop.html', 'utf8');
+    const htmlFile = fs.readFileSync('./commands/templates/shop.html', 'utf8');
     const template = handlebars.compile(htmlFile);
     const result = template({stock: shopStock});
 

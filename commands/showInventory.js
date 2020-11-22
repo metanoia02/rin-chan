@@ -40,7 +40,7 @@ module.exports = {
     content.percentageFill = Math.floor((user.getXp() / nextLevel.xp) * 100);
 
     //compile template
-    const htmlFile = fs.readFileSync('./commands/inventory.html', 'utf8');
+    const htmlFile = fs.readFileSync('./commands/templates/inventory.html', 'utf8');
     const template = handlebars.compile(htmlFile);
     const result = template(content);
 
