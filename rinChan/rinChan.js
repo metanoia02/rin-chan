@@ -99,4 +99,10 @@ const hungerInterval = schedule.scheduleJob('0 * * * *', function () {
 // eslint-disable-next-line no-unused-vars
 const randomMood = schedule.scheduleJob('0 0 * * *', function () {
   module.exports._setMood(module.exports._moodModule.randomMood(module.exports.getMood()));
+
+  const users = database.getAllUsers.all();
+  users.forEach((user) => {
+    const thisUser = new User(undefined, user.user, user.guild);
+    thisUser.changeAffection(-10);
+  });
 });

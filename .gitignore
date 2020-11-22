@@ -9,3 +9,4 @@ model.nlp
 package-lock.json
 rinChan/rinChan.debug.json
 rinChan/rinChan.json
+reactions/reaction.json.template
