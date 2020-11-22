@@ -4,7 +4,7 @@ const database = require('./utils/sql.js');
 const utils = require('./utils/utils.js');
 const config = require('./config.js');
 const moduleManager = require('./moduleManager.js');
-const objectManager = require('./utils/objectManager.js');
+const entityManager = require('./utils/entityManager.js');
 const User = require('./utils/User.js');
 const client = new Discord.Client();
 
@@ -12,11 +12,11 @@ client.login(config.token);
 
 client.once('ready', () => {
   database.init();
-  objectManager.init();
+  entityManager.init();
   moduleManager.init().then(() => {
     rinChan.init('./rinChan/rinChan.json', client);
     rinChan.setId(client.user.id);
-    client.user.setActivity('Miku', {type: 'LISTENING'});
+    client.user.setActivity('with Len', {type: 'PLAYING'});
     client.guilds.cache.first().members.cache.get(client.user.id).setNickname('Rin-chan');
 
     utils.updateBoosts(client.guilds.cache.first());
@@ -25,7 +25,7 @@ client.once('ready', () => {
   });
 });
 
-client.on('guildMemberUpdate', function (oldMember, newMember) {
+client.on('guildMemberUpdate', function(oldMember, newMember) {
   const user = new User(undefined, newMember.id, newMember.guild.id);
   user.setIsBooster(newMember.premiumSince !== null ? 1 : 0);
 });
@@ -67,7 +67,7 @@ client.on('guildMemberAdd', (member) => {
     new Discord.MessageEmbed()
       .setColor('#FFD700')
       .setTitle(`Welcome to my server,`)
-      .setDescription(`${member}`)
+      .setDescription(`${member.user.username}`)
       .attachFiles(attachment)
       .setImage(`attachment://welcome.gif`)
   );
@@ -84,17 +84,17 @@ client.on('guildMemberRemove', (member) => {
     .setImage(`attachment://leave.gif`);
 
   const removedUser = new User(undefined, member.id, member.guild.id);
-  const orangeQuantity = removedUser.getObjectQuantity('orange');
+  const orangeQuantity = removedUser.getEntityQuantity('orange');
 
   if (orangeQuantity > 0) {
     const orangeString = orangeQuantity > 1 ? 'those oranges.' : 'that orange.';
 
-    removedUser.changeObjectQuantity('orange', -orangeQuantity);
-    new User(undefined, rinChan.getId(), member.guild.id).changeObjectQuantity('orange', orangeQuantity);
+    removedUser.changeEntityQuantity('orange', -orangeQuantity);
+    new User(undefined, rinChan.getId(), member.guild.id).changeEntityQuantity('orange', orangeQuantity);
 
-    leaveEmbed.setDescription(`Cya ${member}, I'll be taking ${orangeString}`);
+    leaveEmbed.setDescription(`Cya ${member.user.tag}, I'll be taking ${orangeString}`);
   } else {
-    leaveEmbed.setDescription(`Cya ${member}`);
+    leaveEmbed.setDescription(`Cya ${member.user.tag}`);
   }
 
   channel.send(leaveEmbed);
