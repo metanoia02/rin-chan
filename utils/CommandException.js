@@ -15,7 +15,7 @@ module.exports = class CommandException {
   /**
    * Returns a Discord embed.
    * @param {string} commandName Command name for title of embed.
-   * @return {Discord.MessageEmbed} Embed object.
+   * @return {Discord.MessageEmbed} Embed Entity.
    */
   getEmbed(commandName) {
     const attachment = new Discord.MessageAttachment(`./images/emotes/${this.emote}`, this.emote);

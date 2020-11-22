@@ -5,10 +5,10 @@ const manager = new NlpManager({
 });
 const Discord = require('discord.js');
 const fs = require('fs');
-const database = require('./utils/sql.js');
 const utils = require('./utils/utils.js');
 const Args = require('./utils/Args.js');
 const CommandException = require('./utils/CommandException.js');
+const entityManager = require('./utils/entityManager');
 
 module.exports = {
   async init() {
@@ -20,15 +20,15 @@ module.exports = {
     manager.addAfterCondition('en', 'toTrim', 'to', 'trim');
     manager.addAfterCondition('en', 'inTrim', 'in', 'trim');
 
-    // vocaloid entities
-    database.getVocaloids().forEach((ele) => {
-      manager.addNamedEntityText('vocaloid', ele.name, ['en'], ele.alts);
-    });
-
-    // object entities
-    const objects = database.getAllObjects.all();
-    objects.forEach((element) => {
-      manager.addNamedEntityText('object', element.name, ['en'], [element.name, element.plural]);
+    // Entity entities
+    const entities = entityManager.getAll();
+    entities.forEach((ele) => {
+      manager.addNamedEntityText(
+        'entity',
+        ele.id,
+        ['en'],
+        ele.alts.map((alt) => alt.alt)
+      );
     });
 
     const commandFiles = fs.readdirSync('./commands').filter((file) => file.endsWith('.js'));
@@ -56,6 +56,7 @@ module.exports = {
 
   async runCommand(message) {
     let command = message.content.replace(/^<@![0-9]*>\s*|^<@[0-9]*>\s*/, '');
+    command = command.replace(/<:\w+:\d+>/gi, '');
     command = command.replace(/\s\s+/g, ' ');
 
     const result = await manager.process(command);

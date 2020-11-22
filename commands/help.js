@@ -1,5 +1,6 @@
-const objectManager = require('../utils/objectManager.js');
+const entityManager = require('../utils/entityManager');
 const fs = require('fs');
+const utils = require('../utils/utils');
 
 module.exports = {
   config: {
@@ -14,7 +15,7 @@ module.exports = {
 
     scope: 'DM',
 
-    feedableObjects: [{objectName: 'orange', func: 'feedOrange'}],
+    feedableEntitys: [{EntityName: 'orange', func: 'feedOrange'}],
     orangeGiveCooldown: 300000,
   },
 
@@ -29,17 +30,20 @@ module.exports = {
         this.commandList += command.config.commandName + ': ' + command.config.description + '\n';
       }
     }
+    // update for new entities
+    this.entityList = '\n__**Available Entitys:**__\n';
 
-    this.commandList += '\n__**Available objects:**__\n';
+    const entities = entityManager.getAll();
 
-    const objects = objectManager.getAll();
-
-    this.commandList += objects.reduce((acc, ele) => {
-      return (acc += ele.getName() + '\n');
+    this.entityList += entities.reduce((acc, ele) => {
+      return (acc += `**${utils.capitalizeFirstLetter(ele.name)}**${Boolean(ele.feedable)?'-Feedable- ':' '}${Boolean(ele.tradable)?'-Tradable- ':' '}${Boolean(ele.searchable)?'-Searchable-':' '}\n`);
     }, '');
   },
 
-  async run(message, args) {
+  
+
+  async run(message, args) { 
     message.author.send(this.commandList);
+    message.author.send(this.entityList);
   },
 };

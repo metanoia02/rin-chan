@@ -1,5 +1,5 @@
 const User = require('./User.js');
-const objectManager = require('./objectManager.js');
+const entityManager = require('./entityManager.js');
 const CommandException = require('./CommandException.js');
 const database = require('./sql');
 
@@ -7,14 +7,17 @@ module.exports = class Args {
   /**
    * Container for arguments passed to module
    * @param {string} command
-   * @param {object} result
+   * @param {Entity} result
    * @param {Discord.message} message
    */
   constructor(command, result, message) {
     this.command = command;
     this.result = result;
     this.mentions = [];
-    this.objects = [];
+    this.entities = [];
+    this.feedable = [];
+    this.searchable = [];
+    this.tradable = [];
     this.interactions = [];
     this.quantities = [];
     this.tags = [];
@@ -27,8 +30,14 @@ module.exports = class Args {
             const id = element.sourceText.match(/\d+/)[0];
             this.mentions.push(new User(message, id, message.guild.id));
             break;
-          case 'object':
-            this.objects.push(objectManager.get(element.option));
+          case 'entity':
+            const entity = entityManager.get(element.option);
+            this.entities.push(entity);
+
+            if (entity.feedable) this.feedable.push(entity);
+            if (entity.searchable) this.searchable.push(entity);
+            if (entity.tradable) this.tradable.push(entity);
+
             break;
           case 'interaction':
             this.interactions.push(element.option);

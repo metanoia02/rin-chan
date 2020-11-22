@@ -44,7 +44,7 @@ module.exports = class Reaction {
     }
 
     let answer = {};
-    const reaction = {};
+    const reaction = {}; 
 
     if (answers.length === 0) {
       reaction.string = utils.arrayRandom(this.config.default);

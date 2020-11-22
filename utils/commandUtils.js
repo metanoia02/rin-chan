@@ -6,13 +6,13 @@ const CommandException = require('./CommandException.js');
 
 module.exports = {
   /**
-   * Get leaderboard array for object in descending order
-   * @param {string} object Object for leaderboard
+   * Get leaderboard array for Entity in descending order
+   * @param {string} Entity Entity for leaderboard
    * @param {number} maxEntries Limit of entries in leaderboard, omit for all entries
-   * @return {Array} Array of objects
+   * @return {Array} Array of Entitys
    */
-  getLeaderboard(object, maxEntries) {
-    const board = database.objectLeaderboard.all(object);
+  getLeaderboard(entity, maxEntries) {
+    const board = database.entityLeaderboard.all(entity);
 
     board.sort((a, b) => {
       return b.quantity - a.quantity;
@@ -40,7 +40,7 @@ module.exports = {
         throw new CommandException(`They aren't in the server`, 'rinconfuse.png');
       }
     }
-  }, //check for two usercollection choice return new args?
+  }, // check for two usercollection choice return new args?
 
   validateSingleTagAction(args) {
     if (args.tags.length > 1) {
@@ -48,13 +48,6 @@ module.exports = {
     } else if (args.tags.length != 1) {
       throw new CommandException('You need use a users tag e.g. rin#0202', 'rinwha.png');
     }
-  },
-
-  validateSingleObjectAction(args) {
-    if (args.objects.length > 1) {
-      throw new CommandException(`Which one?`, 'rinconfuse.png');
-    }
-    if (args.objects.length != 1) throw new CommandException(`What object?`, 'rinconfuse.png');
   },
 
   validateSingleInteraction(args) {

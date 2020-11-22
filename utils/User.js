@@ -1,8 +1,9 @@
 const database = require('./sql.js');
-const objectManager = require('./objectManager.js');
+const entityManager = require('./entityManager.js');
 const CommandException = require('./CommandException.js');
 const config = require('../config');
 const Discord = require('discord.js');
+const utils = require('./utils');
 
 module.exports = class User {
   /**
@@ -56,38 +57,38 @@ module.exports = class User {
   }
 
   /**
-   * @param {string} objectName Name of object
-   * @param {number} modifier +/- modifier of object quantity
+   * @param {string} EntityName Name of Entity
+   * @param {number} modifier +/- modifier of Entity quantity
    */
-  changeObjectQuantity(objectName, modifier) {
+  changeEntityQuantity(entityId, modifier) {
     if (typeof modifier != 'number') throw new Error('Modifier must be number');
     if (modifier == 0) throw new Error('Modifier was 0');
-    if (!objectManager.isObject(objectName)) throw new Error(`Invalid object: ${objectName}`);
+    if (!entityManager.isEntity(entityId)) throw new Error(`Invalid Entity: ${entityId}`);
 
-    const inventory = database.getInventory(this._user, objectName);
+    const inventory = database.getInventoryEntity(this._user, entityId);
     if (inventory.quantity + modifier < 0) throw new Error('Tried to set quantity below zero');
 
     inventory.quantity += modifier;
     database.setInventory.run(inventory);
   }
   /**
-   * @param {string} objectName Object to get quantity of
-   * @return {number} Quantity of object in users inventory
+   * @param {string} entityId Entity to get quantity of
+   * @return {number} Quantity of Entity in users inventory
    */
-  getObjectQuantity(objectName) {
-    if (!objectManager.isObject(objectName)) throw new Error(`Invalid object: ${objectName}`);
+  getEntityQuantity(entityId) {
+    if (!entityManager.isEntity(entityId)) throw new Error(`Invalid Entity: ${entityId}`);
 
-    const inventory = database.getInventory(this._user, objectName);
+    const inventory = database.getInventoryEntity(this._user, entityId);
     return inventory.quantity;
   }
   /**
    *
-   * @param {*} objectName
+   * @param {*} entityId
    */
-  setObjectLastGet(objectName) {
-    if (!objectManager.isObject(objectName)) throw new Error(`Invalid object: ${objectName}`);
+  setEntityLastGet(entityId) {
+    if (!entityManager.isEntity(entityId)) throw new Error(`Invalid Entity: ${entityId}`);
 
-    const inventory = database.getInventory(this._user, objectName);
+    const inventory = database.getInventoryEntity(this._user, entityId);
     const now = new Date();
 
     inventory.lastGet = now.getTime();
@@ -95,7 +96,7 @@ module.exports = class User {
   }
 
   /**
-   * @return {Array} Array of all inventory objects
+   * @return {Array} Array of all inventory Entitys
    */
   getInventory() {
     return database.showInventory.all(this._user.id);
@@ -113,13 +114,7 @@ module.exports = class User {
    */
   changeAffection(modifier) {
     if (modifier == 0) throw new Error('Modifier was 0');
-    if (this.getAffection() + modifier > 100) {
-      this._setProperty('affection', 100);
-    } else if (this.getAffection() + modifier < 0) {
-      this._setProperty('affection', 0);
-    } else {
-      this._setProperty('affection', this.getAffection() + modifier);
-    }
+    this._setProperty('affection', utils.clamp(0, 100, this.getAffection() + modifier));
   }
   /**
    * @return {number}
@@ -137,21 +132,21 @@ module.exports = class User {
   }
 
   /**
-   * @return {Discord.User} Discord user object
+   * @return {Discord.User} Discord user Entity
    */
   getDiscordUser() {
     return this._discordUser;
   }
 
   /**
-   * @return {Discord.GuildMember} Discord member object
+   * @return {Discord.GuildMember} Discord member Entity
    */
   getDiscordMember() {
     if (this._discordMember) return this._discordMember;
     throw new Error('No member for user available');
   }
   /**
-   * Checks if a discord member object is available for this user
+   * Checks if a discord member Entity is available for this user
    * @return {Boolean} Member exists or not
    */
   hasDiscordMember() {
