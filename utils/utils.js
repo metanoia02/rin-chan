@@ -52,7 +52,7 @@ module.exports = {
    */
   mentionSpamDetect(message) {
     if (this.getUserIdArr(message.content).length > 10) {
-      message.member.roles.set('620609193228894208', 'Muted for mention spam');
+      message.member.roles.add('620609193228894208', 'Muted for mention spam');
       message.author.send('Go spam somewhere else!', {
         files: ['./images/spam/spam.jpg'],
       });
@@ -69,7 +69,7 @@ module.exports = {
   },
 
   clamp(min, max, value) {
-    return Math.max(min, Math.min(max, value))
+    return Math.max(min, Math.min(max, value));
   },
 
   /**
