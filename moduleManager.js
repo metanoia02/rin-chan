@@ -9,6 +9,7 @@ const utils = require('./utils/utils.js');
 const Args = require('./utils/Args.js');
 const CommandException = require('./utils/CommandException.js');
 const entityManager = require('./utils/entityManager');
+const User = require('./utils/User');
 
 module.exports = {
   async init() {
@@ -75,6 +76,7 @@ module.exports = {
             throw new CommandException('Insufficient permissions', 'rinangrey.png');
           }
           console.log(args);
+          await new User(message).addXp(1, message);
           await commandModule.run(message, args);
         } else if (result.sentiment.vote === 'negative') {
           throw new CommandException(`Ok I won't`, 'smugrin.png');

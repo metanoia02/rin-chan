@@ -46,8 +46,6 @@ client.on('message', async (message) => {
       } else if (message.content.length > 23) {
         if (!(await moduleManager.runCommand(message))) {
           message.channel.send('<:rinwha:600747717081432074>');
-        } else {
-          await new User(message).addXp(1, message);
         }
       }
     } else if (!rinChan.getCollecting()) {
