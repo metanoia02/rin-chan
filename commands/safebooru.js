@@ -8,18 +8,18 @@ module.exports = {
   config: {
     training: [
       // rin
-      {locale: 'en', string: '%vocaloid% image'},
-      {locale: 'en', string: 'show %vocaloid% image'},
-      {locale: 'en', string: 'image of %vocaloid%'},
-      {locale: 'en', string: '%vocaloid% picture'},
-      {locale: 'en', string: 'show %vocaloid% picture'},
-      {locale: 'en', string: 'picture of %vocaloid%'},
+      {locale: 'en', string: '%entity% image'},
+      {locale: 'en', string: 'show %entity% image'},
+      {locale: 'en', string: 'image of %entity%'},
+      {locale: 'en', string: '%entity% picture'},
+      {locale: 'en', string: 'show %entity% picture'},
+      {locale: 'en', string: 'picture of %entity%'},
 
       // vocaloids
-      {locale: 'en', string: '%vocaloid% image'},
-      {locale: 'en', string: '%vocaloid% picture'},
-      {locale: 'en', string: 'image of %vocaloid%'},
-      {locale: 'en', string: 'picture of %vocaloid%'},
+      {locale: 'en', string: '%entity% image'},
+      {locale: 'en', string: '%entity% picture'},
+      {locale: 'en', string: 'image of %entity%'},
+      {locale: 'en', string: 'picture of %entity%'},
     ],
 
     intent: 'safebooru',
@@ -71,8 +71,7 @@ module.exports = {
 
     const filter = (reaction, user) => {
       return (
-        (user.id === message.author.id && reaction.emoji.name === '❌') ||
-        (user.member.roles.cache.has(config.modRole) && reaction.emoji.name === '❌')
+        (user.id === message.author.id && reaction.emoji.name === '❌')
       );
     };
 

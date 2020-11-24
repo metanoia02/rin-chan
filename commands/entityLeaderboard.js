@@ -35,7 +35,7 @@ module.exports = {
           .awaitMessages(filter, {max: 1, time: 30000, errors: ['time']})
           .then((collected) => {
             const entity = entityManager.get(collected.first().content);
-            this.entityLeaderboard(entity, message).then(() => this.sendBoard(entity.id, message));
+            this.entityLeaderboard(entity, message);
           })
           .catch((collected) => {
             if (collected instanceof CommandException) {
@@ -47,7 +47,7 @@ module.exports = {
           });
       });
     } else {
-      this.entityLeaderboard(args.entities[0], message).then(() => this.sendBoard(args.entities[0].name, message));
+      this.entityLeaderboard(args.entities[0], message);
     }
   },
 
@@ -82,7 +82,7 @@ module.exports = {
     const page = await browser.newPage();
     await page.setViewport({
       width: 400,
-      height: 600
+      height: 700
     });
     await page.setContent( result );
     const leaderboardImage = await page.screenshot();

@@ -1,3 +1,5 @@
+const database = require('../utils/sql');
+
 module.exports = {
   _config: {},
   _moodModule: require('./mood.js'),
@@ -103,6 +105,6 @@ const randomMood = schedule.scheduleJob('0 0 * * *', function () {
   const users = database.getAllUsers.all();
   users.forEach((user) => {
     const thisUser = new User(undefined, user.user, user.guild);
-    thisUser.changeAffection(-10);
+    thisUser.changeAffection(-20);
   });
 });
