@@ -12,6 +12,11 @@ const tokens = require('./tokens');
 client.login(tokens.token);
 
 client.once('ready', () => {
+  //get roles
+  config.levels.forEach((level) => {
+    level.role = client.guilds.cache.first().roles.cache.find((role) => role.name == level.name).id;
+  });
+
   database.init();
   entityManager.init();
   moduleManager.init().then(() => {
