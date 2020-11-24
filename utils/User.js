@@ -265,8 +265,8 @@ module.exports = class User {
 
     if (!this.getDiscordMember().roles.cache.has(config.levels[calculatedLevelIndex].role)) {
       const newLevel = config.levels[calculatedLevelIndex];
-      this.getDiscordMember().roles.remove(config.levels[calculatedLevelIndex + 1].role, 'Level up');
-      this.getDiscordMember().roles.add(newLevel.role, 'Level up');
+      await this.getDiscordMember().roles.remove(config.levels[calculatedLevelIndex + 1].role, 'Level up');
+      await this.getDiscordMember().roles.add(newLevel.role, 'Level up');
 
       const attachment = new Discord.MessageAttachment(`./images/emotes/rinverywow.png`, 'rinverywow.png');
 

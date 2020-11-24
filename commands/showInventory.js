@@ -35,9 +35,18 @@ module.exports = {
 
     //xp bar
     const nextLevel = config.levels[user.getLevel()-1];
-    content.barColour = user.getDiscordMember().guild.roles.cache.find((role) => role.name === nextLevel.name).hexColor;
-    content.levelName = nextLevel.name;
-    content.percentageFill = Math.floor((user.getXp() / nextLevel.xp) * 100);
+    if (nextLevel) {
+      content.barColour = user.getDiscordMember().guild.roles.cache
+        .find((role) => role.name === nextLevel.name).hexColor;
+
+      content.levelName = `Next Level: ${nextLevel.name}`;
+      content.percentageFill = Math.floor(((user.getXp() - config.levels[user.getLevel()].xp) / nextLevel.xp) * 100);
+    } else {
+      content.barColour = '#D4AF37';
+      content.levelName = 'Max Level';
+      content.percentageFill = 100;
+    }
+
 
     //compile template
     const htmlFile = fs.readFileSync('./commands/templates/inventory.html', 'utf8');
