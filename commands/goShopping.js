@@ -74,6 +74,11 @@ module.exports = {
     const matchesArray = [...messageContent.matchAll(reg)][0];
 
     const entity = entityManager.find(matchesArray[2]);
+
+    if (!entity.tradable) {
+      throw new CommandException(`You can't trade that`, 'rinno.png');
+    }
+
     const quantity = matchesArray[1];
 
     return {entity: entity, quantity: quantity};
@@ -94,7 +99,8 @@ module.exports = {
       throw new CommandException(`You don't have enough oranges for that.`, 'rinwha.png');
     }
 
-    this.shopChangeEntity(order.entity, -order.quantity);
+    this.shopChangeStock(order.entity.id, -order.quantity);
+    this.shopChangeOranges(parseInt(price));
 
     user.changeEntityQuantity(order.entity.id, parseInt(order.quantity));
     user.changeEntityQuantity('orange', -parseInt(price));
@@ -107,7 +113,7 @@ module.exports = {
     const order = this.getEntityQuantity(collectedContent, this.config.phrases.sell);
 
     const user = new User(message);
-    const price = order.quantity * order.entity.value * 0.5;
+    const price = Math.ceil(order.quantity * order.entity.value * 0.5);
 
     const entityString = order.quantity > 1 ? order.entity.plural : order.entity.name;
 
@@ -119,7 +125,8 @@ module.exports = {
       throw new CommandException(`What's the point of that?`, 'rinconfuse.png');
     }
 
-    this.shopChangeEntity(order.entity, order.quantity);
+    this.shopChangeOranges(-parseInt(price));
+    this.shopChangeStock(order.entity.id, order.quantity);
 
     user.changeEntityQuantity('orange', parseInt(price));
     user.changeEntityQuantity(order.entity.id, -parseInt(order.quantity));
@@ -128,22 +135,26 @@ module.exports = {
     this.sendShopEmbed(message);
   },
 
-  shopChangeEntity(entity, modifier) {
-    const shop = database.getShopStock(entity.id);
+  shopChangeOranges(modifier) {
     const shopOranges = database.getShopStock('orange');
 
-    if (shop.quantity < modifier * -1 && modifier < 0) {
-      throw new CommandException(`There's not enough stock`, 'rinwha.png');
-    }
-    if (modifier > 0 && shopOranges.quantity < modifier * entity.value) {
+    if (modifier < 0 && (shopOranges.quantity + modifier) < 0) {
       throw new CommandException(`The shop doesn't have enough oranges to make the purchase.`, 'rinwha.png');
     }
 
-    shop.quantity += parseInt(modifier);
-    shopOranges.quantity += parseInt(entity.value * (modifier * -1));
-
+    shopOranges.quantity += parseInt(modifier);
     database.setShopStock.run(shopOranges);
-    database.setShopStock.run(shop);
+  },
+
+  shopChangeStock(entityId, modifier) {
+    const stock = database.getShopStock(entityId);
+
+    if (modifier < 0 && (stock.quantity + modifier) < 0) {
+      throw new CommandException(`There's not enough stock`, 'rinwha.png');
+    }
+
+    stock.quantity += parseInt(modifier);
+    database.setShopStock.run(stock);
   },
 
   async sendShopEmbed(message) {
