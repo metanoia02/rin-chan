@@ -26,11 +26,18 @@ module.exports = {
     this.config.units.set('c', 'c');
     this.config.units.set('celsius', 'c');
     this.config.units.set('fahrenheit', 'f');
+    this.config.units.set('℃', 'c');
+    this.config.units.set('℉', 'f');
   },
 
   async run(message, args) {
     const initialEntity = args.result.entities.find((entity) => entity.entity == 'temperature');
     if (!initialEntity) throw new CommandException(`Couldn't find a temperature to convert.`, 'rinconfuse.png');
+
+    if (!args.result.entities.find((entity) => entity.entity == 'toTrim' || entity.entity == 'inTrim')) {
+        throw new CommandException(`Couldn't find a unit to convert to.`, 'rinconfuse.png');
+    }
+
     const initialValue = initialEntity.resolution.value;
     const initialUnit = initialEntity.resolution.unit;
 
@@ -40,9 +47,6 @@ module.exports = {
         .sourceText.replace(/\W+/gi, '')
         .toLowerCase()
     );
-    if (!conversionTemperature) {
-      throw new CommandException(`Couldn't find a temperature to convert to.`, 'rinconfuse.png');
-    }
 
     if (initialUnit.toLowerCase() == 'celsius' && conversionTemperature.toLowerCase() == 'f') {
       let fahrenheit = (initialValue * 1.8 + 32).toFixed(1);

@@ -36,7 +36,7 @@ module.exports = {
           .awaitMessages(filter, {max: 1, time: 30000, errors: ['time']})
           .then((collected) => {
             if (collected.first().mentions.members.size === 1) {
-              const user = new User(message, collected.first().mentions.member.first().id, message.guild.id);
+              const user = new User(message, collected.first().mentions.members.first().id, message.guild.id);
               this.rateUser(user, message);
             } else {
               this.rateRandom(collected.first().content.trim(), message);

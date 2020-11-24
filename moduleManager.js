@@ -13,6 +13,9 @@ const User = require('./utils/User');
 
 module.exports = {
   async init() {
+    //everyone
+    manager.addNamedEntityText('everyone', 'everyone', ['en'], 'everyone');
+
     // discord entities
     manager.addRegexEntity('user', 'en', /<!*@!*[0-9]+>/gi);
     manager.addRegexEntity('tag', 'en', /\S+#[0-9]{4}/gi);
