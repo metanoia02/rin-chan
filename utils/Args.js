@@ -56,6 +56,8 @@ module.exports = class Args {
           case 'vocaloid':
             this.vocaloids.push(database.getVocaloid(element.option));
             break;
+          case 'everyone':
+            this.everyone = true;
           default:
           // error
         }
