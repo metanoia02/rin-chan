@@ -98,8 +98,8 @@ module.exports = {
 
   getCooldown(cooldown, lastTime) {
     const now = new Date();
-    const duration =  Math.ceil((lastTime + cooldown - now.getTime()) / 60000) 
-    return duration + duration > 1 ? ' minutes.' : ' minute.';
+    const duration = Math.ceil((lastTime + cooldown - now.getTime()) / 60000);
+    return duration + (duration > 1 ? ' minutes.' : ' minute.');
   },
 
   /**

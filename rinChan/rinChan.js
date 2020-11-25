@@ -1,4 +1,5 @@
 const database = require('../utils/sql');
+const User = require('../utils/User');
 
 module.exports = {
   _config: {},
