@@ -6,7 +6,6 @@ module.exports = {
     training: [
       {locale: 'en', string: 'hungry'},
       {locale: 'en', string: 'are you hungry'},
-      {locale: 'en', string: 'do you want an orange'},
     ],
 
     intent: 'hungry',

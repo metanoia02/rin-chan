@@ -44,9 +44,12 @@ module.exports = class Reaction {
     }
 
     let answer = {};
-    const reaction = {}; 
+    const reaction = {};
 
     if (answers.length === 0) {
+      if (!this.config.default) {
+        throw new Error('Reactions with no default responses must have a response for every condition');
+      }
       reaction.string = utils.arrayRandom(this.config.default);
     } else {
       answer = utils.arrayRandom(answers);

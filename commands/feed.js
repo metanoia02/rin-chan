@@ -2,7 +2,6 @@ const User = require('../utils/User.js');
 const CommandException = require('../utils/CommandException.js');
 const Reaction = require('../reactions/reaction.js');
 const rinChan = require('../rinChan/rinChan.js');
-const commandUtils = require('../utils/commandUtils.js');
 
 module.exports = {
   config: {
@@ -11,6 +10,7 @@ module.exports = {
       {locale: 'en', string: 'give %entity%'},
       {locale: 'en', string: `here's an %entity%`},
       {locale: 'en', string: `eat an %entity%`},
+      {locale: 'en', string: `consume %entity%`},
     ],
 
     intent: 'feed',
