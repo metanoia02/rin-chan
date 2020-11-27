@@ -27,7 +27,7 @@ module.exports = class Reaction {
         let boostFulfilled = true;
 
         if (response.hasOwnProperty('mood')) {
-          moodFulfilled = this.checkFulfilled(response.mood, rinChan.getMood().value);
+          moodFulfilled = this.checkFulfilled(response.mood, rinChan.getMood());
         }
         if (response.hasOwnProperty('hunger')) {
           hungerFulfilled = this.checkFulfilled(response.hunger, rinChan.getHunger());

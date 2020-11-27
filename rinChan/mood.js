@@ -1,7 +1,6 @@
 const utils = require('../utils/utils');
 
 module.exports = {
-  moods: ['Angry', 'Sad', 'Neutral', 'Ok', 'Good', 'Amazing'],
   moodSwing: 5,
 
   randomMood(mood) {
@@ -10,10 +9,6 @@ module.exports = {
 
     newMood = utils.clamp(0,5,newMood);
 
-    return {value: newMood, moodString: this.moods[newMood]};
-  },
-
-  newMood(mood) {
-    return {value: mood, moodString: this.moods[mood]};
+    return newMood;
   },
 };
