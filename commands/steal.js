@@ -20,7 +20,7 @@ module.exports = {
       {entityId: 'orange', func: 'stealOranges'},
       {entityId: 'kagamineLen', func: 'stealLens'},
     ],
-    orangeStealCooldown: 1,
+    orangeStealCooldown: 86400000,
   },
 
   init() {
@@ -62,11 +62,11 @@ module.exports = {
         throw new CommandException(`They aren't a good target.`, 'rinshrug.png');
       } else if (sourceUser.getAffection() > stealUser.getAffection()) {
         const chance = Math.floor(Math.random() * 100) + 1;
-        if (chance >= 90) {
+        if (chance >= 50) {
           sourceUser.changeAffection(20);
           rinChan.changeMood(1);
 
-          const stolenOranges = Math.min(10, Math.round(stealUser.getEntityQuantity('orange') / 10));
+          const stolenOranges = Math.min(50, Math.round(stealUser.getEntityQuantity('orange') / 10));
 
           sourceUser.changeEntityQuantity('orange', stolenOranges);
           stealUser.changeEntityQuantity('orange', -stolenOranges);
