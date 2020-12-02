@@ -110,6 +110,6 @@ const randomMood = schedule.scheduleJob('0 0 * * *', function () {
   const users = database.getAllUsers.all();
   users.forEach((user) => {
     const thisUser = new User(undefined, user.user, user.guild);
-    thisUser.changeAffection(-20);
+    thisUser.changeAffection(-10);
   });
 });
