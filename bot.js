@@ -37,14 +37,14 @@ client.on('guildMemberUpdate', function(oldMember, newMember) {
 });
 
 client.on('message', async (message) => {
-  if (utils.mentionSpamDetect(message)) {
-    return null;
-  }
-
   const reg = '^<@' + rinChan.getId() + '>|^<@!' + rinChan.getId() + '>';
   const rinTest = new RegExp(reg);
 
   if (!message.author.bot) {
+    if (utils.mentionSpamDetect(message)) {
+      return null;
+    }
+
     if (message.mentions.has(client.user) && message.guild && rinTest.test(message.content)) {
       if (message.content.length < 23 && !rinChan.getCollecting()) {
         message.channel.send('Yes?');
@@ -61,45 +61,55 @@ client.on('message', async (message) => {
 });
 
 client.on('guildMemberAdd', (member) => {
-  const channel = member.guild.channels.cache.find((ch) => ch.name === 'lounge');
+  const loungeChannel = member.guild.channels.cache.find((ch) => ch.name === 'lounge');
 
-  if (!channel) return;
+  if (loungeChannel) {
+    const attachment = new Discord.MessageAttachment(`./images/welcome/welcome.gif`, 'welcome.gif');
 
-  const attachment = new Discord.MessageAttachment(`./images/welcome/welcome.gif`, 'welcome.gif');
+    loungeChannel.send(
+      new Discord.MessageEmbed()
+        .setColor('#FFD700')
+        .setTitle(`Welcome to my server,`)
+        .setDescription(`${member.user.username}`)
+        .attachFiles(attachment)
+        .setImage(`attachment://welcome.gif`)
+    );
+  }
 
-  channel.send(
-    new Discord.MessageEmbed()
-      .setColor('#FFD700')
-      .setTitle(`Welcome to my server,`)
-      .setDescription(`${member.user.username}`)
-      .attachFiles(attachment)
-      .setImage(`attachment://welcome.gif`)
-  );
+  const diaryChannel = member.guild.channels.cache.find((ch) => ch.name === config.diaryChannel);
+  if (diaryChannel) {
+    diaryChannel.send(`${member} joined the server.`);
+  }
 });
 
 client.on('guildMemberRemove', (member) => {
   const channel = member.guild.channels.cache.find((ch) => ch.name === 'lounge');
-  if (!channel) return;
+  if (channel) {
+    const attachment = new Discord.MessageAttachment(`./images/leave/leave.gif`, 'leave.gif');
+    const leaveEmbed = new Discord.MessageEmbed()
+      .setColor('#FFD700')
+      .attachFiles(attachment)
+      .setImage(`attachment://leave.gif`);
 
-  const attachment = new Discord.MessageAttachment(`./images/leave/leave.gif`, 'leave.gif');
-  const leaveEmbed = new Discord.MessageEmbed()
-    .setColor('#FFD700')
-    .attachFiles(attachment)
-    .setImage(`attachment://leave.gif`);
+    const removedUser = new User(undefined, member.id, member.guild.id);
+    const orangeQuantity = removedUser.getEntityQuantity('orange');
 
-  const removedUser = new User(undefined, member.id, member.guild.id);
-  const orangeQuantity = removedUser.getEntityQuantity('orange');
+    if (orangeQuantity > 0) {
+      const orangeString = orangeQuantity > 1 ? 'those oranges.' : 'that orange.';
 
-  if (orangeQuantity > 0) {
-    const orangeString = orangeQuantity > 1 ? 'those oranges.' : 'that orange.';
+      removedUser.changeEntityQuantity('orange', -orangeQuantity);
+      new User(undefined, rinChan.getId(), member.guild.id).changeEntityQuantity('orange', orangeQuantity);
 
-    removedUser.changeEntityQuantity('orange', -orangeQuantity);
-    new User(undefined, rinChan.getId(), member.guild.id).changeEntityQuantity('orange', orangeQuantity);
+      leaveEmbed.setDescription(`Cya ${member.user.username}, I'll be taking ${orangeString}`);
+    } else {
+      leaveEmbed.setDescription(`Cya ${member.user.username}`);
+    }
 
-    leaveEmbed.setDescription(`Cya ${member.user.tag}, I'll be taking ${orangeString}`);
-  } else {
-    leaveEmbed.setDescription(`Cya ${member.user.tag}`);
+    channel.send(leaveEmbed);
   }
 
-  channel.send(leaveEmbed);
+  const diaryChannel = member.guild.channels.cache.find((ch) => ch.name === config.diaryChannel);
+  if (diaryChannel) {
+    diaryChannel.send(`${member} left the server.`);
+  }
 });
