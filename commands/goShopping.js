@@ -81,6 +81,8 @@ module.exports = {
 
     const quantity = matchesArray[1];
 
+    if (quantity < 1) throw new CommandException('You need to buy or sell at least 1', 'rinwha.png');
+
     return {entity: entity, quantity: quantity};
   },
 

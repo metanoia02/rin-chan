@@ -63,8 +63,8 @@ module.exports = {
       } else if (sourceUser.getAffection() > stealUser.getAffection()) {
         const chance = Math.floor(Math.random() * 100) + 1;
         if (chance >= 50) {
-          sourceUser.changeAffection(20);
-          rinChan.changeMood(1);
+          sourceUser.changeAffection(40);
+          rinChan.moodUp();
 
           const stolenOranges = Math.min(50, Math.round(stealUser.getEntityQuantity('orange') / 10));
 
@@ -83,7 +83,7 @@ module.exports = {
           const failStealEmbed = this.failStealReact.getEmbed(sourceUser);
 
           sourceUser.changeAffection(-40);
-          rinChan.changeMood(-1);
+          rinChan.moodDown();
 
           message.channel.send(failStealEmbed);
         }
