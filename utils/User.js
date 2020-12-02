@@ -258,26 +258,28 @@ module.exports = class User {
    * @param {Discord.Message} message
    */
   async addXp(addedXp, message) {
-    if (addedXp < 0) throw new Error(`Can not remove experience.`);
-    this._setProperty('xp', this.getXp() + addedXp);
+    if (this.getDiscordMember().roles.length > 0) {
+      if (addedXp < 0) throw new Error(`Can not remove experience.`);
+      this._setProperty('xp', this.getXp() + addedXp);
 
-    const calculatedLevelIndex = this.getLevel();
+      const calculatedLevelIndex = this.getLevel();
 
-    if (!this.getDiscordMember().roles.cache.has(config.levels[calculatedLevelIndex].role)) {
-      const newLevel = config.levels[calculatedLevelIndex];
-      await this.getDiscordMember().roles.remove(config.levels[calculatedLevelIndex + 1].role, 'Level up');
-      await this.getDiscordMember().roles.add(newLevel.role, 'Level up');
+      if (!this.getDiscordMember().roles.cache.has(config.levels[calculatedLevelIndex].role)) {
+        const newLevel = config.levels[calculatedLevelIndex];
+        await this.getDiscordMember().roles.remove(config.levels[calculatedLevelIndex + 1].role, 'Level up');
+        await this.getDiscordMember().roles.add(newLevel.role, 'Level up');
 
-      const attachment = new Discord.MessageAttachment(`./images/emotes/rinverywow.png`, 'rinverywow.png');
+        const attachment = new Discord.MessageAttachment(`./images/emotes/rinverywow.png`, 'rinverywow.png');
 
-      message.channel.send(
-        new Discord.MessageEmbed()
-          .setColor('#FFD700')
-          .setTitle('Level up!')
-          .setDescription(`You reached the rank of ${newLevel.name}.`)
-          .attachFiles(attachment)
-          .setThumbnail(`attachment://rinverywow.png`)
-      );
+        message.channel.send(
+          new Discord.MessageEmbed()
+            .setColor('#FFD700')
+            .setTitle('Level up!')
+            .setDescription(`You reached the rank of ${newLevel.name}.`)
+            .attachFiles(attachment)
+            .setThumbnail(`attachment://rinverywow.png`)
+        );
+      }
     }
-  }
+  } 
 };
