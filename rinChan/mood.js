@@ -7,8 +7,16 @@ module.exports = {
     const modifier = Math.floor((this.moodSwing - 1) / 2);
     let newMood = Math.floor(Math.random() * this.moodSwing) - modifier;
 
-    newMood = utils.clamp(0,5,newMood);
+    newMood = utils.clamp(0, 5, newMood);
 
     return newMood;
+  },
+
+  moodUp(currentState) {
+    return true;
+  },
+
+  moodDown(currentState) {
+    return true;
   },
 };

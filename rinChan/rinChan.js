@@ -1,5 +1,6 @@
 const database = require('../utils/sql');
 const User = require('../utils/User');
+const utils = require('../utils/utils');
 
 module.exports = {
   _config: {},
@@ -64,8 +65,15 @@ module.exports = {
     this._config.mood = newMood;
     this.writeFile(this._config);
   },
-  changeMood(moodModifier) {
-    this._setMood(this.getMood() + moodModifier);
+  moodUp() {
+    if (this._moodModule.moodUp(this._config)) {
+      this._setMood(utils.clamp(0, 5, this.getMood() + 1));
+    }
+  },
+  moodDown() {
+    if (this._moodModule.moodDown(this._config)) {
+      this._setMood(utils.clamp(0, 5, this.getMood() - 1));
+    }
   },
 
   getMaxHunger() {
