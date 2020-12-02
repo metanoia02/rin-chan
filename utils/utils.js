@@ -52,7 +52,9 @@ module.exports = {
    */
   mentionSpamDetect(message) {
     if (this.getUserIdArr(message.content).length > 10) {
-      message.member.roles.add('620609193228894208', 'Muted for mention spam');
+      const mutedRole = message.guild.roles.cache.find((role) => role.name === config.mutedRole);
+
+      message.member.roles.add(mutedRole, 'Muted for mention spam');
       message.author.send('Go spam somewhere else!', {
         files: ['./images/spam/spam.jpg'],
       });
@@ -61,7 +63,7 @@ module.exports = {
       const channel = message.guild.channels.cache.find((ch) => ch.name === config.diaryChannel);
       if (!channel) return true;
 
-      channel.send(`<@&588521716481785859> Muted ${message.author} for mention spam.`);
+      channel.send(`Muted ${message.author} for mention spam.`);
 
       return true;
     }

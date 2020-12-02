@@ -47,7 +47,7 @@ module.exports = {
     {name: 'Seedling', role: '', xp: 0},
   ],
 
-  mutedRole: '620609193228894208',
+  mutedRole: 'Muted',
   botChannel: '590205616581115918',
   modRole: '588521716481785859',
   diaryChannel: 'rinchans-diary'
