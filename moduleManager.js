@@ -76,7 +76,7 @@ module.exports = {
             commandModule.config.permissions === 'Mods' &&
             !message.member.roles.cache.some((role) => role.name === 'Mods')
           ) {
-            throw new CommandException('Insufficient permissions', 'rinangrey.png');
+            return false;
           }
           console.log(args);
           await new User(message).addXp(1, message);
