@@ -19,6 +19,7 @@ module.exports = {
     // discord entities
     manager.addRegexEntity('user', 'en', /<!*@!*[0-9]+>/gi);
     manager.addRegexEntity('tag', 'en', /\S+#[0-9]{4}/gi);
+    manager.addRegexEntity('emote', 'en', /<:\w+:\d+>/gi);
 
     // trims
     manager.addAfterCondition('en', 'toTrim', 'to', 'trim');
@@ -60,7 +61,6 @@ module.exports = {
 
   async runCommand(message) {
     let command = message.content.replace(/^<@![0-9]*>\s*|^<@[0-9]*>\s*/, '');
-    command = command.replace(/<:\w+:\d+>/gi, '');
     command = command.replace(/\s\s+/g, ' ');
 
     const result = await manager.process(command);
