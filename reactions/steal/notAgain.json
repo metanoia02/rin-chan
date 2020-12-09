@@ -15,7 +15,7 @@
     {
       "mood": { "min": 0, "max": 1 },
 
-      "response": ["Go steal them yourself next time!"],
+      "response": ["Go steal them yourself"],
       "image": "rinangrey.png"
     },
 

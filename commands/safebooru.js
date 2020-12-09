@@ -3,7 +3,7 @@ const axios = require('axios');
 const CommandException = require('../utils/CommandException.js');
 const xml2js = require('xml2js').parseString;
 const config = require('../config');
-const utils = require('../utils/utils')
+const utils = require('../utils/utils');
 
 module.exports = {
   config: {
