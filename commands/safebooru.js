@@ -3,6 +3,7 @@ const axios = require('axios');
 const CommandException = require('../utils/CommandException.js');
 const xml2js = require('xml2js').parseString;
 const config = require('../config');
+const utils = require('../utils/utils')
 
 module.exports = {
   config: {
@@ -26,7 +27,7 @@ module.exports = {
     commandName: 'Images',
     description: 'Get a random image of Rin or any Vocaloids',
 
-    tagBlacklist: '+-underwear+-rope+-nude+-undressing',
+    tagBlacklist: '+-underwear+-rope+-nude+-undressing+-erect_nipples+-no_bra+-fertilization',
     apiString: 'http://safebooru.org/index.php?page=dapi&s=post&q=index&limit=1',
 
     scope: 'channel',
@@ -44,7 +45,7 @@ module.exports = {
       .map((ele) => ele.name)
       .reduce((acc, ele, index) => {
         if (index === 0) {
-          acc += `${ele}`;
+          acc += `${utils.capitalizeFirstLetter(ele)}`;
         } else if (index === args.searchable.length - 1) {
           acc += ` and ${ele}`;
         } else {
