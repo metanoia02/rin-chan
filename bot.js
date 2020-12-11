@@ -50,7 +50,7 @@ client.on('message', async (message) => {
         message.channel.send('Yes?');
       } else if (message.content.length > 23) {
         if (!(await moduleManager.runCommand(message))) {
-          message.channel.send('<:rinwha:600747717081432074>');
+          message.channel.send('<:rinwha:787036890606993438>');
         }
       }
     } else if (!rinChan.getCollecting()) {
