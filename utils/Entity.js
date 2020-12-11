@@ -9,7 +9,7 @@ module.exports = class Entity {
    * @param {*} searchable Database searchable Entity
    * @param {*} tradable  Database tradable Entity
    */
-  constructor(ent, alts, feedable, searchable, tradable) {
+  constructor(ent, alts, feedable, searchable, tradable, singable) {
     this.id = ent.id;
     this.name = ent.name;
     this.determiner = ent.determiner;
@@ -28,6 +28,9 @@ module.exports = class Entity {
     }
     if ((this.tradable = tradable)) {
       this.value = tradable.value;
+    }
+    if ((this.singable = singable)) {
+      this.url = singable.url;
     }
   }
 };

@@ -35,7 +35,7 @@ module.exports = class Reaction {
         if (response.hasOwnProperty('affection') && user) {
           affectionFulfilled = this.checkFulfilled(response.affection, user.getAffection());
         }
-        if (response.hasOwnProperty('boost') === true && user) {
+        if (response.hasOwnProperty('boost') && user) {
           boostFulfilled = response.boost && user.getIsBooster();
         }
 

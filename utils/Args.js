@@ -18,6 +18,7 @@ module.exports = class Args {
     this.feedable = [];
     this.searchable = [];
     this.tradable = [];
+    this.singable = [];
     this.interactions = [];
     this.quantities = [];
     this.tags = [];
@@ -37,6 +38,7 @@ module.exports = class Args {
             if (entity.feedable) this.feedable.push(entity);
             if (entity.searchable) this.searchable.push(entity);
             if (entity.tradable) this.tradable.push(entity);
+            if (entity.singable) this.singable.push(entity);
 
             break;
           case 'interaction':

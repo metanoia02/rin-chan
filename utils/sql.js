@@ -39,6 +39,7 @@ module.exports = {
     this.queryFeedable = sql.prepare('SELECT * FROM entityFeedable');
     this.querySearchable = sql.prepare('SELECT * FROM entitySearchable');
     this.queryTradable = sql.prepare('SELECT * FROM entityTradable');
+    this.querySingable = sql.prepare('SELECT * FROM entitySingable');
   },
 
   close() {
@@ -120,6 +121,7 @@ module.exports = {
     const feedable = this.queryFeedable.all();
     const searchable = this.querySearchable.all();
     const tradable = this.queryTradable.all();
+    const singable = this.querySingable.all();
 
     return entities.reduce((acc, ele) => {
       acc.push(
@@ -128,7 +130,8 @@ module.exports = {
           alts.filter((alt) => alt.entityId === ele.id),
           feedable.find((food) => food.entityId === ele.id),
           searchable.find((search) => search.entityId === ele.id),
-          tradable.find((trade) => trade.entityId === ele.id)
+          tradable.find((trade) => trade.entityId === ele.id),
+          singable.find((song) => song.entityId === ele.id)
         )
       );
       return acc;
