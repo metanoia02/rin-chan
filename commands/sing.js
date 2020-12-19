@@ -39,7 +39,7 @@ module.exports = {
   async run(message, args) {
     let song = {};
 
-    this.voiceChannel = message.guild.channels.cache.get(/*config.singingChannel*/'744989278446289024');
+    this.voiceChannel = message.guild.channels.cache.get(config.singingChannel);
 
     const permissions = this.voiceChannel.permissionsFor(message.client.user);
     if (!permissions.has("CONNECT") || !permissions.has("SPEAK")) {
