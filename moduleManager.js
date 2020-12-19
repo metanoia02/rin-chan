@@ -16,6 +16,9 @@ module.exports = {
     //everyone
     manager.addNamedEntityText('everyone', 'everyone', ['en'], 'everyone');
 
+    //christmas
+    manager.addNamedEntityText('christmasSong', 'christmasSong', ['en'], ['christmas song', 'christmas carol']);
+
     // discord entities
     manager.addRegexEntity('user', 'en', /<!*@!*[0-9]+>/gi);
     manager.addRegexEntity('tag', 'en', /\S+#[0-9]{4}/gi);

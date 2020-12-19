@@ -50,5 +50,6 @@ module.exports = {
   mutedRole: 'Muted',
   botChannel: '590205616581115918',
   modRole: '588521716481785859',
-  diaryChannel: 'rinchans-diary'
+  diaryChannel: 'rinchans-diary',
+  singingChannel: '620600040204926986',
 };
