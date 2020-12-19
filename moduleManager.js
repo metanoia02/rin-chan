@@ -19,6 +19,9 @@ module.exports = {
     //christmas
     manager.addNamedEntityText('christmasSong', 'christmasSong', ['en'], ['christmas song', 'christmas carol']);
 
+    //singing
+    manager.addNamedEntityText('skipSong', 'skipSong', ['en'], ['skip']);
+
     // discord entities
     manager.addRegexEntity('user', 'en', /<!*@!*[0-9]+>/gi);
     manager.addRegexEntity('tag', 'en', /\S+#[0-9]{4}/gi);
@@ -45,18 +48,21 @@ module.exports = {
     let outputString = '';
 
     for (const file of commandFiles) {
-      const command = require(`./commands/${file}`);
-      this.commands.set(command.config.intent, command);
+        const command = require(`./commands/${file}`);
 
-      const training = command.config.training;
-
-      if (command.hasOwnProperty('init')) command.init(manager);
-
-      training.forEach((statement) => {
-        manager.addDocument(statement.locale, statement.string, command.config.intent);
-      });
-
-      outputString += `Added ${command.config.commandName}\n`;
+        if (command.config) {
+          this.commands.set(command.config.intent, command);
+    
+          const training = command.config.training;
+    
+          if (command.hasOwnProperty('init')) command.init(manager);
+    
+          training.forEach((statement) => {
+            manager.addDocument(statement.locale, statement.string, command.config.intent);
+          });
+    
+          outputString += `Added ${command.config.commandName}\n`;
+        }
     }
     await manager.train();
     console.log(outputString);

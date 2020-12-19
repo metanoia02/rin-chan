@@ -13,6 +13,7 @@
     "axios": "^0.20.0",
     "better-sqlite3": "^7.1.1",
     "cjs": "0.0.11",
+    "discord-ytdl-core": "^5.0.0",
     "discord.js": "^12.4.1",
     "eslint-config-prettier": "^6.15.0",
     "ffmpeg-static": "^4.2.7",
