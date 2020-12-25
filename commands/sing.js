@@ -58,6 +58,9 @@ module.exports = {
       if (args.result.entities.find((ele) => ele.entity == 'christmasSong')) {
         song = utils.arrayRandom(this.config.christmasSongs);
       } else {
+        if (user.getEntityQuantity('songBook') < 1) {
+          throw new CommandException('You need a song book for that', 'rinconfuse.png');
+        }
         if (args.entities.length > 0 && args.singable.length === 0) {
           throw new CommandException(`Are you sure that's a song...`, 'rinwha.png');
         }
@@ -68,7 +71,7 @@ module.exports = {
           throw new CommandException('One at a time please', 'rinconfuse.png');
         }
         const user = new User(message);
-        if (user.getEntityQuantity(args.singable[0].id) < 1) {
+        if (user.isInSongbook(args.singable[0].id) < 1) {
           throw new CommandException(`You don't have that track`, 'rinded.png');
         }
 

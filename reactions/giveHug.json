@@ -7,6 +7,9 @@
   "responses": [
     {
       "response": [" You got a hug from "]
+    },
+    {
+      "response": [" you look like you need a hug! You got a hug from "]
     }
   ]
 }

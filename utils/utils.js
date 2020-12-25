@@ -1,6 +1,9 @@
 const CommandException = require('./CommandException.js');
 const database = require('./sql.js');
 const config = require('../config');
+const handlebars = require('handlebars');
+const puppeteer = require('puppeteer');
+const fs = require('fs');
 
 module.exports = {
   getUserIdArr(command) {
@@ -111,5 +114,26 @@ module.exports = {
    */
   arrayRandom(array) {
     return array[Math.floor(Math.random() * array.length)];
+  },
+
+  async generateImage(templateFile, content) {
+    //compile template
+    const htmlFile = fs.readFileSync(templateFile, 'utf8');
+    const template = handlebars.compile(htmlFile);
+    const result = template(content);
+
+    //make screenshot
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+    await page.setViewport({
+      width: 400,
+      height: 700
+    });
+    await page.setContent( result );
+    const image = await page.screenshot();
+
+    await browser.close();
+
+    return image;
   },
 };

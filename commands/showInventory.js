@@ -1,10 +1,9 @@
 const User = require('../utils/User.js');
 const Discord = require('discord.js');
-const entityManager = require('../utils/entityManager.js');
-const fs = require('fs');
 const config = require('../config');
-const handlebars = require('handlebars');
-const puppeteer = require('puppeteer');
+const utils = require('../utils/utils');
+const fs = require('fs');
+const entityManager = require('../utils/entityManager');
 
 module.exports = {
   config: {
@@ -26,14 +25,29 @@ module.exports = {
 
   async run(message, args) {
     const user = new User(message);
-    let content = {};
+    const content = {};
+    const inventory = user.getInventory();
+    content.equippedItem = true;
 
-    //get inventory
-    const inventory = this.getInventory(user);
-    content.inventorySlots = inventory[0];
-    content = {...content, ...inventory[1]};
+    const inventoryCallback = (acc, ele) => {
+      const obj = entityManager.get(ele.entityId);
+      if (ele.quantity > 0) {
+        const image = fs.readFileSync(`./images/entity/${obj.id}.png`);
+        const base64Image = new Buffer.from(image).toString('base64');
+        const dataURI = 'data:image/png;base64,' + base64Image;
 
-    //xp bar
+        content[obj.id] = dataURI;
+
+        const item = {image: dataURI};
+        item.quantity = ele.quantity;
+
+        acc.push(item);
+      }
+      return acc;
+    };
+
+    content.inventorySlots = inventory.reduce(inventoryCallback, []);
+
     const nextLevel = config.levels[user.getLevel()-1];
     if (nextLevel) {
       content.barColour = user.getDiscordMember().guild.roles.cache
@@ -47,23 +61,18 @@ module.exports = {
       content.percentageFill = 100;
     }
 
+    const equippedEntity = user.getEquipped();
 
-    //compile template
-    const htmlFile = fs.readFileSync('./commands/templates/inventory.html', 'utf8');
-    const template = handlebars.compile(htmlFile);
-    const result = template(content);
+    if (equippedEntity) {
+      const image = fs.readFileSync(`./images/entity/${equippedEntity.id}.png`);
+      const base64Image = new Buffer.from(image).toString('base64');
+      const dataURI = 'data:image/png;base64,' + base64Image;
 
-    //make screenshot
-    const browser = await puppeteer.launch();
-    const page = await browser.newPage();
-    await page.setViewport({
-      width: 400,
-      height: 600
-    });
-    await page.setContent( result );
-    const inventoryImage = await page.screenshot();
+      content.equippedImage = dataURI;
+    }
 
-    //discord
+    const inventoryImage = await utils.generateImage('./commands/templates/inventory.html', content);
+
     const attachment = new Discord.MessageAttachment(inventoryImage, 'inventory.png');
     const inventoryEmbed = new Discord.MessageEmbed()
       .setColor('#0099ff')
@@ -72,30 +81,5 @@ module.exports = {
       .setImage('attachment://inventory.png');
 
     message.channel.send(inventoryEmbed);
-
-    await browser.close();
-  },
-
-  getInventory(user) {
-    const inventory = user.getInventory();
-
-    const content = {};
-
-    const inventoryCallback = (acc, ele) => {
-      const obj = entityManager.get(ele.entityId);
-      if (ele.quantity > 0) {
-        const image = fs.readFileSync(`./images/entity/${obj.id}.png`);
-        const base64Image = new Buffer.from(image).toString('base64');
-        const dataURI = 'data:image/png;base64,' + base64Image;
-
-        content[obj.id] = dataURI;
-
-        acc.push({image: dataURI, quantity: ele.quantity});
-      }
-      return acc;
-    };
-
-    const inventorySlots = inventory.reduce(inventoryCallback, []);
-    return [inventorySlots, content];
   },
 };

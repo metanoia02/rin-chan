@@ -52,4 +52,5 @@ module.exports = {
   modRole: '588521716481785859',
   diaryChannel: 'rinchans-diary',
   singingChannel: '620600040204926986',
+  //singingChannel: '744989278446289024',
 };

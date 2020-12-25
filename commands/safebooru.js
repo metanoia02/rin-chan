@@ -27,7 +27,7 @@ module.exports = {
     commandName: 'Images',
     description: 'Get a random image of Rin or any Vocaloids',
 
-    tagBlacklist: '+-underwear+-rope+-nude+-undressing+-erect_nipples+-no_bra+-fertilization',
+    tagBlacklist: '+christmas+-underwear+-rope+-nude+-undressing+-erect_nipples+-no_bra+-fertilization+-naked_coat',
     apiString: 'http://safebooru.org/index.php?page=dapi&s=post&q=index&limit=1',
 
     scope: 'channel',

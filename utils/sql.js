@@ -11,12 +11,21 @@ module.exports = {
     );
     this.getAllUsers = sql.prepare('SELECT * FROM user');
 
+    //inventory
     this.queryInventory = sql.prepare('SELECT * FROM inventory WHERE userId = ? AND entityId = ?');
     this.setInventory = sql.prepare(
       'REPLACE INTO inventory(userId, entityId, quantity, lastGet, id) VALUES (@userId, @entityId, @quantity, @lastGet, @id);'
     );
-
     this.showInventory = sql.prepare('SELECT * FROM inventory WHERE userId = ?');
+
+    //songBook Inventory
+    this.querySongBookInventory = sql.prepare('SELECT * FROM songBookInventory WHERE userId = ? AND entityId = ?');
+    this.addSongInventory = sql.prepare(
+      'INSERT INTO songBookInventory(userId, entityId, id) VALUES (@userId, @entityId, @id);'
+    );
+    this.removeSongInventory = sql.prepare('DELETE FROM songBookInventory WHERE userId = ? AND entityId = ?');
+    this.showSongBookInventory = sql.prepare('SELECT * FROM inventory WHERE userId = ?');
+    this.getSongBook = sql.prepare('SELECT * FROM songBookInventory WHERE userId = ?');
 
     this.entityLeaderboard = sql.prepare('SELECT * FROM inventory WHERE entityId = ?');
 
@@ -29,6 +38,8 @@ module.exports = {
 
     this.queryStock = sql.prepare('SELECT * FROM shop');
 
+    this.getShops = sql.prepare('SELECT * FROM shopLayout');
+
     // affection
     this.getTopAffection = sql.prepare('SELECT user FROM user ORDER BY affection DESC');
 
@@ -40,19 +51,28 @@ module.exports = {
     this.querySearchable = sql.prepare('SELECT * FROM entitySearchable');
     this.queryTradable = sql.prepare('SELECT * FROM entityTradable');
     this.querySingable = sql.prepare('SELECT * FROM entitySingable');
+
+    this.queryEntityCurrency = sql.prepare('SELECT * FROM entityTradable WHERE entityId = ?');
+
+    this.queryEquipped = sql.prepare('SELECT * FROM equippedEntity WHERE userId = ?');
+    this.setEquipped = sql.prepare(
+      'INSERT OR REPLACE INTO equippedEntity (userId, entityId) VALUES (@userId, @entityId);');
   },
 
   close() {
     sql.close();
   },
 
-  getAllShopStock() {
+  getAllShopStock(currencyEntityId) {
     const stock = this.queryStock.all();
 
     return stock.reduce((acc, ele) => {
-      const entityName = this.queryEntity.get(ele.entityId).name;
-      acc.push({id: ele.entityId, name: entityName, quantity: ele.quantity});
-      return acc;
+      const entity = this.queryEntity.get(ele.entityId);
+
+      if (this.queryEntityCurrency.get(ele.entityId) == currencyEntityId) {
+        acc.push({id: ele.entityId, name: entity.name, quantity: ele.quantity});
+        return acc;
+      }
     }, []);
   },
 
@@ -95,7 +115,35 @@ module.exports = {
     } else {
       return undefined;
     }
-  }, 
+  },
+
+  addSong(userId, entityId) {
+    if (this.queryEntity.get(entityId)) {
+      let inventory = this.querySongBookInventory.get(userId, entityId);
+
+      if (!inventory) {
+        inventory = {
+          userId: userId,
+          entityId: entityId,
+          id: `${userId}-${entityId}`,
+        };
+      } else {
+        throw new Error('Tried to add song that already exists in inventory');
+      }
+
+      this.addSongInventory.run(inventory);
+    }
+  },
+
+  removeSong(userId, entityId) {
+    let inventory = this.querySongBookInventory.get(userId, entityId);
+
+    if(!inventory) {
+      throw new Error('Tried to remove song that doesnt exist in inventory');
+    } else {
+      this.removeSongInventory.run(userId, entityId);
+    }
+  },
 
   getShopStock(entityId) {
     if (this.queryEntity.get(entityId)) {

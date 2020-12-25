@@ -4,6 +4,7 @@ const CommandException = require('./CommandException.js');
 const config = require('../config');
 const Discord = require('discord.js');
 const utils = require('./utils');
+const sql = require('./sql.js');
 
 module.exports = class User {
   /**
@@ -106,7 +107,7 @@ module.exports = class User {
    * @return {number}
    */
   getId() {
-    return parseInt(this._user.user);
+    return this._user.user;
   }
   /**
    *
@@ -281,5 +282,69 @@ module.exports = class User {
         );
       }
     }
-  } 
+  }
+  
+  /**
+   * 
+   * @param {*} entityId 
+   */
+  equipItem(entityId) {
+    database.equipItem.run({userId: this.getId(), entityId: entityId});
+  }
+
+  /**
+   * 
+   */
+  getEquipped() {
+    const equipped = database.queryEquipped.get(this.getId());
+
+    if(equipped) {
+      return entityManager.get(equipped.entityId);
+    }
+  }
+
+  /**
+   * 
+   * @param {*} entityId 
+   */
+  isInSongbook(entityId) {
+    return Boolean(database.querySongBookInventory.get(this.getId(), entityId));
+  }
+
+  /**
+   * 
+   * @param {*} entityId 
+   */
+  addSong(entityId) {
+    if (this.isInSongbook(entityId)) {
+      throw new Error('song is already owned');
+    } else {
+      database.addSong(this.getId(), entityId);
+    }
+  }
+
+  /**
+   * 
+   * @param {*} entityId 
+   */
+  removeSong(entityId) {
+    if (!this.isInSongbook(entityId)) {
+      throw new Error('Tried to remove song not owned');
+    } else {
+      database.removeSong(this.getId(), entityId);
+    }
+  }
+
+  /**
+   * 
+   */
+  getSongBook() {
+    if(this.getEntityQuantity('songBook') > 0) {
+      return database.getSongBook.all(this.getId());
+    } else {
+      throw Error('Tried to access song book of user that doesnt own one');
+    }
+  }
+
+  
 };

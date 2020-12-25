@@ -4,9 +4,6 @@ const commandUtils = require('../utils/commandUtils.js');
 const entityManager = require('../utils/entityManager.js');
 const rinChan = require('../rinChan/rinChan.js');
 const CommandException = require('../utils/CommandException.js');
-const fs = require('fs');
-const handlebars = require('handlebars');
-const puppeteer = require('puppeteer');
 
 module.exports = {
   config: {
@@ -65,29 +62,14 @@ module.exports = {
             displayHex: member.displayHex,
             avatarUrl: member.user.avatarURL(),
             displayName: member.displayName,
-            quantity:
-            ele.quantity});
+            quantity: ele.quantity});
         }
       }
       return acc;
     }, []);
 
-    //compile template
-    const htmlFile = fs.readFileSync('./commands/templates/leaderboard.html', 'utf8');
-    const template = handlebars.compile(htmlFile);
-    const result = template(content);
+    const leaderboardImage = await utils.generateImage('./commands/templates/leaderboard.html', content);
 
-    //make screenshot
-    const browser = await puppeteer.launch();
-    const page = await browser.newPage();
-    await page.setViewport({
-      width: 400,
-      height: 700
-    });
-    await page.setContent( result );
-    const leaderboardImage = await page.screenshot();
-
-    //discord
     const attachment = new Discord.MessageAttachment(leaderboardImage, 'leaderboard.png');
     const leaderboardEmbed = new Discord.MessageEmbed()
       .setColor('#0099ff')
@@ -97,7 +79,5 @@ module.exports = {
 
     message.channel.send(leaderboardEmbed);
     rinChan.setCollecting(false);
-
-    await browser.close();
   }
 };
