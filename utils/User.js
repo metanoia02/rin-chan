@@ -4,7 +4,6 @@ const CommandException = require('./CommandException.js');
 const config = require('../config');
 const Discord = require('discord.js');
 const utils = require('./utils');
-const sql = require('./sql.js');
 
 module.exports = class User {
   /**

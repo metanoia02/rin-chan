@@ -5,6 +5,7 @@ const Discord = require('discord.js');
 const schedule = require('node-schedule');
 const database = require('../utils/sql.js');
 const rinChan = require('../rinChan/rinChan.js');
+const CommandException = require('../utils/CommandException.js');
 
 module.exports = {
   config: {
@@ -31,6 +32,12 @@ module.exports = {
   },
 
   async run(message, args) {
+    const today = new Date();
+
+    if (today.getDate() == 27 && today.getMonth() == 11) {
+      throw new CommandException('Forget that! I have cake to eat!', 'smolrin.png');
+    }
+
     const user = new User(message);
     const chance = Math.floor(Math.random() * 100) + 1;
     const now = new Date();

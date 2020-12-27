@@ -1,0 +1,26 @@
+{
+  "embedColour": "#FF8C00",
+
+  "images": {
+    "path": "./images/birthdayCake/",
+    "quantity": 10
+  },
+
+  "responses": [
+    {
+      "response": ["This cake is the best! I want more!!!"]
+    },
+    {
+      "response": ["It tastes so good!"]
+    },
+    {
+      "response": ["I could eat this every day!"]
+    },
+    {
+      "response": ["You're the best!"]
+    },
+    {
+      "response": ["You know... you can give me cake on other days not just my birthday..."]
+    }
+  ]
+}

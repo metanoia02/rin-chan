@@ -57,12 +57,32 @@ module.exports = {
     this.queryEquipped = sql.prepare('SELECT * FROM equippedEntity WHERE userId = ?');
     this.setEquipped = sql.prepare(
       'INSERT OR REPLACE INTO equippedEntity (userId, entityId) VALUES (@userId, @entityId);');
+
+    this.queryQuest = sql.prepare('SELECT * FROM quest WHERE id = ?');
+    this.queryQuestLog = sql.prepare('SELECT * FROM questLog WHERE userId = ? AND questId = ?');
+    this.updateQuest = sql.prepare('INSERT OR REPLACE INTO questLog (id, userId, questId, status, saveLabel) VALUES (@id, @userId, @questId, @status, @saveLabel);')
   },
 
   close() {
     sql.close();
   },
 
+  getQuestLog(user, quest) {
+    let questLog = this.queryQuestLog.get(user.getId(), quest.id);
+
+    if (!questLog) {
+      questLog = {
+        id: `${user.getId()}-${quest.id}`,
+        userId: user.getId(),
+        questId: quest.id,
+        status: null,
+        saveLabel: null
+      };
+    }
+
+    return questLog;
+  },
+/*
   getAllShopStock(currencyEntityId) {
     const stock = this.queryStock.all();
 
@@ -73,6 +93,16 @@ module.exports = {
         acc.push({id: ele.entityId, name: entity.name, quantity: ele.quantity});
         return acc;
       }
+    }, []);
+  },*/
+
+  getAllShopStock() {
+    const stock = this.queryStock.all();
+
+    return stock.reduce((acc, ele) => {
+      const entityName = this.queryEntity.get(ele.entityId).name;
+      acc.push({id: ele.entityId, name: entityName, quantity: ele.quantity});
+      return acc;
     }, []);
   },
 
