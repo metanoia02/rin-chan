@@ -38,6 +38,7 @@ module.exports = {
 
   async run(message, args) {
     let song = {};
+  	const user = new User(message);
 
     this.voiceChannel = message.guild.channels.cache.get(config.singingChannel);
 

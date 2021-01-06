@@ -51,7 +51,7 @@ module.exports = {
   },
 
   orange(message, user, entity) {
-    /*const currentTime = new Date();
+    const currentTime = new Date();
 
     if (rinChan.getHunger() === 0) {
       throw new CommandException(`I'm stuffed, I cant eat another one`, 'rinstuffed.png');
@@ -63,9 +63,7 @@ module.exports = {
     user.changeAffection(5);
     user.setLastGive();
     rinChan.setHunger(rinChan.getHunger() - 1);
-    rinChan.setLastFed(currentTime.getTime());*/
-
-    throw new CommandException(`Don't you have something... sweeter?`, 'oharin.png');
+    rinChan.setLastFed(currentTime.getTime());
   },
 
   birthdayCake(message, user, entity) {
