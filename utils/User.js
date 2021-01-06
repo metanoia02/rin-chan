@@ -258,7 +258,9 @@ module.exports = class User {
    * @param {Discord.Message} message
    */
   async addXp(addedXp, message) {
-    if (this.getDiscordMember().roles.length > 0) {
+    const levelIds = config.levels.map((level) => level.role);
+
+    if (this.getDiscordMember().roles.cache.some((role) => levelIds.includes(role.id))) {
       if (addedXp < 0) throw new Error(`Can not remove experience.`);
       this._setProperty('xp', this.getXp() + addedXp);
 
