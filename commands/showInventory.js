@@ -54,7 +54,8 @@ module.exports = {
         .find((role) => role.name === nextLevel.name).hexColor;
 
       content.levelName = `Next Level: ${nextLevel.name}`;
-      content.percentageFill = Math.floor(((user.getXp() - config.levels[user.getLevel()].xp) / nextLevel.xp) * 100);
+      content.percentageFill = Math.floor(((user.getXp() - config.levels[user.getLevel()].xp) /
+       (nextLevel.xp - config.levels[user.getLevel()].xp)) * 100);
     } else {
       content.barColour = '#D4AF37';
       content.levelName = 'Max Level';
