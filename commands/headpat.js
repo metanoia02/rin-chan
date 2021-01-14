@@ -6,6 +6,7 @@ module.exports = {
     training: [
       {locale: 'en', string: 'headpat'},
       {locale: 'en', string: '<:rinheadpat:686915995373142028>'},
+      {locale: 'en', string: 'pat'},
     ],
 
     intent: 'headpat',
