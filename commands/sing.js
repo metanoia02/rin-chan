@@ -1,14 +1,12 @@
 const User = require('../utils/User.js');
 const ytdl = require('discord-ytdl-core');
 const CommandException = require('../utils/CommandException');
-const utils = require('../utils/utils');
 const config = require('../config');
 
 module.exports = {
   config: {
     training: [
       {locale: 'en', string: 'sing %entity%'},
-      {locale: 'en', string: 'sing %christmasSong%'},
 
       {locale: 'en', string: '%skipSong% song'},
     ],
@@ -18,16 +16,6 @@ module.exports = {
     description: 'Rin-chan will sing music you own.',
 
     scope: 'channel',
-
-    christmasSongs: [
-      {name: 'Silent Night', url:'https://www.youtube.com/watch?v=TOCjEGxjThs'},
-      {name: 'Angels We Have Heard on High', url:'https://www.youtube.com/watch?v=yRhA-aN0l-Y'},
-      {name: 'O Holy Night', url:'https://www.youtube.com/watch?v=ZqR2cdIhXGE'},
-      {name: 'Jingle Bells', url:'https://www.youtube.com/watch?v=a0QlvHNl4iM'},
-      {name: 'Merry Christmas, My Hero', url:'https://www.youtube.com/watch?v=SUgbHJKLQBA'},
-      {name: 'Santa Baby', url:'https://www.youtube.com/watch?v=0daNo64NDNE'},
-      {name: 'Magical Christmas', url:'https://www.youtube.com/watch?v=pgRiOOPolEo'},
-    ],
   },
 
   init() {
@@ -38,7 +26,7 @@ module.exports = {
 
   async run(message, args) {
     let song = {};
-  	const user = new User(message);
+    const user = new User(message);
 
     this.voiceChannel = message.guild.channels.cache.get(config.singingChannel);
 
@@ -56,9 +44,6 @@ module.exports = {
         this.play(this.queue[0], message);
       }
     } else {
-      if (args.result.entities.find((ele) => ele.entity == 'christmasSong')) {
-        song = utils.arrayRandom(this.config.christmasSongs);
-      } else {
         if (user.getEntityQuantity('songBook') < 1) {
           throw new CommandException('You need a song book for that', 'rinconfuse.png');
         }
@@ -71,13 +56,11 @@ module.exports = {
         if (args.singable.length > 1) {
           throw new CommandException('One at a time please', 'rinconfuse.png');
         }
-        const user = new User(message);
         if (user.isInSongbook(args.singable[0].id) < 1) {
           throw new CommandException(`You don't have that track`, 'rinded.png');
         }
 
         song = args.singable[0];
-      }
 
       if (this.queue.length == 0) {
         this.voiceConnection = await this.voiceChannel.join();

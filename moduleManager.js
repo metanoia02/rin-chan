@@ -13,13 +13,10 @@ const User = require('./utils/User');
 
 module.exports = {
   async init() {
-    //everyone
+    // everyone
     manager.addNamedEntityText('everyone', 'everyone', ['en'], 'everyone');
 
-    //christmas
-    manager.addNamedEntityText('christmasSong', 'christmasSong', ['en'], ['christmas song', 'christmas carol']);
-
-    //singing
+    // singing
     manager.addNamedEntityText('skipSong', 'skipSong', ['en'], ['skip']);
 
     // discord entities
