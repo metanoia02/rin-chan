@@ -27,7 +27,7 @@
     "puppeteer": "^2.1.1",
     "random-org": "^2.1.0",
     "xml2js": "^0.4.23",
-    "ytdl-core": "^4.2.1"
+    "ytdl-core": "^4.4.3"
   },
   "devDependencies": {
     "eslint": "^7.12.1",
