@@ -29,6 +29,7 @@ module.exports = {
 
   init() {
     this.findOrangeReact = new Reaction('../reactions/harvest/findOrange.json', this.config.commandName);
+    this.findCarrotReact = new Reaction('../reactions/harvest/findCarrot.json', this.config.commandName);
     this.imTiredReact = new Reaction('../reactions/harvest/imTired.json', this.config.commandName);
   },
 
@@ -46,14 +47,16 @@ module.exports = {
     if (user.getTries() > 0) {
       if (0 < chance && chance <= 5) {
         this.easterEgg(message, user);
-      } else if (5 < chance && chance <= 60) {
+      } else if (5 < chance && chance <= 50) {
         const chanceSteal = Math.floor(Math.random() * 100) + 1;
         if (rinChan.getHunger() > 3 && chanceSteal > 50) {
           this.stealOrange(message, user);
         } else {
           this.foundOrange(message, user);
         }
-      } else if (60 < chance && chance <= 100) {
+      } else if(50 < chance && chance <= 65) {
+        this.foundCarrot(message, user);
+      } else if (65 < chance && chance <= 100) {
         this.couldntFind(message, user);
       }
 
@@ -108,6 +111,14 @@ module.exports = {
     user.changeTries(-1);
 
     message.channel.send(this.findOrangeReact.getEmbed(user));
+  },
+
+  foundCarrot(message, user) {
+    user.changeEntityQuantity('carrot', 1);
+    user.setEntityLastGet('carrot');
+    user.changeTries(-1);
+
+    message.channel.send(this.findCarrotReact.getEmbed(user));
   },
 
   couldntFind(message, user) {
