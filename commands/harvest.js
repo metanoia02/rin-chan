@@ -12,6 +12,7 @@ module.exports = {
     training: [
       {locale: 'en', string: 'harvest'},
       {locale: 'en', string: 'look for %Entity%'},
+      {locale: 'en', string: 'looj for %Entity%'},
       {locale: 'en', string: 'find an %Entity%'},
       {locale: 'en', string: 'locate an %Entity%'},
     ],

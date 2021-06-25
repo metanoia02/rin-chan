@@ -38,10 +38,10 @@ module.exports = {
       throw new CommandException(`Please use three letter currency codes.`, 'rinwha.png');
     }
 
-    const currencyTable = await axios.get('https://api.exchangeratesapi.io/latest');
+    const currencyTable = await axios.get('https://v6.exchangerate-api.com/v6/168e2a62b1c6599adcba93e8/latest/USD');
 
-    fx.rates = currencyTable.data.rates;
-    fx.base = currencyTable.data.base;
+    fx.rates = currencyTable.data.conversion_rates;
+    fx.base = currencyTable.data.base_code;
 
     const convertedValue = fx(initialValue)
       .from(initialUnit.toUpperCase())

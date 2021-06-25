@@ -172,7 +172,7 @@ module.exports = {
     const result = template({stock: shopStock});
 
     //make screenshot
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch({args: ['--no-sandbox', '--disable-setuid-sandbox']});
     const page = await browser.newPage();
     await page.setViewport({
       width: 400,
