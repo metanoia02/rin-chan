@@ -53,4 +53,5 @@ module.exports = {
   diaryChannel: 'rinchans-diary',
   singingChannel: '620600040204926986',
   //singingChannel: '744989278446289024',
+  gumiId: '725019857099423755',
 };

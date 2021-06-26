@@ -77,7 +77,7 @@ module.exports = {
 
       try {
         const args = new Args(command, result, message);
-        if (result.sentiment.vote === 'positive' || result.sentiment.vote === 'neutral') {
+        if (result.sentiment.vote === 'positive' || result.sentiment.vote === 'neutral' || result.intent == 'bakeCake') {
           if (
             commandModule.config.permissions === 'Mods' &&
             !message.member.roles.cache.some((role) => role.name === 'Mods')
