@@ -47,15 +47,13 @@ module.exports = {
     if (user.getTries() > 0) {
       if (0 < chance && chance <= 5) {
         this.easterEgg(message, user);
-      } else if (5 < chance && chance <= 50) {
+      } else if (5 < chance && chance <= 65) {
         const chanceSteal = Math.floor(Math.random() * 100) + 1;
         if (rinChan.getHunger() > 3 && chanceSteal > 50) {
           this.stealOrange(message, user);
         } else {
           this.foundOrange(message, user);
         }
-      } else if(50 < chance && chance <= 65) {
-        this.foundCarrot(message, user);
       } else if (65 < chance && chance <= 100) {
         this.couldntFind(message, user);
       }
@@ -111,14 +109,6 @@ module.exports = {
     user.changeTries(-1);
 
     message.channel.send(this.findOrangeReact.getEmbed(user));
-  },
-
-  foundCarrot(message, user) {
-    user.changeEntityQuantity('carrot', 1);
-    user.setEntityLastGet('carrot');
-    user.changeTries(-1);
-
-    message.channel.send(this.findCarrotReact.getEmbed(user));
   },
 
   couldntFind(message, user) {
