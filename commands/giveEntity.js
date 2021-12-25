@@ -81,10 +81,6 @@ module.exports = {
     const entityString = num > 1 ? entity.plural : entity.determiner + ' ' + entity.name;
     const entityNumString = num > 1 ? num + ' ' + entityString : entityString;
     
-    if (entity.id == 'christmasPresent') {
-      throw new CommandException('Its not Christmas yet!', 'rinwha.png');
-    }
-
     if (sourceUser.getEntityQuantity(entity.id) >= num) {
       if (num < 1) {
         throw new CommandException(`Fine, no ${entityString} for them`, 'rinsmug.png');
@@ -129,7 +125,7 @@ module.exports = {
 
     rinChan.setCollecting(true);
 
-    message.channel.awaitMessages(filter, {max: 1, time: 60000, errors: ['time']})
+    message.channel.awaitMessages(filter, {max: 1, time: 120000, errors: ['time']})
       .then((collected) => {
         setTimeout(() => {
           message.channel.send('*rustle rustle*...');
