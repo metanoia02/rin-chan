@@ -31,9 +31,18 @@ module.exports = {
         if (!user.isInSongbook('merryChristmasMyHero')) {
             messageStr = `I have a present for you, ${message.author}!`;
 
-            const followupStr = `Here's a songbook you can keep you're favourite songs in. I added a song just for you.
+            let followupStr = `I added a song to your song book!
+            I'll sing for you any time! And these golden oranges, 
+            they will take those at the new shops in town. Let's go when they are open.`;
+
+            if (user.getEntityQuantity('songBook') == 0)
+            {
+                followupStr = `Here's a songbook you can keep you're favourite songs in. I added a song just for you.
                 I'll sing for you any time! And these golden oranges, 
                 they will take those at the new shops in town. Let's go when they are open.`;
+
+                user.changeEntityQuantity('songBook', 1);
+            }
 
             setTimeout(() => {
                 const attachment = new Discord.MessageAttachment(
@@ -50,7 +59,6 @@ module.exports = {
 
                 message.author.send(embed);
 
-                user.changeEntityQuantity('songBook', 1);
                 user.changeEntityQuantity('goldenOrange', 5);
                 user.addSong('merryChristmasMyHero');
             }, 10000);
