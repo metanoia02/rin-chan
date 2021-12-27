@@ -97,7 +97,7 @@ module.exports = {
             sourceUser.changeEntityQuantity(entity.id, -num);
             destUser.changeEntityQuantity(entity.id, num);
           } else {
-            message.channel.send('You keep that for now <:rinlove:726120311967449199>');
+            message.channel.send('You keep that for now <:rinlove:787037972330446848>');
           }
         } else {
           if (entity.id == 'christmasPresent') {

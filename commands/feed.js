@@ -57,13 +57,15 @@ module.exports = {
       throw new CommandException(`I'm stuffed, I cant eat another one`, 'rinstuffed.png');
     }
 
-    message.channel.send(this.orangeReaction.getEmbed(user));
+    /*message.channel.send(this.orangeReaction.getEmbed(user));
 
     user.changeEntityQuantity(entity.id, -1);
     user.changeAffection(5);
     user.setLastGive();
     rinChan.setHunger(rinChan.getHunger() - 1);
-    rinChan.setLastFed(currentTime.getTime());
+    rinChan.setLastFed(currentTime.getTime());*/
+
+    throw new CommandException(`Don't you have something... sweeter?`, 'oharin.png');
   },
 
   birthdayCake(message, user, entity) {
