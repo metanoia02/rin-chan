@@ -16,12 +16,12 @@ module.exports = {
 
     interactions: [
       {name: 'headpat', cost: 2, reaction: new Reaction('../reactions/giveHeadpat.json'), thumbnail: true},
-      {name: 'hug', cost: 5, reaction: new Reaction('../reactions/giveHug.json'), thumbnail: false},
+      {name: 'hug', cost: 0, reaction: new Reaction('../reactions/giveHug.json'), thumbnail: false},
     ],
 
     intent: 'interaction',
     commandName: 'Interactions',
-    description: 'Get Rin-chan to do various things like headpat and hug other users, costs oranges.',
+    description: 'Get Rin-chan to do various things like headpat and hug other users, perhaps in exchange for oranges.',
 
     scope: 'channel',
   },
@@ -60,9 +60,10 @@ module.exports = {
       throw new CommandException('Excuse me?', 'rinwhat.png');
     }
 
-    if (sourceUser.getEntityQuantity('orange') < cost) {
-      throw new CommandException(`To do that I'll need a 'donation' of ${cost} oranges`, 'rinpout.png');
-    } else {
+    if (cost > 0) {
+      if (sourceUser.getEntityQuantity('orange') < cost) {
+        throw new CommandException(`To do that I'll need a 'donation' of ${cost} oranges`, 'rinpout.png');
+      }
       sourceUser.changeEntityQuantity('orange', -cost);
       const rinchan = new User(message, rinChan.getId(), message.guild.id);
       rinchan.changeEntityQuantity('orange', cost);
