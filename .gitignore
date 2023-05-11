@@ -1,9 +1,3 @@
-orange.sqlite
-orange.sqlite-shm
-orange.sqlite-wal
 node_modules
-model.nlp
 package-lock.json
-rinChan/rinChan.json
-reactions/reaction.json.template
-tokens.js
+src/tokens.json

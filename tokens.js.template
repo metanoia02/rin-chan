@@ -1,4 +1,0 @@
-module.exports = {
-    token: '', //discord token
-    randomkey: '', //random-org api token
-};

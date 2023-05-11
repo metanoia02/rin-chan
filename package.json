@@ -1,34 +1,15 @@
 {
   "name": "rinchan",
-  "version": "0.1.0",
+  "version": "2.0.0",
   "description": "Rin chan now",
-  "main": "bot.js",
+  "main": "rin.ts",
   "author": "metanoia02",
   "repository": {
     "type": "git",
     "url": "https://github.com/metanoia02/rin-chan"
   },
   "dependencies": {
-    "@discordjs/opus": "^0.7.0",
-    "@discordjs/voice": "^0.9.0",
-    "axios": "^0.27.2",
-    "better-sqlite3": "^7.4.5",
-    "cjs": "0.0.11",
-    "discord-ytdl-core": "^5.0.4",
-    "discord.js": "^13.7.0",
-    "eslint-config-prettier": "^6.15.0",
-    "ffmpeg-static": "^4.4.0",
-    "forever": "^4.0.3",
-    "handlebars": "^4.7.7",
-    "money": "^0.2.0",
-    "node-gyp": "^5.1.1",
-    "node-nlp": "^4.22.1",
-    "node-schedule": "^2.1.0",
-    "prettier": "^2.5.1",
-    "puppeteer": "^14.1.0",
-    "random-org": "^2.2.0",
-    "xml2js": "^0.4.23",
-    "ytdl-core": "^4.9.2"
+    "discord.js": "^14.9.0"
   },
   "devDependencies": {
     "eslint": "^7.32.0",
@@ -37,12 +18,11 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^4.3.1",
     "eslint-plugin-spellcheck": "0.0.17",
-    "eslint-plugin-standard": "^4.0.2"
+    "eslint-plugin-standard": "^4.0.2",
+    "typescript": "^5.0.3"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "prettier": "prettier --ignore-path .gitignore --write \"**/*.+(js|json)\"",
-    "format": "npm run prettier -- --write"
+    "start": "ts-node src/rin.ts"    
   },
   "license": "ISC"
 }
