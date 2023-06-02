@@ -1,4 +1,4 @@
-import { Client } from "discord.js";
+import { Client, GatewayIntentBits } from "discord.js";
 import tokens from "./tokens.json";
 
 // Listeners
@@ -9,7 +9,12 @@ import ready from "./listeners/ready";
 import loadCommands from "./util/loadCommands"
 
 const client = new Client({
-    intents: []
+    intents: [		
+        GatewayIntentBits.Guilds,
+		GatewayIntentBits.GuildMessages,
+		GatewayIntentBits.MessageContent,
+		GatewayIntentBits.GuildMembers,
+    ]
 });
 
 console.log("Rin-chan is waking up...");
