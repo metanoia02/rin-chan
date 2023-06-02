@@ -5,6 +5,8 @@ import { CommandInteraction } from "discord.js";
 
 /**
  * Test ping command
+ * 
+ * @returns Bot replies with Pong!
  */
 export const ping: Command = {
 	data: new SlashCommandBuilder()
