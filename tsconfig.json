@@ -1,13 +1,13 @@
 {
     "compilerOptions": {
+        "declaration": true,
         "target": "ESNext",
         "module": "commonjs",
-        "rootDir": "./src/",
+        "rootDirs": ["./src"],
         "outDir": "./dist/",
         "strict": true,
         "moduleResolution": "node",
         "importHelpers": true,
-        "experimentalDecorators": true,
         "esModuleInterop": true,
         "skipLibCheck": true,
         "allowSyntheticDefaultImports": true,
@@ -19,6 +19,8 @@
         ],
         "sourceMap": false,
         "baseUrl": "./",
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true
     },
     "files": [
         "src/rin.ts"
@@ -29,5 +31,5 @@
     "exclude": [
         "node_modules",
         "dist"
-    ],
+    ]
 }
