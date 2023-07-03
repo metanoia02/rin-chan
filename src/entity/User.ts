@@ -1,7 +1,15 @@
-import { GuildMember } from "discord.js";
-import { Entity, PrimaryColumn, Column, UpdateDateColumn, OneToMany } from "typeorm"
-import { UserInventoryItem } from "./UserInventoryItem";
-import { UserSongBookItem } from "./UserSongBookItem";
+import {
+  Entity,
+  Column,
+  OneToMany,
+  PrimaryColumn,
+} from "typeorm";
+import {
+  IsInt,
+  Min,
+  Max,
+} from "class-validator";
+import { InventoryStack } from "./InventoryStack";
 
 /**
  * Represents a User.
@@ -9,32 +17,37 @@ import { UserSongBookItem } from "./UserSongBookItem";
 @Entity()
 export class User {
   @PrimaryColumn()
-  public id?: number;
+  public id!: string;
 
   @PrimaryColumn()
-  public guild?: number;
+  public guild!: string;
 
-  @Column()
-  public affection?: number;
+  @Column({ default: 0 })
+  @IsInt()
+  @Min(0)
+  @Max(100)
+  public affection!: number;
 
-  @Column()
-  public harvestAttempts?: number;
+  @Column({ default: 3 })
+  public harvestAttempts!: number;
 
-  @UpdateDateColumn()
-  public lastFedRinchan?: Date;
+  @Column({default: 0})
+  @IsInt()
+  @Min(0)
+  public lastFedRinchan!: number;
 
-  @UpdateDateColumn()
-  public lastHarvested?: Date;
+  @Column({default: 0})
+  @IsInt()
+  @Min(0)
+  public lastHarvested!: number;
 
-  @Column()
-  public booster?: boolean;
+  @Column({ default: 0 })
+  @IsInt()
+  @Min(0)
+  public xp!: number;
 
-  @Column()
-  public xp?: number;
-
-  @OneToMany(() => UserInventoryItem, (inventory:UserInventoryItem) => inventory.userId)
-  public inventory?: UserInventoryItem[];
-
-  @OneToMany(() => UserSongBookItem, (inventory:UserSongBookItem) => inventory.userId)
-  public songBook?: UserSongBookItem[];
-};
+  @OneToMany(() => InventoryStack, (inventoryStack) => inventoryStack.user, {
+    eager: true,
+  })
+  public inventory?: InventoryStack[];
+}

@@ -1,7 +1,6 @@
-import { Entity, PrimaryColumn, Column, OneToMany } from "typeorm"
+import { Entity, PrimaryColumn, Column, OneToMany, ManyToMany } from "typeorm"
+import { InventoryStack } from "./InventoryStack";
 import { ItemAlts } from "./ItemAlts";
-import { UserInventoryItem } from "./UserInventoryItem";
-import { UserSongBookItem } from "./UserSongBookItem";
 
 /**
  * Represents a single Item or song.
@@ -9,16 +8,16 @@ import { UserSongBookItem } from "./UserSongBookItem";
 @Entity()
 export class Item {
   @PrimaryColumn()
-  public id?:string;
+  public id!:string;
 
   @Column()
-  public name?:string;
+  public name!:string;
 
   @Column()
-  public determiner?:string;
+  public determiner!:string;
 
   @Column()
-  public plural?:string;
+  public plural!:string;
 
   @Column({nullable: true})
   public filling?:number;
@@ -32,12 +31,9 @@ export class Item {
   @Column({nullable: true})
   public value?:number;
 
-  @OneToMany(() => ItemAlts, (alt) => alt.itemId)
-  public alts?: ItemAlts[];
+  @OneToMany(() => InventoryStack, inventoryStack => inventoryStack.item)
+  public inventoryStacks!: InventoryStack[];
 
-  @OneToMany(() => UserInventoryItem, userInventoryItem => userInventoryItem.itemId)
-  public userInventoryItems?: UserInventoryItem[];
-
-  @OneToMany(() => UserSongBookItem, userSongBookItem => userSongBookItem.itemId)
-  public userSongBookItems?: UserSongBookItem[];
+  @OneToMany(() => ItemAlts, (alts) => alts.item)
+  public alts?:ItemAlts;
 };

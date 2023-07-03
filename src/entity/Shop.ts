@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn, ManyToOne } from "typeorm";
 import { Currency } from "./Currency";
 
 /**
@@ -7,12 +7,11 @@ import { Currency } from "./Currency";
 @Entity()
 export class Shop {
   @PrimaryGeneratedColumn()
-  public id?: number;
+  public id!: number;
 
   @Column()
-  public name?: string;
+  public name!: string;
 
-  @OneToOne(() => Currency)
-  @JoinColumn()
-  public currency?:Currency;
+  @ManyToOne(() => Currency, (currency) => currency.shops)
+  public currency!: Currency;
 };

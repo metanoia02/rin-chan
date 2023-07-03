@@ -1,16 +1,17 @@
-import { Entity, PrimaryColumn, Column } from "typeorm"
+import { Entity, Column, PrimaryGeneratedColumn, OneToOne, ManyToOne } from "typeorm"
+import { Item } from "./Item";
 
-/**
- * Represents one or more items of a single type owned by a user.
- */
 @Entity()
 export class ItemAlts {
-  @PrimaryColumn()
-  public itemId?: string;
+  @PrimaryGeneratedColumn()
+  public id!: number;
 
   @Column()
-  public name?: string;
+  public name!: string;
 
-  @Column()
-  public language?: string;
+  @Column({default: "en"})
+  public language!: string;
+
+  @ManyToOne(() => Item, (item) => item.alts)
+  public item!: Item;
 };
