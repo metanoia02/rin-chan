@@ -1,18 +1,36 @@
 import { User } from "../entity/User";
 import { AppDataSource } from "../data-source";
+import { Item } from "src/entity/Item";
+import { config } from "../config";
+import { Level } from "../interfaces/Level";
+import * as schedule from "node-schedule";
 
 export const userRepository = AppDataSource.getRepository(User).extend({
-  //TODO: this whole system sucks
-  getLevel() {
-    //return config.levels.findIndex((ele:object) => this.getXp() >= ele.xp);
+  /**
+   * Get a user by member id and guild id.
+   * @param id 
+   * @param guild 
+   */
+  async getUser(id:string, guild:string) : Promise<User>{
+    const user = await userRepository.findOne({where:{id, guild}});
+
+    if(!user) {
+      return await this.newUser(id, guild);
+    } else {
+      return user;
+    }
   },
 
-  changeAffection(modifier:number) {
-  /* if (modifier == 0) throw new Error("Modifier was 0");
-    this.setProperty(
-      "affection",
-      utils.clamp(0, 100, this.getAffection() + modifier)
-    );*/
+  async newUser(id:string, guild:string) : Promise<User>{
+    const user =  new User();
+    user.id = id;
+    user.guild = guild;
+    this.save(user);
+    return user;
+  },
+
+  getLevel(user: User) {
+    return config.levels.findIndex((ele:Level) => user.xp >= ele.xp);
   },
 
   async addXp(addedXp:number) {
@@ -55,7 +73,7 @@ export const userRepository = AppDataSource.getRepository(User).extend({
             .setThumbnail(`attachment://rinverywow.png`)
         );
       }  */
-    }
+    },
 
     changeQuantity(anItem: Item, modifier:number) {
       /*
@@ -70,7 +88,7 @@ export const userRepository = AppDataSource.getRepository(User).extend({
   
       inventory.quantity += modifier;
       database.setInventory.run(inventory);*/
-    }
+    },
   
     getQuantity(itemId: string) {
       /*
@@ -83,6 +101,15 @@ export const userRepository = AppDataSource.getRepository(User).extend({
     }
 });
 
-
-
-  
+ 
+/**
+ * Run once a day.
+ */
+schedule.scheduleJob('0 0 * * *', async function () {
+  // Reduce users affection by 10
+  const users = await userRepository.find();
+  users.forEach((user:User) => {
+    user.affection = user.affection -10;
+    userRepository.save(user);
+  });
+});
