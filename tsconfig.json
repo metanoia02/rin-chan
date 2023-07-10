@@ -1,35 +1,26 @@
 {
-    "compilerOptions": {
-        "declaration": true,
-        "target": "ESNext",
-        "module": "commonjs",
-        "rootDirs": ["./src"],
-        "outDir": "./dist/",
-        "strict": true,
-        "moduleResolution": "node",
-        "importHelpers": true,
-        "esModuleInterop": true,
-        "skipLibCheck": true,
-        "allowSyntheticDefaultImports": true,
-        "resolveJsonModule": true,
-        "forceConsistentCasingInFileNames": true,
-        "removeComments": true,
-        "typeRoots": [
-            "node_modules/@types"
-        ],
-        "sourceMap": false,
-        "baseUrl": "./",
-        "emitDecoratorMetadata": true,
-        "experimentalDecorators": true
-    },
-    "files": [
-        "src/rin.ts"
-    ],
-    "include": [
-        "./**/*.ts"
-    ],
-    "exclude": [
-        "node_modules",
-        "dist"
-    ]
+  "compilerOptions": {
+    "declaration": true,
+    "target": "ESNext",
+    "module": "commonjs",
+    "rootDirs": ["./src"],
+    "outDir": "./dist/",
+    "strict": true,
+    "moduleResolution": "node",
+    "importHelpers": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+    "forceConsistentCasingInFileNames": true,
+    "removeComments": true,
+    "typeRoots": ["node_modules/@types"],
+    "sourceMap": false,
+    "baseUrl": "./",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true
+  },
+  "files": ["src/rin.ts"],
+  "include": ["./**/*.ts"],
+  "exclude": ["node_modules", "dist"]
 }

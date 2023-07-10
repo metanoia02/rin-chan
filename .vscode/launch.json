@@ -1,11 +1,5 @@
 {
-    "version": "0.2.0",
-    "configurations": [
-      {
-        "type": "node-terminal",
-        "name": "Debug",
-        "request": "launch",
-        "command": "npx ts-node src/rin.ts",
-      }
-    ]
-  }
+  "editor.codeActionsOnSave": { "source.fixAll.eslint": true },
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true
+}
