@@ -1,5 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn, ManyToOne } from "typeorm";
-import { Currency } from "./Currency";
+import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn, ManyToOne } from 'typeorm';
+import { Currency } from './Currency';
 
 /**
  * Represents a shop that trades in a related currency item
@@ -14,4 +14,4 @@ export class Shop {
 
   @ManyToOne(() => Currency, (currency) => currency.shops)
   public currency!: Currency;
-};
+}

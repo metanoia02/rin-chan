@@ -1,5 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToOne, ManyToOne } from "typeorm"
-import { Item } from "./Item";
+import { Entity, Column, PrimaryGeneratedColumn, OneToOne, ManyToOne } from 'typeorm';
+import { Item } from './Item';
 
 @Entity()
 export class ItemAlts {
@@ -9,9 +9,9 @@ export class ItemAlts {
   @Column()
   public name!: string;
 
-  @Column({default: "en"})
+  @Column({ default: 'en' })
   public language!: string;
 
   @ManyToOne(() => Item, (item) => item.alts)
   public item!: Item;
-};
+}

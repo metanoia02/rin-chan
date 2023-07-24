@@ -1,15 +1,7 @@
-import {
-  Entity,
-  Column,
-  OneToMany,
-  PrimaryColumn,
-} from "typeorm";
-import {
-  IsInt,
-  Min,
-  Max,
-} from "class-validator";
-import { InventoryStack } from "./InventoryStack";
+import { Entity, Column, OneToMany, PrimaryColumn } from 'typeorm';
+import { IsInt, Min, Max } from 'class-validator';
+import { InventoryStack } from './InventoryStack';
+import { GuildMember } from 'discord.js';
 
 /**
  * Represents a User.
@@ -31,12 +23,12 @@ export class User {
   @Column({ default: 3 })
   public harvestAttempts!: number;
 
-  @Column({default: 0})
+  @Column({ default: 0 })
   @IsInt()
   @Min(0)
   public lastFedRinchan!: number;
 
-  @Column({default: 0})
+  @Column({ default: 0 })
   @IsInt()
   @Min(0)
   public lastHarvested!: number;
@@ -50,4 +42,8 @@ export class User {
     eager: true,
   })
   public inventory?: InventoryStack[];
+
+  public discordMember!: GuildMember;
+
+  public isBoosting!: boolean;
 }

@@ -1,6 +1,6 @@
-import { Entity, Column, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { Item } from "./Item";
-import { User } from "./User";
+import { Entity, Column, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Item } from './Item';
+import { User } from './User';
 
 @Entity()
 export class InventoryStack {
