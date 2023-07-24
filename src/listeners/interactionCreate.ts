@@ -1,5 +1,5 @@
-import { Client, Events, Interaction } from "discord.js";
-import { CommandList } from "../commands/Commands";
+import { Client, Events, Interaction } from 'discord.js';
+import { CommandList } from '../commands/Commands';
 
 export default (client: Client): void => {
   client.on(Events.InteractionCreate, async (interaction: Interaction) => {
@@ -7,9 +7,7 @@ export default (client: Client): void => {
       const command = CommandList.get(interaction.commandName);
 
       if (!command) {
-        console.error(
-          `No command matching ${interaction.commandName} was found.`
-        );
+        console.error(`No command matching ${interaction.commandName} was found.`);
         return;
       }
 
@@ -19,12 +17,12 @@ export default (client: Client): void => {
         console.error(error);
         if (interaction.replied || interaction.deferred) {
           await interaction.followUp({
-            content: "There was an error while executing this command!",
+            content: 'There was an error while executing this command!',
             ephemeral: true,
           });
         } else {
           await interaction.reply({
-            content: "There was an error while executing this command!",
+            content: 'There was an error while executing this command!',
             ephemeral: true,
           });
         }
@@ -33,9 +31,7 @@ export default (client: Client): void => {
       const command = CommandList.get(interaction.commandName);
 
       if (!command) {
-        console.error(
-          `No command matching ${interaction.commandName} was found.`
-        );
+        console.error(`No command matching ${interaction.commandName} was found.`);
         return;
       }
 

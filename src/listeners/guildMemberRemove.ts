@@ -14,7 +14,10 @@ client.on('guildMemberRemove', (member) => {
       const orangeString = orangeQuantity > 1 ? 'those oranges.' : 'that orange.';
 
       removedUser.changeEntityQuantity('orange', -orangeQuantity);
-      new User(undefined, rinChan.getId(), member.guild.id).changeEntityQuantity('orange', orangeQuantity);
+      new User(undefined, rinChan.getId(), member.guild.id).changeEntityQuantity(
+        'orange',
+        orangeQuantity,
+      );
 
       leaveEmbed.setDescription(`Cya ${member.user.username}, I'll be taking ${orangeString}`);
     } else {
