@@ -1,4 +1,4 @@
-import { Command } from '../../interfaces/ICommand';
+import { ICommand } from '../../interfaces/ICommand';
 
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { ChatInputCommandInteraction } from 'discord.js';
@@ -8,7 +8,7 @@ import { ChatInputCommandInteraction } from 'discord.js';
  *
  * @returns Bot replied with server name and member count
  */
-export const server: Command = {
+export const server: ICommand = {
   data: new SlashCommandBuilder()
     .setName('server')
     .setDescription('Provides information about the server.'),

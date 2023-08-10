@@ -3,12 +3,12 @@ const fs = require('fs');
 const handlebars = require('handlebars');
 const puppeteer = require('puppeteer');
 
-import { Command } from '../../interfaces/ICommand';
+import { ICommand } from '../../interfaces/ICommand';
 
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { AttachmentBuilder, ChatInputCommandInteraction, EmbedBuilder } from 'discord.js';
 import { InventoryStack } from '../../entity/InventoryStack';
-import { userRepository } from '../../repository/userRespository';
+import { User } from '../../entity/User';
 
 async function generateImage(templateFile: string, content: object) {
   //compile template
@@ -34,16 +34,16 @@ async function generateImage(templateFile: string, content: object) {
   return image;
 }
 
-export const inventory: Command = {
+export const inventory: ICommand = {
   data: new SlashCommandBuilder().setName('inventory').setDescription('Show your inventory.'),
   async execute(interaction: ChatInputCommandInteraction) {
-    const user = await userRepository.getUser(interaction.user.id, interaction.guildId!);
+    const user = await User.getUser(interaction.user.id, interaction.guildId!);
 
     const content: any = {};
 
     const inventoryCallback = (acc: any, ele: InventoryStack) => {
       if (ele.quantity > 0) {
-        const itemImage = fs.readFileSync(`./src/images/entity/${ele.item.id}.png`, 'base64');
+        const itemImage = fs.readFileSync(`./src/images/entity/${ele.item.name}.png`, 'base64');
         const dataURI = 'data:image/png;base64,' + itemImage;
 
         content[ele.item.id] = dataURI;

@@ -1,28 +1,28 @@
 import { ICommand } from '../../interfaces/ICommand';
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { AttachmentBuilder, CommandInteraction, EmbedBuilder } from 'discord.js';
-import { User } from 'src/entity/User';
-import { RinChan } from 'src/entity/RinChan';
-import { userRepository } from 'src/repository/userRespository';
-import { AttachedEmbed } from 'src/types/AttachedEmbed';
-import { config } from 'src/config';
-import { ReactionManager } from 'src/reactions/ReactionManager';
-import { rinChanRepository } from 'src/repository/rinChanRepository';
-import { getCooldown, commandEmbed } from 'src/util/commands';
+import { User } from '../../entity/User';
+import { RinChan } from '../../entity/RinChan';
+import { AttachedEmbed } from '../../types/AttachedEmbed';
+import { config } from '../../config';
+import { ReactionMaker } from '../../reactions/ReactionMaker';
+import { rinChanRepository } from '../../repository/rinChanRepository';
+import { getCooldown, commandEmbed } from '../../util/commands';
 import * as schedule from 'node-schedule';
 
 // Reactions
-import { findOrange as findOrangeReact } from 'src/reactions/harvest/findOrange';
-import { imTired as imTiredReact } from 'src/reactions/harvest/imTired';
-import { itemRepository } from 'src/repository/itemRepository';
+import { findOrange as findOrangeReact } from '../../reactions/harvest/findOrange';
+import { imTired as imTiredReact } from '../../reactions/harvest/imTired';
 
-const lenImages = { path: './images/len/', quantity: 10 };
+const lenImages = { path: './src/images/len/', quantity: 10 };
 
 export const harvest: ICommand = {
-  data: new SlashCommandBuilder().setName('ping').setDescription('Replies with Pong!'),
+  data: new SlashCommandBuilder()
+    .setName('harvest')
+    .setDescription('Try your luck to get some oranges!'),
   execute: async (interaction: CommandInteraction) => {
     const today = new Date();
-    const user = await userRepository.getUser(interaction.user.id, interaction.guildId!);
+    const user = await User.getUser(interaction.user.id, interaction.guildId!);
     const rinChan = await rinChanRepository.get(interaction.guildId!);
     const chance = Math.floor(Math.random() * 100) + 1;
     let response: AttachedEmbed | null = null;
@@ -37,7 +37,7 @@ export const harvest: ICommand = {
         if (rinChan.hunger > 3 && chanceSteal > 50) {
           response = stealOrange(user, rinChan);
         } else {
-          response = findOrange(user);
+          response = await findOrange(user);
         }
       } else if (65 < chance && chance <= 100) {
         response = couldntFind(user);
@@ -48,12 +48,17 @@ export const harvest: ICommand = {
       }
     } else {
       const duration = getCooldown(config.orangeHarvestCooldown, user.lastHarvested);
-      response = imTiredReact.getEmbed(user).addField('You can try again in:', duration, true);
+      response = await ReactionMaker.getEmbed(imTiredReact, user);
+      response.embeds[0].addFields({
+        name: 'You can try again in:',
+        value: duration,
+        inline: true,
+      });
     }
 
     rinChanRepository.save(rinChan);
-    userRepository.save(user);
-    if (response) interaction.reply({ embeds: [response.embed], files: [response.attachment] });
+    User.save(user);
+    if (response) interaction.reply(response);
     else throw new Error('Response not set in harvest.');
   },
 };
@@ -62,7 +67,7 @@ function stealOrange(user: User, rinChan: RinChan): AttachedEmbed {
   rinChan.hunger = rinChan.hunger - 1;
   user.harvestAttempts = user.harvestAttempts - 1;
 
-  const stealAttachment = new AttachmentBuilder('./images/emotes/rintehe.png', {
+  const stealAttachment = new AttachmentBuilder('./src/images/emotes/rintehe.png', {
     name: 'rintehe.png',
   });
   const stealEmbed = new EmbedBuilder()
@@ -71,11 +76,11 @@ function stealOrange(user: User, rinChan: RinChan): AttachedEmbed {
     .setDescription(`I found one! But I got hungry on the way back.`)
     .setThumbnail('attachment://rintehe.png');
 
-  return { embed: stealEmbed, attachment: stealAttachment };
+  return { embeds: [stealEmbed], files: [stealAttachment] };
 }
 
 function findLen(user: User): AttachedEmbed {
-  userRepository.changeQuantity('kagamineLen', 1);
+  user.changeQuantity('kagamineLen', 1);
   user.harvestAttempts = 0;
 
   const imageName = Math.floor(Math.random() * lenImages.quantity) + 1 + '.jpg';
@@ -88,20 +93,20 @@ function findLen(user: User): AttachedEmbed {
     .setDescription('Found a Len! <:rinwao:701505851449671871>')
     .setImage(`attachment://${imageName}`);
 
-  return { embed: couldntFindEmbed, attachment: couldntFindAttachment };
+  return { embeds: [couldntFindEmbed], files: [couldntFindAttachment] };
 }
 
-function findOrange(user: User): AttachedEmbed {
-  userRepository.changeQuantity('orange', 1);
+async function findOrange(user: User): Promise<AttachedEmbed> {
+  user.changeQuantity('orange', 1);
   user.harvestAttempts = user.harvestAttempts - 1;
 
-  return ReactionManager.getEmbed(findOrangeReact, user);
+  return await ReactionMaker.getEmbed(findOrangeReact, user);
 }
 
 function couldntFind(user: User): AttachedEmbed {
   user.harvestAttempts = user.harvestAttempts - 1;
 
-  const couldntFindAttachment = new AttachmentBuilder('./images/emotes/rinyabai.png', {
+  const couldntFindAttachment = new AttachmentBuilder('./src/images/emotes/rinyabai.png', {
     name: 'rinyabai.png',
   });
   const couldntFindEmbed = new EmbedBuilder()
@@ -110,11 +115,11 @@ function couldntFind(user: User): AttachedEmbed {
     .setDescription(`Couldn't find anything`)
     .setThumbnail('attachment://rinyabai.png');
 
-  return { embed: couldntFindEmbed, attachment: couldntFindAttachment };
+  return { embeds: [couldntFindEmbed], files: [couldntFindAttachment] };
 }
 
 const updateTriesInterval = schedule.scheduleJob('0 * * * * *', async () => {
-  const users = await userRepository.find();
+  const users = await User.find();
   const now = new Date();
 
   users.forEach((thisUser: User) => {

@@ -1,4 +1,6 @@
-import fetch from 'node-fetch';
+async () => {
+  const fetch = (await import('node-fetch')).default;
+};
 import { ICommand } from '../../interfaces/ICommand';
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { AutocompleteInteraction, ChatInputCommandInteraction } from 'discord.js';

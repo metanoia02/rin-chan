@@ -1,6 +1,6 @@
 import { EmbedBuilder } from '@discordjs/builders';
-import { AttachmentBuilder } from 'discord.js';
-import { AttachedEmbed } from 'src/types/AttachedEmbed';
+import { AttachmentBuilder, Embed, InteractionReplyOptions } from 'discord.js';
+import { AttachedEmbed } from '../types/AttachedEmbed';
 
 export function getCooldown(cooldown: number, lastTime: number): string {
   const now = new Date();
@@ -9,12 +9,10 @@ export function getCooldown(cooldown: number, lastTime: number): string {
 }
 
 export function commandEmbed(reply: string, emote: string): AttachedEmbed {
-  const commandAttachment = new AttachmentBuilder(`./images/emotes/${emote}`, { name: emote });
+  const commandAttachment = new AttachmentBuilder(emote, { name: emote });
   const commandEmbed = new EmbedBuilder()
-    .setColor(0xff0000)
-    .setTitle('Harvest')
     .setDescription(reply)
     .setThumbnail(`attachment://${emote}`);
 
-  return { attachment: commandAttachment, embed: commandEmbed };
+  return { files: [commandAttachment], embeds: [commandEmbed] };
 }
