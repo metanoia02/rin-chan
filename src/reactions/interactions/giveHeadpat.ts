@@ -1,7 +1,9 @@
-import { ReactionConfig } from 'src/interfaces/IReaction';
+import { Reaction } from '../../types/Reaction';
 
-export const giveHeadpat: ReactionConfig = {
-  images: './images/emotes/',
+export const giveHeadpat: Reaction = {
+  embedColour: '#FFFFFF',
+
+  images: './src/images/emotes/',
 
   default: {
     response: [' You got a headpat from '],

@@ -1,6 +1,8 @@
-import { ReactionConfig } from 'src/interfaces/IReaction';
+import { Reaction } from '../../types/Reaction';
 
-export const giveHug: ReactionConfig = {
+export const giveHug: Reaction = {
+  embedColour: '#FFFFFF',
+
   images: './images/hug/',
 
   default: {

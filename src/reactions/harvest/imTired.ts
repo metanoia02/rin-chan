@@ -1,9 +1,9 @@
-import { ReactionConfig } from 'src/interfaces/IReaction';
+import { Reaction } from '../../types/Reaction';
 
-export const imTired: ReactionConfig = {
-  images: './images/emotes/',
+export const imTired: Reaction = {
+  images: './src/images/emotes/',
 
-  embedColour: '#FF0000',
+  embedColour: 0xff0000,
 
   default: {
     response: ["I'm tired!"],

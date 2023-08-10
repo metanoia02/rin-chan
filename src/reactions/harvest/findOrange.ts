@@ -1,9 +1,9 @@
-import { ReactionConfig } from 'src/interfaces/IReaction';
+import { Reaction } from '../../types/Reaction';
 
-export const findOrange: ReactionConfig = {
-  images: './images/findOrange/',
+export const findOrange: Reaction = {
+  images: './src/images/findOrange/',
 
-  embedColour: '#FF4500',
+  embedColour: 0xff4500,
 
   default: {
     response: [

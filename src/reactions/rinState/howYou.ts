@@ -1,6 +1,8 @@
-import { ReactionConfig } from 'src/interfaces/IReaction';
+import { Reaction } from '../../types/Reaction';
 
-export const howYou: ReactionConfig = {
+export const howYou: Reaction = {
+  embedColour: '#FFFFFF',
+
   default: {
     response: ["I'm pretty good."],
   },

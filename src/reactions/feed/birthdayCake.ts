@@ -1,4 +1,4 @@
-import { Reaction } from 'src/types/Reaction';
+import { Reaction } from '../../types/Reaction';
 
 export const feedBirthdayCakeReact: Reaction = {
   embedColour: '#FF8C00',

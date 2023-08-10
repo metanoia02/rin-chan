@@ -1,6 +1,8 @@
-import { ReactionConfig } from 'src/interfaces/IReaction';
+import { Reaction } from '../../types/Reaction';
 
-export const hungry: ReactionConfig = {
+export const hungry: Reaction = {
+  embedColour: '#FFFFFF',
+
   images: './images/hungry/',
 
   default: {

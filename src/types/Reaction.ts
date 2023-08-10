@@ -1,16 +1,11 @@
 import { MinMax } from './MinMax';
+import { ReactionResponse } from './ReactionResponse';
+import { ColorResolvable } from 'discord.js';
 
 export interface Reaction {
-  embedColour?: string;
-  images?: string;
+  embedColour: ColorResolvable;
+  images: string;
   default: { response: string[]; image?: string };
-  responses?: {
-    hunger?: number | MinMax;
-    mood?: number | MinMax;
-    affection?: number | MinMax;
-    boost?: boolean;
-    response: string[];
-    image?: string;
-  }[];
+  responses?: ReactionResponse[];
   followUp?: string[];
 }
