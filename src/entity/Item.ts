@@ -1,4 +1,4 @@
-import { Entity, PrimaryColumn, Column, OneToMany, ManyToMany } from 'typeorm';
+import { Entity, PrimaryColumn, Column, OneToMany, ManyToMany, BaseEntity } from 'typeorm';
 import { InventoryStack } from './InventoryStack';
 import { ItemAlts } from './ItemAlts';
 
@@ -6,7 +6,7 @@ import { ItemAlts } from './ItemAlts';
  * Represents a single Item or song.
  */
 @Entity()
-export class Item {
+export class Item extends BaseEntity {
   @PrimaryColumn()
   public id!: string;
 
@@ -36,4 +36,9 @@ export class Item {
 
   @OneToMany(() => ItemAlts, (alts) => alts.item)
   public alts?: ItemAlts;
+
+  async get(itemId: string): Promise<Item | null> {
+    const item = await Item.findOne({ where: { id: itemId } });
+    return item;
+  }
 }

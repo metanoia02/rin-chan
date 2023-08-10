@@ -7,8 +7,9 @@ import { ping } from './test/ping';
 import { server } from './test/server';
 import { user } from './test/user';
 import { currency } from './utility/currency';
+import { serverConfig } from './admin/serverConfig';
 
-const CommandList: Collection<string, ICommand> = new Collection();
+export const CommandList: Collection<string, ICommand> = new Collection();
 
 CommandList.set('harvest', harvest);
 CommandList.set('inventory', inventory);
@@ -16,5 +17,4 @@ CommandList.set('ping', ping);
 CommandList.set('server', server);
 CommandList.set('user', user);
 CommandList.set('currency', currency);
-
-export default CommandList;
+CommandList.set(serverConfig.data.name, serverConfig);

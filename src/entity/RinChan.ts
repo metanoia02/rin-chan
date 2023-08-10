@@ -1,14 +1,15 @@
-import { Entity, Column, PrimaryColumn } from 'typeorm';
+import { Entity, Column, PrimaryColumn, PrimaryGeneratedColumn, BaseEntity } from 'typeorm';
 import { IsInt, Min, Max, IsBoolean } from 'class-validator';
-
 import { Guild } from 'discord.js';
-import { clamp } from 'src/util/clamp';
+import { clamp } from '../util/clamp';
+import { config } from '../config';
+import * as schedule from 'node-schedule';
 
 /**
  * Represents a Rinchan on a particular server.
  */
 @Entity()
-export class RinChan {
+export class RinChan extends BaseEntity {
   @PrimaryColumn()
   public id!: string;
 
@@ -27,8 +28,8 @@ export class RinChan {
   @Max(6)
   public mood!: number;
 
-  @Column({ default: new Date(0) })
-  public lastFed!: Date;
+  @Column({ default: 0 })
+  public lastFed!: number;
 
   @Column({ default: false })
   @IsBoolean()
@@ -37,6 +38,50 @@ export class RinChan {
   changeHunger(guild: Guild, hunger: number) {
     this.hunger = clamp(1, 5, hunger);
 
-    guild.setIcon(config.icons[hunger]);
+    guild.setIcon(config.hungerIcon[hunger]);
+  }
+
+  async get(guildId: string): Promise<RinChan> {
+    const rinChan = await RinChan.findOne({ where: { id: guildId } });
+
+    if (rinChan) {
+      return rinChan;
+    } else {
+      return await this.newRinchan(guildId);
+    }
+  }
+
+  async newRinchan(guild: string): Promise<RinChan> {
+    const rinChan = new RinChan();
+    rinChan.id = client.user!.id;
+    rinChan.guildId = guild;
+    await RinChan.save(rinChan);
+    return rinChan;
   }
 }
+
+/**
+ * Run once an hour
+ */
+schedule.scheduleJob('0 * * * *', function () {
+  const randomDelay = Math.floor(Math.random() * 3600000) + 1;
+
+  setTimeout(() => {
+    module.exports.setHunger(module.exports.getHunger() + 1);
+  }, randomDelay);
+});
+
+/**
+ * Run once a day.
+ */
+schedule.scheduleJob('0 0 * * *', async function () {
+  // Set Random moods for RinChans
+  const rinChans = await RinChan.find();
+  rinChans.forEach((rinChan: RinChan) => {
+    const modifier = Math.floor((4 - 1) / 2);
+    let newMood = Math.floor(Math.random() * 4) - modifier;
+    newMood = clamp(0, 5, newMood);
+    rinChan.mood = newMood;
+    RinChan.save(rinChan);
+  });
+});

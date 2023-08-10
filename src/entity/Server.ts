@@ -1,41 +1,43 @@
-import { Entity; Column, PrimaryColumn } from 'typeorm';
-import { IsInt, Min, Max } from 'class-validator';
+import { Entity, Column, PrimaryColumn, BaseEntity } from 'typeorm';
 
 /**
  * Represents a Server running Rin-chan.
  */
 @Entity()
-export class Server {
+export class Server extends BaseEntity {
   @PrimaryColumn()
   public id!: string;
 
-  @Column()
-  public mutedRole?:string 
+  @Column({ nullable: true })
+  public modRole?: string;
 
-  @Column()
-  public modRole?:string
+  @Column({ nullable: true })
+  public botChannel?: string;
 
-  @Column()
-  public botChannel?:string
+  @Column({ nullable: true })
+  public diaryChannel?: string;
 
-  @Column()
-  public diaryChannel?:string
+  @Column({ nullable: true })
+  public singingChannel?: string;
 
-  @Column()
-  public singingChannel?:string
+  @Column({ nullable: true })
+  public boosterRole?: string;
 
-  @Column()
-  public boosterRole?:string
+  async get(id: string): Promise<Server> {
+    const server = await Server.findOne({ where: { id: id } });
+
+    if (server) {
+      return server;
+    } else {
+      return await this.newServer(id);
+    }
+  }
+
+  async newServer(id: string): Promise<Server> {
+    const guild = new Server();
+    guild.id = id;
+
+    await Server.save(guild);
+    return guild;
+  }
 }
-
-
-/*
-
-  mutedRole:string '620609193228894208';
-  modRole:string '588521716481785859';
-  botChannel:string '590205616581115918';
-  diaryChannel:string '713133491373604895';
-  singingChannel:string '620600040204926986';
-  boosterRole:string '639753961339092993';
-
-  */

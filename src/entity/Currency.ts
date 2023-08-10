@@ -1,9 +1,9 @@
-import { Entity, PrimaryColumn, OneToOne, JoinColumn, OneToMany } from 'typeorm';
+import { Entity, PrimaryColumn, OneToOne, JoinColumn, OneToMany, BaseEntity } from 'typeorm';
 import { Item } from './Item';
 import { Shop } from './Shop';
 
 @Entity()
-export class Currency {
+export class Currency extends BaseEntity {
   @PrimaryColumn()
   public shopId!: number;
 

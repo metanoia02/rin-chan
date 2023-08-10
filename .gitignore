@@ -2,3 +2,5 @@ node_modules
 package-lock.json
 src/tokens.json
 src/images
+dist
+orange.db3

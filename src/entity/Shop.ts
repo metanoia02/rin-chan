@@ -1,11 +1,19 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn, ManyToOne } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  OneToOne,
+  JoinColumn,
+  ManyToOne,
+  BaseEntity,
+} from 'typeorm';
 import { Currency } from './Currency';
 
 /**
  * Represents a shop that trades in a related currency item
  */
 @Entity()
-export class Shop {
+export class Shop extends BaseEntity {
   @PrimaryGeneratedColumn()
   public id!: number;
 

@@ -2,6 +2,7 @@ import { REST } from 'discord.js';
 import { Routes } from 'discord-api-types/v10';
 import { clientId, guildId, token } from '../tokens.json';
 import { CommandList } from '../commands/Commands';
+import { AppDataSource } from '../data-source';
 
 const commands = CommandList.map((command) => command.data.toJSON());
 
@@ -12,6 +13,7 @@ const rest = new REST().setToken(token);
 (async () => {
   try {
     console.log(`Started refreshing ${commands.length} application (/) commands.`);
+    commands.forEach((command) => console.log(command.name));
 
     // The put method is used to fully refresh all commands in the guild with the current set
     const data: any = await rest.put(Routes.applicationGuildCommands(clientId, guildId), {
