@@ -1,8 +1,12 @@
+/**
+ * Command registration function from Discord.js documentation.
+ * https://discordjs.guide/creating-your-bot/command-deployment.html#command-registration
+ */
+
 import { REST } from 'discord.js';
 import { Routes } from 'discord-api-types/v10';
 import { clientId, guildId, token } from '../tokens.json';
 import { CommandList } from '../commands/Commands';
-import { AppDataSource } from '../data-source';
 
 const commands = CommandList.map((command) => command.data.toJSON());
 
