@@ -1,21 +1,21 @@
 import { User } from '../entity/User';
 import { Reaction } from '../types/Reaction';
 import { MinMax, isMinMax } from '../types/MinMax';
-import { rinChanRepository } from '../repository/rinChanRepository';
 import { AttachedEmbed } from '../types/AttachedEmbed';
 import { ReactionResponse } from '../types/ReactionResponse';
 import { ReactionReply } from '../types/ReactionReply';
 import arrayRandom from '../util/arrayRandom';
 import { readdirSync } from 'fs';
-import { commandEmbed } from '../util/commands';
+import { RinChan } from '../entity/RinChan';
+import { AttachmentBuilder, EmbedBuilder } from 'discord.js';
 
 export const ReactionMaker = {
   async getReaction(config: Reaction, user: User): Promise<ReactionReply> {
     let answers: ReactionResponse[] = [];
-    const rinChan = await rinChanRepository.get(user.guild);
+    const rinChan = await RinChan.get(user.guild);
 
     if (config.responses) {
-      answers = config.responses.filter((response) => {
+      answers = config.responses.filter(async (response) => {
         let moodFulfilled = true;
         let hungerFulfilled = true;
         let affectionFulfilled = true;
@@ -30,8 +30,8 @@ export const ReactionMaker = {
         if (response.affection && user) {
           affectionFulfilled = this.checkFulfilled(response.affection, user.affection);
         }
-        if (response.boost && user.discordMember) {
-          boostFulfilled = response.boost && user.isBoosting;
+        if (response.boost && (await user.getDiscordMember())) {
+          boostFulfilled = response.boost && (await user.isBoosting());
         }
 
         return moodFulfilled && hungerFulfilled && affectionFulfilled && boostFulfilled;
@@ -49,14 +49,14 @@ export const ReactionMaker = {
           image = arrayRandom(readdirSync(config.images));
         }
       }
-      return { reply: defaultAnswer, image: config.images + image };
+      return { reply: defaultAnswer, imagePath: config.images, imageFilename: image };
     } else {
-      return arrayRandom(
-        config.responses!.map((response) => ({
-          reply: arrayRandom(response.response),
-          image: config.images + response.image,
-        })),
-      );
+      const response = arrayRandom(config.responses!);
+      return {
+        reply: arrayRandom(response.response),
+        imagePath: config.images,
+        imageFilename: response.image,
+      };
     }
   },
 
@@ -67,15 +67,15 @@ export const ReactionMaker = {
   async getEmbed(config: Reaction, user: User): Promise<AttachedEmbed> {
     const reaction = await this.getReaction(config, user);
 
-    const attachedEmbed = commandEmbed(reaction.reply, reaction.image);
+    const commandAttachment = new AttachmentBuilder(reaction.imagePath + reaction.imageFilename);
+    const commandEmbed = new EmbedBuilder()
+      .setDescription(reaction.reply)
+      .setThumbnail(`attachment://${reaction.imageFilename}`);
+
+    const attachedEmbed = { files: [commandAttachment], embeds: [commandEmbed] };
+
     attachedEmbed.embeds[0].setColor(config.embedColour);
 
-    if (user.discordMember) {
-      attachedEmbed.embeds[0].setFooter({
-        text: user.discordMember.displayName,
-        iconURL: user.discordMember.avatarURL()!,
-      });
-    }
     return attachedEmbed;
   },
 

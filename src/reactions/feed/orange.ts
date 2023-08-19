@@ -1,6 +1,6 @@
 import { Reaction } from '../../types/Reaction';
 
-export const feedOrangeReact: Reaction = {
+export const feedOrange: Reaction = {
   images: './src/images/emotes/',
 
   embedColour: '#FF4500',

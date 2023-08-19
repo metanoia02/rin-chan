@@ -6,15 +6,16 @@ import { RinChan } from '../../entity/RinChan';
 import { AttachedEmbed } from '../../types/AttachedEmbed';
 import { config } from '../../config';
 import { ReactionMaker } from '../../reactions/ReactionMaker';
-import { rinChanRepository } from '../../repository/rinChanRepository';
 import { getCooldown, commandEmbed } from '../../util/commands';
 import * as schedule from 'node-schedule';
 
 // Reactions
 import { findOrange as findOrangeReact } from '../../reactions/harvest/findOrange';
 import { imTired as imTiredReact } from '../../reactions/harvest/imTired';
-
-const lenImages = { path: './src/images/len/', quantity: 10 };
+import { couldntFind as couldntFindReact } from '../../reactions/harvest/couldntFind';
+import { findLen as findLenReact } from '../../reactions/harvest/findLen';
+import { stealOrange as stealOrangeReact } from '../../reactions/harvest/stealOrange';
+import { SlashCommandError } from 'src/util/SlashCommandError';
 
 export const harvest: ICommand = {
   data: new SlashCommandBuilder()
@@ -22,8 +23,8 @@ export const harvest: ICommand = {
     .setDescription('Try your luck to get some oranges!'),
   execute: async (interaction: CommandInteraction) => {
     const today = new Date();
-    const user = await User.getUser(interaction.user.id, interaction.guildId!);
-    const rinChan = await rinChanRepository.get(interaction.guildId!);
+    const user = await User.get(interaction.user.id, interaction.guildId!);
+    const rinChan = await RinChan.get(interaction.guildId!);
     const chance = Math.floor(Math.random() * 100) + 1;
     let response: AttachedEmbed | null = null;
 
@@ -31,16 +32,16 @@ export const harvest: ICommand = {
       response = commandEmbed('Forget that! I have cake to eat!', 'smolrin.png');
     } else if (user.harvestAttempts > 0) {
       if (0 < chance && chance <= 5) {
-        response = findLen(user);
+        response = await findLen(user);
       } else if (5 < chance && chance <= 65) {
         const chanceSteal = Math.floor(Math.random() * 100) + 1;
         if (rinChan.hunger > 3 && chanceSteal > 50) {
-          response = stealOrange(user, rinChan);
+          response = await stealOrange(user, rinChan);
         } else {
           response = await findOrange(user);
         }
       } else if (65 < chance && chance <= 100) {
-        response = couldntFind(user);
+        response = await couldntFind(user);
       }
 
       if (today.getTime() - user.lastHarvested > config.orangeHarvestCooldown) {
@@ -56,74 +57,47 @@ export const harvest: ICommand = {
       });
     }
 
-    rinChanRepository.save(rinChan);
+    RinChan.save(rinChan);
     User.save(user);
+
     if (response) interaction.reply(response);
-    else throw new Error('Response not set in harvest.');
+    else throw new SlashCommandError('Response not set in harvest.', user);
   },
 };
 
-function stealOrange(user: User, rinChan: RinChan): AttachedEmbed {
+async function stealOrange(user: User, rinChan: RinChan): Promise<AttachedEmbed> {
   rinChan.hunger = rinChan.hunger - 1;
   user.harvestAttempts = user.harvestAttempts - 1;
 
-  const stealAttachment = new AttachmentBuilder('./src/images/emotes/rintehe.png', {
-    name: 'rintehe.png',
-  });
-  const stealEmbed = new EmbedBuilder()
-    .setColor('#FF0000')
-    .setTitle('Harvest')
-    .setDescription(`I found one! But I got hungry on the way back.`)
-    .setThumbnail('attachment://rintehe.png');
-
-  return { embeds: [stealEmbed], files: [stealAttachment] };
+  return await ReactionMaker.getEmbed(stealOrangeReact, user);
 }
 
-function findLen(user: User): AttachedEmbed {
-  user.changeQuantity('kagamineLen', 1);
+async function findLen(user: User): Promise<AttachedEmbed> {
+  await user.giveItem('kagamineLen');
   user.harvestAttempts = 0;
 
-  const imageName = Math.floor(Math.random() * lenImages.quantity) + 1 + '.jpg';
-  const image = lenImages.path + imageName;
-
-  const couldntFindAttachment = new AttachmentBuilder(image, { name: imageName });
-  const couldntFindEmbed = new EmbedBuilder()
-    .setColor('#FFFF00')
-    .setTitle('Harvest')
-    .setDescription('Found a Len! <:rinwao:701505851449671871>')
-    .setImage(`attachment://${imageName}`);
-
-  return { embeds: [couldntFindEmbed], files: [couldntFindAttachment] };
+  return await ReactionMaker.getEmbed(findLenReact, user);
 }
 
 async function findOrange(user: User): Promise<AttachedEmbed> {
-  user.changeQuantity('orange', 1);
+  await user.giveItem('orange');
   user.harvestAttempts = user.harvestAttempts - 1;
 
   return await ReactionMaker.getEmbed(findOrangeReact, user);
 }
 
-function couldntFind(user: User): AttachedEmbed {
+async function couldntFind(user: User): Promise<AttachedEmbed> {
   user.harvestAttempts = user.harvestAttempts - 1;
 
-  const couldntFindAttachment = new AttachmentBuilder('./src/images/emotes/rinyabai.png', {
-    name: 'rinyabai.png',
-  });
-  const couldntFindEmbed = new EmbedBuilder()
-    .setColor('#FF0000')
-    .setTitle('Harvest')
-    .setDescription(`Couldn't find anything`)
-    .setThumbnail('attachment://rinyabai.png');
-
-  return { embeds: [couldntFindEmbed], files: [couldntFindAttachment] };
+  return await ReactionMaker.getEmbed(couldntFindReact, user);
 }
 
-const updateTriesInterval = schedule.scheduleJob('0 * * * * *', async () => {
+schedule.scheduleJob('0 * * * * *', async () => {
   const users = await User.find();
   const now = new Date();
 
-  users.forEach((thisUser: User) => {
-    const maxTries = thisUser.isBoosting ? 4 : 3;
+  users.forEach(async (thisUser: User) => {
+    const maxTries = (await thisUser.isBoosting()) ? 4 : 3;
     if (thisUser.harvestAttempts < maxTries) {
       if (now.getTime() - thisUser.lastHarvested > config.orangeHarvestCooldown) {
         thisUser.harvestAttempts = thisUser.harvestAttempts + 1;

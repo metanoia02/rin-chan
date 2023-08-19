@@ -1,6 +1,6 @@
 import { Reaction } from '../../types/Reaction';
 
-export const feedBirthdayCakeReact: Reaction = {
+export const feedBirthdayCake: Reaction = {
   embedColour: '#FF8C00',
 
   images: './images/birthdayCake/',
