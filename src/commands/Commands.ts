@@ -8,6 +8,7 @@ import { server } from './test/server';
 import { user } from './test/user';
 import { currency } from './utility/currency';
 import { serverConfig } from './admin/serverConfig';
+import { leaderboard } from './items/leaderboard';
 
 export const CommandList: Collection<string, ICommand> = new Collection();
 
@@ -17,4 +18,5 @@ CommandList.set('ping', ping);
 CommandList.set('server', server);
 CommandList.set('user', user);
 CommandList.set('currency', currency);
+CommandList.set('leaderboard', leaderboard);
 CommandList.set(serverConfig.data.name, serverConfig);
