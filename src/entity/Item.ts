@@ -1,6 +1,7 @@
 import { Entity, PrimaryColumn, Column, OneToMany, ManyToMany, BaseEntity } from 'typeorm';
 import { InventoryStack } from './InventoryStack';
 import { ItemAlts } from './ItemAlts';
+import { SlashCommandError } from 'src/util/SlashCommandError';
 
 /**
  * Represents a single Item or song.
@@ -37,8 +38,24 @@ export class Item extends BaseEntity {
   @OneToMany(() => ItemAlts, (alts) => alts.item)
   public alts?: ItemAlts;
 
-  async get(itemId: string): Promise<Item | null> {
+  static async get(itemId: string): Promise<Item> {
     const item = await Item.findOne({ where: { id: itemId } });
-    return item;
+    if (item) {
+      return item;
+    } else {
+      throw new SlashCommandError('Invalid item.', itemId);
+    }
+  }
+
+  static async exists(itemAlt: string): Promise<boolean> {
+    if (
+      (await Item.findOne({ where: { id: itemAlt } })) ||
+      (await Item.findOne({ where: { name: itemAlt } })) ||
+      (await ItemAlts.findOne({ where: { name: itemAlt } }))
+    ) {
+      return true;
+    } else {
+      return false;
+    }
   }
 }

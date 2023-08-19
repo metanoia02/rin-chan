@@ -1,9 +1,9 @@
 import { Entity, Column, PrimaryColumn, PrimaryGeneratedColumn, BaseEntity } from 'typeorm';
-import { IsInt, Min, Max, IsBoolean } from 'class-validator';
 import { Guild } from 'discord.js';
 import { clamp } from '../util/clamp';
 import { config } from '../config';
 import * as schedule from 'node-schedule';
+import { client } from '../client';
 
 /**
  * Represents a Rinchan on a particular server.
@@ -17,22 +17,15 @@ export class RinChan extends BaseEntity {
   public guildId!: string;
 
   @Column({ default: 5 })
-  @IsInt()
-  @Min(0)
-  @Max(5)
   public hunger!: number;
 
   @Column({ default: 3 })
-  @IsInt()
-  @Min(1)
-  @Max(6)
   public mood!: number;
 
   @Column({ default: 0 })
   public lastFed!: number;
 
   @Column({ default: false })
-  @IsBoolean()
   public collecting!: boolean;
 
   changeHunger(guild: Guild, hunger: number) {
@@ -41,17 +34,17 @@ export class RinChan extends BaseEntity {
     guild.setIcon(config.hungerIcon[hunger]);
   }
 
-  async get(guildId: string): Promise<RinChan> {
-    const rinChan = await RinChan.findOne({ where: { id: guildId } });
+  static async get(guildId: string): Promise<RinChan> {
+    const rinChan = await RinChan.findOne({ where: { guildId: guildId } });
 
     if (rinChan) {
       return rinChan;
     } else {
-      return await this.newRinchan(guildId);
+      return await RinChan.newRinchan(guildId);
     }
   }
 
-  async newRinchan(guild: string): Promise<RinChan> {
+  private static async newRinchan(guild: string): Promise<RinChan> {
     const rinChan = new RinChan();
     rinChan.id = client.user!.id;
     rinChan.guildId = guild;

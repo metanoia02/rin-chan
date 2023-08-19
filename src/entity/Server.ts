@@ -23,6 +23,9 @@ export class Server extends BaseEntity {
   @Column({ nullable: true })
   public boosterRole?: string;
 
+  @Column({ nullable: true })
+  public loungeChannel?: string;
+
   static async get(id: string): Promise<Server> {
     const server = await Server.findOne({ where: { id: id } });
 
@@ -33,7 +36,7 @@ export class Server extends BaseEntity {
     }
   }
 
-  static async newServer(id: string): Promise<Server> {
+  private static async newServer(id: string): Promise<Server> {
     const guild = new Server();
     guild.id = id;
 
