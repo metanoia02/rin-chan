@@ -9,6 +9,7 @@ import { user } from './test/user';
 import { currency } from './utility/currency';
 import { serverConfig } from './admin/serverConfig';
 import { leaderboard } from './items/leaderboard';
+import { feed } from './items/feed';
 
 export const CommandList: Collection<string, ICommand> = new Collection();
 
@@ -19,4 +20,5 @@ CommandList.set('server', server);
 CommandList.set('user', user);
 CommandList.set('currency', currency);
 CommandList.set('leaderboard', leaderboard);
+CommandList.set('feed', feed);
 CommandList.set(serverConfig.data.name, serverConfig);
