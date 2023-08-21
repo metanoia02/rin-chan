@@ -22,7 +22,7 @@ export function getCooldown(cooldown: number, lastTime: number): string {
  * @returns {AttachedEmbed} Embed object.
  */
 export function commandEmbed(reply: string, emote: string): AttachedEmbed {
-  const commandAttachment = new AttachmentBuilder(`./images/emotes/${emote}`, { name: emote });
+  const commandAttachment = new AttachmentBuilder(`./src/images/emotes/${emote}`, { name: emote });
   const commandEmbed = new EmbedBuilder()
     .setColor(0xff0000)
     .setTitle('Harvest')

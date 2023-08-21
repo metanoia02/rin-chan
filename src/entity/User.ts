@@ -9,7 +9,7 @@ import { commandEmbed } from '../util/commands';
 import { clamp } from '../util/clamp';
 import { Item } from './Item';
 import { Server } from './Server';
-import { SlashCommandError } from 'src/util/SlashCommandError';
+import { SlashCommandError } from '../util/SlashCommandError';
 
 /**
  * Represents a User.
@@ -88,6 +88,18 @@ export class User extends BaseEntity {
    */
   async giveItem(itemId: string) {
     await this.setQuantity(itemId, (await this.getQuantity(itemId)) + 1);
+  }
+
+  /**
+   * Remove a single item to the user
+   * @param itemId Id of item
+   */
+  async takeItem(itemId: string) {
+    if ((await this.getQuantity(itemId)) > 0) {
+      await this.setQuantity(itemId, (await this.getQuantity(itemId)) - 1);
+    } else {
+      throw new SlashCommandError('Tried to take item user does not have.', this);
+    }
   }
 
   async setQuantity(itemId: string, quantity: number) {

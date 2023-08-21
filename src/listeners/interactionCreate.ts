@@ -1,7 +1,7 @@
 import { Client, Events, Interaction, TextBasedChannel } from 'discord.js';
 import { CommandList } from '../commands/Commands';
-import { SlashCommandError } from 'src/util/SlashCommandError';
-import { Server } from 'src/entity/Server';
+import { SlashCommandError } from '../util/SlashCommandError';
+import { Server } from '../entity/Server';
 
 export default (client: Client): void => {
   client.on(Events.InteractionCreate, async (interaction: Interaction) => {
@@ -73,8 +73,9 @@ export default (client: Client): void => {
           } else {
             console.log(error.toString(interaction.commandName));
           }
-      } else {
-        console.log(error);
+        } else {
+          console.log(error);
+        }
       }
     }
   });

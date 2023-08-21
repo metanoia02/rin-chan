@@ -1,6 +1,6 @@
 import { ICommand } from '../../interfaces/ICommand';
 import { SlashCommandBuilder } from '@discordjs/builders';
-import { AttachmentBuilder, CommandInteraction, EmbedBuilder } from 'discord.js';
+import { CommandInteraction } from 'discord.js';
 import { User } from '../../entity/User';
 import { RinChan } from '../../entity/RinChan';
 import { AttachedEmbed } from '../../types/AttachedEmbed';
@@ -15,7 +15,7 @@ import { imTired as imTiredReact } from '../../reactions/harvest/imTired';
 import { couldntFind as couldntFindReact } from '../../reactions/harvest/couldntFind';
 import { findLen as findLenReact } from '../../reactions/harvest/findLen';
 import { stealOrange as stealOrangeReact } from '../../reactions/harvest/stealOrange';
-import { SlashCommandError } from 'src/util/SlashCommandError';
+import { SlashCommandError } from '../../util/SlashCommandError';
 
 export const harvest: ICommand = {
   data: new SlashCommandBuilder()

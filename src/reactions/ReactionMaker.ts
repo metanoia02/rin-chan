@@ -20,6 +20,7 @@ export const ReactionMaker = {
         let hungerFulfilled = true;
         let affectionFulfilled = true;
         let boostFulfilled = true;
+        let timeFulfilled = true;
 
         if (response.mood) {
           moodFulfilled = this.checkFulfilled(response.mood, rinChan.mood);
@@ -32,6 +33,9 @@ export const ReactionMaker = {
         }
         if (response.boost && (await user.getDiscordMember())) {
           boostFulfilled = response.boost && (await user.isBoosting());
+        }
+        if (response.time) {
+          timeFulfilled = this.checkFulfilled(response.time, new Date().getHours());
         }
 
         return moodFulfilled && hungerFulfilled && affectionFulfilled && boostFulfilled;

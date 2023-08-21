@@ -1,7 +1,7 @@
 import { Entity, PrimaryColumn, Column, OneToMany, ManyToMany, BaseEntity } from 'typeorm';
 import { InventoryStack } from './InventoryStack';
 import { ItemAlts } from './ItemAlts';
-import { SlashCommandError } from 'src/util/SlashCommandError';
+import { SlashCommandError } from '../util/SlashCommandError';
 
 /**
  * Represents a single Item or song.

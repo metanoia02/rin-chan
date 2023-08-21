@@ -7,4 +7,5 @@ export type ReactionResponse = {
   boost?: boolean;
   response: string[];
   image?: string;
+  time?: MinMax;
 };

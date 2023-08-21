@@ -51,6 +51,10 @@ export class RinChan extends BaseEntity {
     await RinChan.save(rinChan);
     return rinChan;
   }
+
+  async feed() {}
+
+  async moodUp() {}
 }
 
 /**
