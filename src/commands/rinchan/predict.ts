@@ -1,10 +1,10 @@
 import { ICommand } from '../../interfaces/ICommand';
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { ChatInputCommandInteraction, Message } from 'discord.js';
-import { User } from 'src/entity/User';
-import { commandEmbed } from 'src/util/commands';
-import { RinChan } from 'src/entity/RinChan';
-import arrayRandom from 'src/util/arrayRandom';
+import { User } from '../../entity/User';
+import { commandEmbed } from '../../util/commands';
+import { RinChan } from '../../entity/RinChan';
+import arrayRandom from '../../util/arrayRandom';
 
 const responses = [
   'It is certain',
@@ -34,10 +34,16 @@ const price = 3;
 export const predict: ICommand = {
   data: new SlashCommandBuilder()
     .setName('predict')
-    .setDescription('Ask Rin-chan to make a prediction about something.'),
+    .setDescription('Ask Rin-chan to make a prediction about something. Costs 3 oranges.')
+    .addStringOption((stringOptions) =>
+      stringOptions
+        .setName('prediction')
+        .setDescription('A question for Rin-chan')
+        .setRequired(true),
+    ),
 
   async execute(interaction: ChatInputCommandInteraction) {
-    const filter = (response:Message) => {
+    const filter = (response: Message) => {
       return response.author.id === interaction.user.id;
     };
 
@@ -46,25 +52,25 @@ export const predict: ICommand = {
         `You may seek my wisdom for a small fee of ${price} oranges. If that's okay ask your question now:`,
       );
 
-      const collector = interaction.channel.createMessageCollector({filter: filter, time: 30000);
+      const collector = interaction.channel.createMessageCollector({ filter: filter, time: 30000 });
 
-        collector.on('collect', (message) => {
-          const user = await User.get(message.author.id, message.guildId!);
-          if (await user.getQuantity('orange') < price) {
-            interaction.followUp(commandEmbed(`You don't have enough oranges.`, 'rinpls.png'));
-          }
+      collector.on('collect', async (message) => {
+        const user = await User.get(message.author.id, message.guildId!);
+        if ((await user.getQuantity('orange')) < price) {
+          interaction.followUp(commandEmbed(`You don't have enough oranges.`, 'rinpls.png'));
+        }
 
-          const rinChan = await RinChan.get(message.guildId!);
-          user.setQuantity('orange', (await user.getQuantity('orange')) - price);
-          const rinchan = await User.get(rinChan.id, message.guildId!);
-          rinchan.setQuantity('orange', (await rinchan.getQuantity('orange')) + price);
+        const rinChan = await RinChan.get(message.guildId!);
+        user.setQuantity('orange', (await user.getQuantity('orange')) - price);
+        const rinchan = await User.get(rinChan.id, message.guildId!);
+        rinchan.setQuantity('orange', (await rinchan.getQuantity('orange')) + price);
 
-          interaction.followUp(arrayRandom(responses));
-        });
+        interaction.followUp(arrayRandom(responses));
+      });
 
-        collector.on('end', (() => {
-          interaction.followUp('Another time perhaps');
-        }));
+      collector.on('end', () => {
+        interaction.followUp('Another time perhaps');
+      });
     }
   },
 };

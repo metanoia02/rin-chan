@@ -1,8 +1,8 @@
 import { ICommand } from '../../interfaces/ICommand';
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { ChatInputCommandInteraction } from 'discord.js';
-import { ReactionMaker } from 'src/reactions/ReactionMaker';
-import { User } from 'src/entity/User';
+import { ReactionMaker } from '../../reactions/ReactionMaker';
+import { User } from '../../entity/User';
 import { sayHi as sayHiReact } from '../../reactions/rinchan/sayHi';
 
 export const sayhi: ICommand = {

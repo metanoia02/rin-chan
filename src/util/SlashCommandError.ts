@@ -19,10 +19,9 @@ export class SlashCommandError {
    * @param {string} commandName Command name for title of embed.
    * @return {Discord.MessageEmbed} Embed Entity.
    */
-  getEmbed(commandName: string): MessageCreateOptions {
+  getEmbed(): MessageCreateOptions {
     const commandEmbed = new EmbedBuilder()
       .setColor(0xff0000)
-      .setTitle(commandName)
       .setDescription(this.message)
       .addFields({
         name: this.errorClass.constructor.name,

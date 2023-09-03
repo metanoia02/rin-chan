@@ -25,7 +25,6 @@ export function commandEmbed(reply: string, emote: string): AttachedEmbed {
   const commandAttachment = new AttachmentBuilder(`./src/images/emotes/${emote}`, { name: emote });
   const commandEmbed = new EmbedBuilder()
     .setColor(0xff0000)
-    .setTitle('Harvest')
     .setDescription(reply)
     .setThumbnail(`attachment://${emote}`);
 

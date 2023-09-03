@@ -2,8 +2,8 @@ import { ICommand } from '../../interfaces/ICommand';
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { ChatInputCommandInteraction } from 'discord.js';
 import { thanks as thanksReact } from '../../reactions/misc/thanks';
-import { ReactionMaker } from 'src/reactions/ReactionMaker';
-import { User } from 'src/entity/User';
+import { ReactionMaker } from '../../reactions/ReactionMaker';
+import { User } from '../../entity/User';
 
 export const thanks: ICommand = {
   data: new SlashCommandBuilder().setName('thanks').setDescription('Thank Rin-chan.'),

@@ -37,7 +37,7 @@ export default (client: Client): void => {
               const channel = await discordServer.channels.fetch(server.diaryChannel);
 
               if (channel?.isTextBased()) {
-                (channel as TextBasedChannel).send(error.getEmbed(interaction.commandName));
+                (channel as TextBasedChannel).send(error.getEmbed());
               }
             }
           } else {
@@ -67,7 +67,7 @@ export default (client: Client): void => {
               const channel = await discordServer.channels.fetch(server.diaryChannel);
 
               if (channel?.isTextBased()) {
-                (channel as TextBasedChannel).send(error.getEmbed(interaction.commandName));
+                (channel as TextBasedChannel).send(error.getEmbed());
               }
             }
           } else {

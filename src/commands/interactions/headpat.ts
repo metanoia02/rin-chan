@@ -1,6 +1,6 @@
 import { ICommand } from '../../interfaces/ICommand';
 import { SlashCommandBuilder } from '@discordjs/builders';
-import { ChatInputCommandInteraction } from 'discord.js';
+import { AttachmentBuilder, ChatInputCommandInteraction, EmbedBuilder } from 'discord.js';
 import { ReactionMaker } from '../../reactions/ReactionMaker';
 import { User } from '../../entity/User';
 import { RinChan } from '../../entity/RinChan';
@@ -42,17 +42,26 @@ export const headpat: ICommand = {
           return;
         } else {
           await user.setQuantity('orange', (await user.getQuantity('orange')) - cost);
-          const rinchan = await User.get(rinChan.id, interaction.guildId!);
           await user.setQuantity('orange', (await user.getQuantity('orange')) + cost);
 
-          const embed = await ReactionMaker.getEmbed(giveHeadpatReact, user);
-          embed.embeds[0].setDescription(
-            (await user.getDiscordMember()) +
-              embed.embeds[0].data.description! +
-              (await rinchan.getDiscordMember()),
-          );
+          const reaction = await ReactionMaker.getReaction(giveHeadpatReact, user);
 
-          interaction.reply(embed);
+          const commandAttachment = new AttachmentBuilder(
+            reaction.imagePath + reaction.imageFilename,
+          );
+          const commandEmbed = new EmbedBuilder()
+            .addFields([
+              {
+                name: '\u200b',
+                value: '<@' + targetUser.id + '>' + reaction.reply + '<@' + rinChan.id + '>',
+              },
+            ])
+            .setThumbnail(`attachment://${reaction.imageFilename}`)
+            .setColor(giveHeadpatReact.embedColour);
+
+          const attachedEmbed = { files: [commandAttachment], embeds: [commandEmbed] };
+
+          interaction.reply(attachedEmbed);
           return;
         }
       }

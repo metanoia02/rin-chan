@@ -28,7 +28,7 @@ export class User extends BaseEntity {
   @Column({ default: 3 })
   public harvestAttempts!: number;
 
-  @Column({ default: Date.now() })
+  @Column({ default: 0 })
   public lastFedRinchan!: number;
 
   @Column({ default: 0 })
@@ -162,7 +162,7 @@ export class User extends BaseEntity {
     user.id = id;
     user.guild = guild;
 
-    this.save(user);
+    await this.save(user);
     return user;
   }
 
