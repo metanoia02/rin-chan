@@ -15,31 +15,32 @@ export const ReactionMaker = {
     const rinChan = await RinChan.get(user.guild);
 
     if (config.responses) {
-      answers = config.responses.filter(async (response) => {
+      for (const response of config.responses) {
         let moodFulfilled = true;
         let hungerFulfilled = true;
         let affectionFulfilled = true;
         let boostFulfilled = true;
         let timeFulfilled = true;
 
-        if (response.mood) {
+        if (response.mood != undefined) {
           moodFulfilled = this.checkFulfilled(response.mood, rinChan.mood);
         }
-        if (response.hunger) {
+        if (response.hunger != undefined) {
           hungerFulfilled = this.checkFulfilled(response.hunger, rinChan.hunger);
         }
-        if (response.affection && user) {
+        if (response.affection != undefined && user) {
           affectionFulfilled = this.checkFulfilled(response.affection, user.affection);
         }
         if (response.boost && (await user.getDiscordMember())) {
           boostFulfilled = response.boost && (await user.isBoosting());
         }
-        if (response.time) {
+        if (response.time != undefined) {
           timeFulfilled = this.checkFulfilled(response.time, new Date().getHours());
         }
 
-        return moodFulfilled && hungerFulfilled && affectionFulfilled && boostFulfilled;
-      });
+        if (moodFulfilled && hungerFulfilled && affectionFulfilled && boostFulfilled)
+          answers.push(response);
+      }
     }
 
     if (answers.length < 1) {
@@ -55,7 +56,7 @@ export const ReactionMaker = {
       }
       return { reply: defaultAnswer, imagePath: config.images, imageFilename: image };
     } else {
-      const response = arrayRandom(config.responses!);
+      const response = arrayRandom(answers);
       return {
         reply: arrayRandom(response.response),
         imagePath: config.images,
@@ -73,12 +74,11 @@ export const ReactionMaker = {
 
     const commandAttachment = new AttachmentBuilder(reaction.imagePath + reaction.imageFilename);
     const commandEmbed = new EmbedBuilder()
-      .setDescription(reaction.reply)
-      .setThumbnail(`attachment://${reaction.imageFilename}`);
+      .addFields([{ name: '\u200b', value: reaction.reply }])
+      .setThumbnail(`attachment://${reaction.imageFilename}`)
+      .setColor(config.embedColour);
 
     const attachedEmbed = { files: [commandAttachment], embeds: [commandEmbed] };
-
-    attachedEmbed.embeds[0].setColor(config.embedColour);
 
     return attachedEmbed;
   },

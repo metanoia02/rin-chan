@@ -3,7 +3,7 @@ import { Reaction } from '../../types/Reaction';
 export const sayHi: Reaction = {
   embedColour: '#FFFFFF',
 
-  images: './images/emotes/',
+  images: './src/images/emotes/',
 
   default: {
     response: ['Why are you bothering me at this time, I need to sleep!'],
