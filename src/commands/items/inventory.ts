@@ -36,7 +36,6 @@ export const inventory: ICommand = {
     const attachment = new AttachmentBuilder(inventoryImage, { name: 'inventory.png' });
     const inventoryEmbed = new EmbedBuilder()
       .setColor('#0099ff')
-      .setTitle(`Inventory`)
       .setImage('attachment://inventory.png');
 
     interaction.reply({ embeds: [inventoryEmbed], files: [attachment] });

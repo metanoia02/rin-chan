@@ -1,6 +1,10 @@
 import { ICommand } from '../../interfaces/ICommand';
 import { SlashCommandBuilder } from '@discordjs/builders';
-import { CommandInteraction } from 'discord.js';
+import {
+  ChatInputApplicationCommandData,
+  ChatInputCommandInteraction,
+  CommandInteraction,
+} from 'discord.js';
 import { User } from '../../entity/User';
 import { RinChan } from '../../entity/RinChan';
 import { AttachedEmbed } from '../../types/AttachedEmbed';
@@ -20,8 +24,11 @@ import { SlashCommandError } from '../../util/SlashCommandError';
 export const harvest: ICommand = {
   data: new SlashCommandBuilder()
     .setName('harvest')
-    .setDescription('Try your luck to get some oranges!'),
-  execute: async (interaction: CommandInteraction) => {
+    .setDescription('Try your luck to get some oranges!')
+    .addStringOption((stringOptions) =>
+      stringOptions.setName('harvest').setDescription('Something to harvest').setRequired(false),
+    ),
+  execute: async (interaction: ChatInputCommandInteraction) => {
     const today = new Date();
     const user = await User.get(interaction.user.id, interaction.guildId!);
     const rinChan = await RinChan.get(interaction.guildId!);
@@ -59,6 +66,12 @@ export const harvest: ICommand = {
 
     RinChan.save(rinChan);
     User.save(user);
+
+    const harvested = interaction.options.getString('harvest');
+
+    if (harvested) {
+      response?.embeds[0].setDescription(`You harvested ${harvested}.`);
+    }
 
     if (response) interaction.reply(response);
     else throw new SlashCommandError('Response not set in harvest.', user);

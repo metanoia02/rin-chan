@@ -75,7 +75,6 @@ export const leaderboard: ICommand = {
       const attachment = new AttachmentBuilder(leaderboardImage, { name: 'leaderboard.jpg' });
       const leaderboardEmbed = new EmbedBuilder()
         .setColor('#0099ff')
-        .setTitle(`${item.name} Leaderboard`)
         .setImage('attachment://leaderboard.jpg');
 
       interaction.reply({ embeds: [leaderboardEmbed], files: [attachment] });
