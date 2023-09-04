@@ -11,20 +11,22 @@ async function rateUser(user: User, rinChan: RinChan): Promise<AttachedEmbed> {
     return commandEmbed(`Probably about 1000%`, 'rintriumph.png');
   } else {
     return commandEmbed(
-      `I would rate @<${(await user.getDiscordMember()).id}> ${user.affection}%`,
+      `I would rate <@${(await user.getDiscordMember()).id}> ${user.affection}%`,
       'oharin.png',
     );
   }
 }
 
 function rateRandom(toRate: string): AttachedEmbed {
+  const replyStart = 'I would rate';
+
   if (toRate.toLowerCase().includes('orange')) {
-    return commandEmbed(`I would rate '${toRate.trim()}' 100%`, 'rinchill.png');
+    return commandEmbed(`${replyStart} '${toRate.trim()}' 100%`, 'rinchill.png');
   } else if (toRate.toLowerCase().includes('len')) {
-    return commandEmbed(`I would rate '${toRate.trim()}' roadroller%`, 'rinchill.png');
+    return commandEmbed(`${replyStart} '${toRate.trim()}' roadroller%`, 'rinchill.png');
   } else {
     const randomRating = Math.floor(Math.random() * 99) + 1;
-    return commandEmbed(`I would rate '${toRate.trim()}' ${randomRating}%`, 'rinchill.png');
+    return commandEmbed(`${replyStart} '${toRate.trim()}' ${randomRating}%`, 'rinchill.png');
   }
 }
 
@@ -32,8 +34,12 @@ export const rate: ICommand = {
   data: new SlashCommandBuilder()
     .setName('rate')
     .setDescription('Ask Rin-chan to rate an object or player.')
-    .addUserOption((userOption) => userOption.setName('user').setDescription('Pick a user to rate').setRequired(false))
-    .addStringOption((stringOption) => stringOption.setName('thing').setDescription('Enter a thing to rate').setRequired(false)),
+    .addUserOption((userOption) =>
+      userOption.setName('user').setDescription('Pick a user to rate').setRequired(false),
+    )
+    .addStringOption((stringOption) =>
+      stringOption.setName('thing').setDescription('Enter a thing to rate').setRequired(false),
+    ),
 
   async execute(interaction: ChatInputCommandInteraction) {
     const discordUserToRate = interaction.options.getUser('user');
@@ -44,8 +50,8 @@ export const rate: ICommand = {
     if (discordUserToRate) {
       const userToRate = await User.get(discordUserToRate.id, interaction.guildId!);
       interaction.reply(await rateUser(userToRate, rinChan));
-    } else if(thingToRate) {
-      interaction.reply(rateRandom(thingToRate.trim());
+    } else if (thingToRate) {
+      interaction.reply(rateRandom(thingToRate.trim()));
     } else {
       interaction.reply(commandEmbed('What should I rate?', 'rinwha.png'));
     }
