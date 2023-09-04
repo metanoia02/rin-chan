@@ -40,6 +40,9 @@ CommandList.set(sayhi.data.name, sayhi);
 import { thanks } from './rinchan/thanks';
 CommandList.set(thanks.data.name, thanks);
 
+import { rate } from './rinchan/rate';
+CommandList.set(rate.data.name, rate);
+
 //test
 import { ping } from './test/ping';
 CommandList.set('ping', ping);
@@ -56,3 +59,6 @@ CommandList.set(currency.data.name, currency);
 
 import { serverConfig } from './admin/serverConfig';
 CommandList.set(serverConfig.data.name, serverConfig);
+
+import { temperature } from './utility/temperature';
+CommandList.set(temperature.data.name, temperature);
