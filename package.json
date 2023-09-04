@@ -13,6 +13,7 @@
     "@types/node-schedule": "^2.1.0",
     "discord-api-types": "^0.37.50",
     "discord.js": "^14.11.0",
+    "forever": "^4.0.3",
     "handlebars": "^4.7.7",
     "node-fetch": "^3.3.1",
     "node-schedule": "^2.1.1",
