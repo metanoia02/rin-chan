@@ -2,6 +2,7 @@ import { ICommand } from '../../interfaces/ICommand';
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { ChatInputCommandInteraction, PermissionFlagsBits } from 'discord.js';
 import { Server } from '../../entity/Server';
+import { SlashCommandError } from '../../util/SlashCommandError';
 
 /**
  * Set the role for server boosters.
@@ -92,8 +93,7 @@ export const serverConfig: ICommand = {
         message = 'Booster role has been set to ' + role!.name + ' (Id:' + role!.id + ')';
         break;
       default:
-        interaction.reply('Error: Nothing was set');
-        return;
+        throw new SlashCommandError('Subcommand not set', interaction);
     }
 
     await Server.save(server);
