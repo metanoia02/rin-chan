@@ -43,6 +43,9 @@ CommandList.set(thanks.data.name, thanks);
 import { rate } from './rinchan/rate';
 CommandList.set(rate.data.name, rate);
 
+import { howAreYou } from './rinchan/howAreYou';
+CommandList.set(howAreYou.data.name, howAreYou);
+
 //test
 import { ping } from './test/ping';
 CommandList.set('ping', ping);
