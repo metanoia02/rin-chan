@@ -43,6 +43,8 @@ export const ReactionMaker = {
       }
     }
 
+    let reaction: ReactionReply;
+
     if (answers.length < 1) {
       const defaultAnswer = arrayRandom(config.default.response);
       let image = '';
@@ -54,15 +56,21 @@ export const ReactionMaker = {
           image = arrayRandom(readdirSync(config.images));
         }
       }
-      return { reply: defaultAnswer, imagePath: config.images, imageFilename: image };
+      reaction = { reply: defaultAnswer, imagePath: config.images, imageFilename: image };
     } else {
       const response = arrayRandom(answers);
-      return {
+      reaction = {
         reply: arrayRandom(response.response),
         imagePath: config.images,
         imageFilename: response.image,
       };
     }
+
+    if (config.followUp) {
+      reaction.reply += ' ' + arrayRandom(config.followUp);
+    }
+
+    return reaction;
   },
 
   /**
