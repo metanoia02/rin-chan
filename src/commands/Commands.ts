@@ -65,3 +65,6 @@ CommandList.set(serverConfig.data.name, serverConfig);
 
 import { temperature } from './utility/temperature';
 CommandList.set(temperature.data.name, temperature);
+
+import { safebooru } from './utility/safebooru';
+CommandList.set(safebooru.data.name, safebooru);
