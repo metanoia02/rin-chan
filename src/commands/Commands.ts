@@ -7,6 +7,9 @@ export const CommandList: Collection<string, ICommand> = new Collection();
 import { happybirthday } from './events/happyBirthday';
 CommandList.set('happybirthday', happybirthday);
 
+import { merrychristmas } from './events/merryChristmas';
+CommandList.set(merrychristmas.data.name, merrychristmas);
+
 //interactions
 import { headpat } from './interactions/headpat';
 CommandList.set('headpat', headpat);
