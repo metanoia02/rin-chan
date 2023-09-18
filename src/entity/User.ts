@@ -127,6 +127,14 @@ export class User extends BaseEntity {
     await User.save(this);
   }
 
+  async changeQuantity(itemId: string, modifier: number) {
+    await this.setQuantity(itemId, (await this.getQuantity(itemId)) + modifier);
+  }
+
+  getSongBook(): InventoryStack[] {
+    return this.inventory.filter((inventoryStack) => inventoryStack.item.videoUrl);
+  }
+
   async getQuantity(itemId: string): Promise<number> {
     if (!Item.exists(itemId)) throw new SlashCommandError('Invalid Item', itemId);
 

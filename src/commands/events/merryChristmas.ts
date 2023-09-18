@@ -1,13 +1,13 @@
 import { ICommand } from '../../interfaces/ICommand';
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { AttachmentBuilder, ChatInputCommandInteraction, EmbedBuilder } from 'discord.js';
-import { User } from 'src/entity/User';
-import arrayRandom from 'src/util/arrayRandom';
-import { AttachedEmbed } from 'src/types/AttachedEmbed';
+import { User } from '../../entity/User';
+import arrayRandom from '../../util/arrayRandom';
+import { AttachedEmbed } from '../../types/AttachedEmbed';
 import { readdirSync } from 'fs';
-import { commandEmbed } from 'src/util/commands';
+import { commandEmbed } from '../../util/commands';
 
-const christmasImagesPath = './images/christmas/';
+const christmasImagesPath = './src/images/christmas/';
 const itemImage = 'christmasItems.png';
 const christmasImages = readdirSync(christmasImagesPath).filter((file) => file.endsWith('.jpg'));
 
@@ -22,7 +22,7 @@ export const merrychristmas: ICommand = {
     const today = new Date();
 
     if (today.getDate() == 27 && today.getMonth() == 11) {
-      if ((await user.getQuantity('merryChristmasMyHero')) > 0) {
+      if ((await user.getQuantity('merryChristmasMyHero')) < 1) {
         messageStr = `I have a present for you, <@${user.id}>!`;
 
         let followupStr = `I added a song to your song book!
@@ -47,7 +47,7 @@ export const merrychristmas: ICommand = {
         messageStr = `Didn't I already give you a present? Hope you're having a good day!`;
       }
 
-      interaction.followUp(
+      interaction.reply(
         merryChristmasReply(`${christmasImagesPath}${arrayRandom(christmasImages)}`, messageStr),
       );
     } else {
