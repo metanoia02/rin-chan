@@ -5,7 +5,7 @@ import { config } from '../config';
 import { Level } from '../types/Level';
 import { client } from '../client';
 import * as schedule from 'node-schedule';
-import { commandEmbed } from '../util/commands';
+import { commandEmbedEmote } from '../util/commands';
 import { clamp } from '../util/clamp';
 import { Item } from './Item';
 import { Server } from './Server';
@@ -111,6 +111,7 @@ export class User extends BaseEntity {
         this,
       );
 
+    if (!this.inventory) this.inventory = [];
     let inventoryStack = this.inventory?.findLast((stack) => stack.item.id == itemId);
 
     if (inventoryStack) {
@@ -199,7 +200,7 @@ export class User extends BaseEntity {
 
               if (channel?.isTextBased) {
                 (channel as TextChannel).send(
-                  commandEmbed(`${this.id} Level up!`, './src/images/emotes/rinverywow.png'),
+                  commandEmbedEmote(`${this.id} Level up!`, './src/images/emotes/rinverywow.png'),
                 );
               }
             }

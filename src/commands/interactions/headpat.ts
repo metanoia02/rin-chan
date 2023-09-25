@@ -4,7 +4,7 @@ import { AttachmentBuilder, ChatInputCommandInteraction, EmbedBuilder } from 'di
 import { ReactionMaker } from '../../reactions/ReactionMaker';
 import { User } from '../../entity/User';
 import { RinChan } from '../../entity/RinChan';
-import { commandEmbed } from '../../util/commands';
+import { commandEmbedEmote } from '../../util/commands';
 import { giveHeadpat as giveHeadpatReact } from '../../reactions/interactions/giveHeadpat';
 
 const cost = 3;
@@ -28,7 +28,7 @@ export const headpat: ICommand = {
         const currentTime = new Date();
 
         if (user.lastFedRinchan < currentTime.getTime() - 172800000) {
-          interaction.reply(commandEmbed('You never give me oranges...', 'rinpout.png'));
+          interaction.reply(commandEmbedEmote('You never give me oranges...', 'rinpout.png'));
           return;
         } else {
           interaction.reply('<:rincomf:634115522002419744>');
@@ -37,7 +37,10 @@ export const headpat: ICommand = {
       } else {
         if ((await user.getQuantity('orange')) < cost) {
           interaction.reply(
-            commandEmbed(`To do that I'll need a 'donation' of ${cost} oranges`, 'rinpout.png'),
+            commandEmbedEmote(
+              `To do that I'll need a 'donation' of ${cost} oranges`,
+              'rinpout.png',
+            ),
           );
           return;
         } else {

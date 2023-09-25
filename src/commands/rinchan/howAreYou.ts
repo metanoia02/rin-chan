@@ -11,7 +11,7 @@ import {
 import { ReactionMaker } from '../../reactions/ReactionMaker';
 import { User } from '../../entity/User';
 import { howYou as howYouReact } from '../../reactions/rinchan/howYou';
-import { commandEmbed } from '../../util/commands';
+import { commandEmbedEmote } from '../../util/commands';
 
 const cheerUpImages = { path: './src/images/cheerup/', quantity: 6 };
 
@@ -52,11 +52,11 @@ export const howAreYou: ICommand = {
             files: [commandAttachment],
           });
         } else if (collected.has('✅')) {
-          interaction.followUp(commandEmbed(`That's great!`, 'rinok.png'));
+          interaction.followUp(commandEmbedEmote(`That's great!`, 'rinok.png'));
         }
       })
       .catch(() => {
-        interaction.followUp(commandEmbed(`Well I hope you're okay`, 'rinlove.png'));
+        interaction.followUp(commandEmbedEmote(`Well I hope you're okay`, 'rinlove.png'));
       });
   },
 };

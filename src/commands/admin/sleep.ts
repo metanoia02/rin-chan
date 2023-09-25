@@ -4,7 +4,7 @@ import { ChatInputCommandInteraction, PermissionFlagsBits, TextBasedChannel } fr
 import { Forever } from 'forever';
 import { client } from 'src/client';
 import { Server } from 'src/entity/Server';
-import { commandEmbed } from 'src/util/commands';
+import { commandEmbedEmote } from 'src/util/commands';
 import { CommandFailedEvent } from 'typeorm';
 
 export const sleep: ICommand = {
@@ -20,7 +20,9 @@ export const sleep: ICommand = {
     if (server.botChannel) {
       const botChannel = client.guilds.cache.get(server.id)?.channels.cache.get(server.botChannel);
       if (botChannel?.isTextBased) {
-        (botChannel as TextBasedChannel).send(commandEmbed(`I'll be right back!`, 'rinbath.png'));
+        (botChannel as TextBasedChannel).send(
+          commandEmbedEmote(`I'll be right back!`, 'rinbath.png'),
+        );
       }
     }
 

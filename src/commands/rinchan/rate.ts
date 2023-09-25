@@ -4,13 +4,13 @@ import { ChatInputCommandInteraction } from 'discord.js';
 import { User } from '../../entity/User';
 import { RinChan } from '../../entity/RinChan';
 import { AttachedEmbed } from '../../types/AttachedEmbed';
-import { commandEmbed } from '../../util/commands';
+import { commandEmbedEmote } from '../../util/commands';
 
 async function rateUser(user: User, rinChan: RinChan): Promise<AttachedEmbed> {
   if (user.id == rinChan.id) {
-    return commandEmbed(`Probably about 1000%`, 'rintriumph.png');
+    return commandEmbedEmote(`Probably about 1000%`, 'rintriumph.png');
   } else {
-    return commandEmbed(
+    return commandEmbedEmote(
       `I would rate <@${(await user.getDiscordMember()).id}> ${user.affection}%`,
       'oharin.png',
     );
@@ -21,12 +21,12 @@ function rateRandom(toRate: string): AttachedEmbed {
   const replyStart = 'I would rate';
 
   if (toRate.toLowerCase().includes('orange')) {
-    return commandEmbed(`${replyStart} '${toRate.trim()}' 100%`, 'rinchill.png');
+    return commandEmbedEmote(`${replyStart} '${toRate.trim()}' 100%`, 'rinchill.png');
   } else if (toRate.toLowerCase().includes('len')) {
-    return commandEmbed(`${replyStart} '${toRate.trim()}' roadroller%`, 'rinchill.png');
+    return commandEmbedEmote(`${replyStart} '${toRate.trim()}' roadroller%`, 'rinchill.png');
   } else {
     const randomRating = Math.floor(Math.random() * 99) + 1;
-    return commandEmbed(`${replyStart} '${toRate.trim()}' ${randomRating}%`, 'rinchill.png');
+    return commandEmbedEmote(`${replyStart} '${toRate.trim()}' ${randomRating}%`, 'rinchill.png');
   }
 }
 
@@ -53,7 +53,7 @@ export const rate: ICommand = {
     } else if (thingToRate) {
       interaction.reply(rateRandom(thingToRate.trim()));
     } else {
-      interaction.reply(commandEmbed('What should I rate?', 'rinwha.png'));
+      interaction.reply(commandEmbedEmote('What should I rate?', 'rinwha.png'));
     }
   },
 };

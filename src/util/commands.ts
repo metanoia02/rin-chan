@@ -21,12 +21,24 @@ export function getCooldown(cooldown: number, lastTime: number): string {
  * @param emote Emote filename in emotes folder.
  * @returns {AttachedEmbed} Embed object.
  */
-export function commandEmbed(reply: string, emote: string): AttachedEmbed {
+export function commandEmbedEmote(reply: string, emote: string): AttachedEmbed {
   const commandAttachment = new AttachmentBuilder(`./src/images/emotes/${emote}`, { name: emote });
   const commandEmbed = new EmbedBuilder()
     .setColor(0xff0000)
     .setDescription(reply)
     .setThumbnail(`attachment://${emote}`);
+
+  return { files: [commandAttachment], embeds: [commandEmbed] };
+}
+
+export function commandEmbed(reply: string, path: string): AttachedEmbed {
+  const commandAttachment = new AttachmentBuilder(`./src/images/${path}`, {
+    name: 'image.jpg',
+  });
+  const commandEmbed = new EmbedBuilder()
+    .setColor(0xff0000)
+    .setDescription(reply)
+    .setThumbnail('attachment://image.jpg');
 
   return { files: [commandAttachment], embeds: [commandEmbed] };
 }

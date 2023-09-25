@@ -1,7 +1,7 @@
 import { ICommand } from '../../interfaces/ICommand';
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { ChatInputCommandInteraction, AutocompleteInteraction } from 'discord.js';
-import { commandEmbed } from '../../util/commands';
+import { commandEmbedEmote } from '../../util/commands';
 
 const unitOptions = [
   { name: '℃', value: '℃' },
@@ -58,7 +58,7 @@ export const temperature: ICommand = {
         unitOptions.find((unit) => unit.value == unitTo)
       )
     ) {
-      interaction.reply(commandEmbed('Invalid temperature unit.', 'rinwha.png'));
+      interaction.reply(commandEmbedEmote('Invalid temperature unit.', 'rinwha.png'));
       return;
     }
 
@@ -72,10 +72,10 @@ export const temperature: ICommand = {
       }
 
       interaction.reply(
-        commandEmbed(`${valueFrom}${unitFrom} is ${result}${unitTo}.`, 'rinchill.png'),
+        commandEmbedEmote(`${valueFrom}${unitFrom} is ${result}${unitTo}.`, 'rinchill.png'),
       );
     } else {
-      interaction.reply(commandEmbed(`Couldn't find a temperature to convert.`, 'rinwha.png'));
+      interaction.reply(commandEmbedEmote(`Couldn't find a temperature to convert.`, 'rinwha.png'));
     }
   },
 

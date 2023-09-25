@@ -5,7 +5,7 @@ import { User } from '../../entity/User';
 import arrayRandom from '../../util/arrayRandom';
 import { AttachedEmbed } from '../../types/AttachedEmbed';
 import { readdirSync } from 'fs';
-import { commandEmbed } from '../../util/commands';
+import { commandEmbedEmote } from '../../util/commands';
 
 const christmasImagesPath = './src/images/christmas/';
 const itemImage = 'christmasItems.png';
@@ -51,7 +51,7 @@ export const merrychristmas: ICommand = {
         merryChristmasReply(`${christmasImagesPath}${arrayRandom(christmasImages)}`, messageStr),
       );
     } else {
-      interaction.reply(commandEmbed(`It's not christmas.`, 'rinconfuse.png'));
+      interaction.reply(commandEmbedEmote(`It's not christmas.`, 'rinconfuse.png'));
     }
   },
 };

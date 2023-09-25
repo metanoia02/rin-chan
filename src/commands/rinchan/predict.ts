@@ -2,7 +2,7 @@ import { ICommand } from '../../interfaces/ICommand';
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { ChatInputCommandInteraction, Message } from 'discord.js';
 import { User } from '../../entity/User';
-import { commandEmbed } from '../../util/commands';
+import { commandEmbedEmote } from '../../util/commands';
 import { RinChan } from '../../entity/RinChan';
 import arrayRandom from '../../util/arrayRandom';
 
@@ -57,7 +57,7 @@ export const predict: ICommand = {
       collector.on('collect', async (message) => {
         const user = await User.get(message.author.id, message.guildId!);
         if ((await user.getQuantity('orange')) < price) {
-          interaction.followUp(commandEmbed(`You don't have enough oranges.`, 'rinpls.png'));
+          interaction.followUp(commandEmbedEmote(`You don't have enough oranges.`, 'rinpls.png'));
         }
 
         const rinChan = await RinChan.get(message.guildId!);

@@ -6,7 +6,7 @@ import {
   ChatInputCommandInteraction,
 } from 'discord.js';
 import { Item } from '../../entity/Item';
-import { commandEmbed } from '../../util/commands';
+import { commandEmbedEmote } from '../../util/commands';
 import { User } from '../../entity/User';
 import { feedOrange as feedOrangeReact } from '../../reactions/feed/orange';
 import { feedBirthdayCake as feedBirthdayCakeReact } from '../../reactions/feed/birthdayCake';
@@ -25,7 +25,7 @@ async function feedRinchan(user: User, item: Item): Promise<AttachedEmbed> {
   let embed: AttachedEmbed;
 
   if (rinChan.hunger === 0) {
-    return commandEmbed(`I'm stuffed, I cant eat another one`, 'rinstuffed.png');
+    return commandEmbedEmote(`I'm stuffed, I cant eat another one`, 'rinstuffed.png');
   }
 
   switch (item.id) {
@@ -91,7 +91,7 @@ export const feed: ICommand = {
       const item = await Item.get(itemId);
 
       if (!item.filling) {
-        interaction.reply(commandEmbed(`I don't fancy one of those right now`, 'rinlove.png'));
+        interaction.reply(commandEmbedEmote(`I don't fancy one of those right now`, 'rinlove.png'));
         return;
       }
 
@@ -101,7 +101,7 @@ export const feed: ICommand = {
       if (checkGiveSpam(user) || rinChan.hunger >= 4) {
         interaction.reply(await feedRinchan(user, item));
       } else {
-        interaction.reply(commandEmbed(`Hang on, I'm still eating...`, 'rinchill.png'));
+        interaction.reply(commandEmbedEmote(`Hang on, I'm still eating...`, 'rinchill.png'));
         //todo cooldown
       }
     }

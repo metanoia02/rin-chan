@@ -12,7 +12,7 @@ import {
 } from 'discord.js';
 import { Item } from '../../entity/Item';
 import { IsNull, Not } from 'typeorm';
-import { capitalizeFirstLetter, commandEmbed } from '../../util/commands';
+import { capitalizeFirstLetter, commandEmbedEmote } from '../../util/commands';
 import { parseString } from 'xml2js';
 import { SlashCommandError } from '../../util/SlashCommandError';
 import { Server } from '../../entity/Server';
@@ -86,7 +86,7 @@ export const safebooru: ICommand = {
     const image = await axios.get(`${apiString}&pid=${randomId}&tags=${imageTags}&json=1`);
 
     if (!image.data[0]) {
-      interaction.reply(commandEmbed(`Couldn't find any images...`, 'rinded.png'));
+      interaction.reply(commandEmbedEmote(`Couldn't find any images...`, 'rinded.png'));
     } else {
       let titleString = '';
 

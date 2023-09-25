@@ -10,7 +10,7 @@ import { RinChan } from '../../entity/RinChan';
 import { AttachedEmbed } from '../../types/AttachedEmbed';
 import { config } from '../../config';
 import { ReactionMaker } from '../../reactions/ReactionMaker';
-import { getCooldown, commandEmbed } from '../../util/commands';
+import { getCooldown, commandEmbedEmote } from '../../util/commands';
 import * as schedule from 'node-schedule';
 
 // Reactions
@@ -36,7 +36,7 @@ export const harvest: ICommand = {
     let response: AttachedEmbed | null = null;
 
     if (today.getDate() == 27 && today.getMonth() == 11) {
-      response = commandEmbed('Forget that! I have cake to eat!', 'smolrin.png');
+      response = commandEmbedEmote('Forget that! I have cake to eat!', 'smolrin.png');
     } else if (user.harvestAttempts > 0) {
       if (0 < chance && chance <= 5) {
         response = await findLen(user);
