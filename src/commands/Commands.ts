@@ -33,6 +33,9 @@ CommandList.set('leaderboard', leaderboard);
 import { showSongBook } from './items/showSongBook';
 CommandList.set(showSongBook.data.name, showSongBook);
 
+import { give } from './items/give';
+CommandList.set(give.data.name, give);
+
 //rinchan
 import { hungry } from './rinchan/hungry';
 CommandList.set(hungry.data.name, hungry);
