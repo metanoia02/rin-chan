@@ -10,7 +10,8 @@ import {
 import { InventoryStack } from '../../entity/InventoryStack';
 import { Item } from '../../entity/Item';
 import { capitalizeFirstLetter } from '../../util/commands';
-import { LeaderboardContent, LeaderboardRow } from 'src/types/LeaderboardContent';
+import { LeaderboardContent, LeaderboardRow } from '../../types/LeaderboardContent';
+import { SlashCommandError } from '../../util/SlashCommandError';
 
 async function getLeaderboard(itemId: string, maxEntries?: number) {
   const inventoryStacks = await InventoryStack.find({
@@ -52,7 +53,7 @@ export const leaderboard: ICommand = {
 
       for (const entry of board) {
         if (entry.quantity > 0) {
-          const member = await entry.user.getDiscordMember();
+          const member = await entry.user?.getDiscordMember();
           if (member) {
             let avatarUrl = member.user.avatarURL();
             if (!avatarUrl) avatarUrl = ''; //TODO: blank avatar image
@@ -79,7 +80,7 @@ export const leaderboard: ICommand = {
 
       interaction.reply({ embeds: [leaderboardEmbed], files: [attachment] });
     } else {
-      //discord error
+      throw new SlashCommandError('Invalid item', itemId);
     }
   },
 
