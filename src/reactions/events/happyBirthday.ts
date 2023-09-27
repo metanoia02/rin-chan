@@ -3,7 +3,7 @@ import { Reaction } from '../../types/Reaction';
 export const happyBirthday: Reaction = {
   embedColour: '#FF8C00',
 
-  images: './images/birthday/',
+  images: './src/images/birthday/',
 
   default: {
     response: [
@@ -13,4 +13,5 @@ export const happyBirthday: Reaction = {
       `Thank you! Let's have fun!`,
     ],
   },
+  largeImage: true,
 };

@@ -8,4 +8,5 @@ export interface Reaction {
   default: { response: string[]; image?: string };
   responses?: ReactionResponse[];
   followUp?: string[];
+  largeImage?: boolean;
 }

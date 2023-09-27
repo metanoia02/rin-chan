@@ -83,11 +83,15 @@ export const ReactionMaker = {
     const commandAttachment = new AttachmentBuilder(reaction.imagePath + reaction.imageFilename);
     const commandEmbed = new EmbedBuilder()
       .addFields([{ name: '\u200b', value: reaction.reply }])
-      .setThumbnail(`attachment://${reaction.imageFilename}`)
       .setColor(config.embedColour);
 
-    const attachedEmbed = { files: [commandAttachment], embeds: [commandEmbed] };
+    if (config.largeImage) {
+      commandEmbed.setImage(`attachment://${reaction.imageFilename}`);
+    } else {
+      commandEmbed.setThumbnail(`attachment://${reaction.imageFilename}`);
+    }
 
+    const attachedEmbed = { files: [commandAttachment], embeds: [commandEmbed] };
     return attachedEmbed;
   },
 
