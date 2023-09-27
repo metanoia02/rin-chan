@@ -77,3 +77,7 @@ CommandList.set(temperature.data.name, temperature);
 
 import { safebooru } from './utility/safebooru';
 CommandList.set(safebooru.data.name, safebooru);
+
+//shopping
+import { supermarket } from './shopping/supermarket';
+CommandList.set(supermarket.data.name, supermarket);

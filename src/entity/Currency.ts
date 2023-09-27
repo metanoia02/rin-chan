@@ -1,14 +1,19 @@
-import { Entity, PrimaryColumn, OneToOne, JoinColumn, OneToMany, BaseEntity } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  OneToOne,
+  JoinColumn,
+  OneToMany,
+  BaseEntity,
+} from 'typeorm';
 import { Item } from './Item';
 import { Shop } from './Shop';
 
 @Entity()
 export class Currency extends BaseEntity {
-  @PrimaryColumn()
-  public shopId!: number;
-
-  @PrimaryColumn()
-  public itemId!: string;
+  @PrimaryGeneratedColumn()
+  public id?: number;
 
   @OneToMany(() => Shop, (shop) => shop.currency)
   public shops?: Shop[];

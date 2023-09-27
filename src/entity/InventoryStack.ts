@@ -1,6 +1,7 @@
 import { Entity, Column, ManyToOne, PrimaryGeneratedColumn, BaseEntity } from 'typeorm';
 import { Item } from './Item';
 import { User } from './User';
+import { Shop } from './Shop';
 
 @Entity()
 export class InventoryStack extends BaseEntity {
@@ -16,5 +17,8 @@ export class InventoryStack extends BaseEntity {
   public item!: Item;
 
   @ManyToOne(() => User, (user) => user.inventory)
-  public user!: User;
+  public user?: User;
+
+  @ManyToOne(() => Shop, (shop) => shop.stock)
+  public shop?: Shop;
 }
