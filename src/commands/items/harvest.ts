@@ -104,19 +104,3 @@ async function couldntFind(user: User): Promise<AttachedEmbed> {
 
   return await ReactionMaker.getEmbed(couldntFindReact, user);
 }
-
-schedule.scheduleJob('0 * * * * *', async () => {
-  const users = await User.find();
-  const now = new Date();
-
-  users.forEach(async (thisUser: User) => {
-    const maxTries = (await thisUser.isBoosting()) ? 4 : 3;
-    if (thisUser.harvestAttempts < maxTries) {
-      if (now.getTime() - thisUser.lastHarvested > config.orangeHarvestCooldown) {
-        thisUser.harvestAttempts = thisUser.harvestAttempts + 1;
-        const now = new Date();
-        thisUser.lastHarvested = now.getTime();
-      }
-    }
-  });
-});
