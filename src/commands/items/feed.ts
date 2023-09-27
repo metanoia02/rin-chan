@@ -87,22 +87,27 @@ export const feed: ICommand = {
   async execute(interaction: ChatInputCommandInteraction) {
     const itemId = interaction.options.getString('item');
 
-    if (itemId) {
+    if (itemId && (await Item.exists(itemId))) {
       const item = await Item.get(itemId);
+      const user = await User.get(interaction.user.id, interaction.guildId!);
+      const rinChan = await RinChan.get(interaction.guildId!);
+
+      if ((await user.getQuantity(itemId)) < 1) {
+        interaction.reply(commandEmbedEmote(`You dont't have any of those`, 'rinconfuse.png'));
+        return;
+      }
 
       if (!item.filling) {
         interaction.reply(commandEmbedEmote(`I don't fancy one of those right now`, 'rinlove.png'));
         return;
       }
 
-      const user = await User.get(interaction.user.id, interaction.guildId!);
-      const rinChan = await RinChan.get(interaction.guildId!);
-
       if (checkGiveSpam(user) || rinChan.hunger >= 4) {
         interaction.reply(await feedRinchan(user, item));
+        return;
       } else {
         interaction.reply(commandEmbedEmote(`Hang on, I'm still eating...`, 'rinchill.png'));
-        //todo cooldown
+        return;
       }
     }
   },
