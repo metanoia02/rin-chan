@@ -60,12 +60,16 @@ export class RinChan extends BaseEntity {
 /**
  * Run once an hour
  */
-schedule.scheduleJob('0 * * * *', function () {
-  const randomDelay = Math.floor(Math.random() * 3600000) + 1;
+schedule.scheduleJob('0 * * * *', async function () {
+  const rinChans = await RinChan.find();
+  rinChans.forEach((rinChan: RinChan) => {
+    const randomDelay = Math.floor(Math.random() * 3600000) + 1;
 
-  setTimeout(() => {
-    module.exports.setHunger(module.exports.getHunger() + 1);
-  }, randomDelay);
+    setTimeout(async () => {
+      rinChan.hunger = clamp(0, 5, rinChan.hunger + 1);
+      await rinChan.save();
+    }, randomDelay);
+  });
 });
 
 /**
@@ -74,11 +78,11 @@ schedule.scheduleJob('0 * * * *', function () {
 schedule.scheduleJob('0 0 * * *', async function () {
   // Set Random moods for RinChans
   const rinChans = await RinChan.find();
-  rinChans.forEach((rinChan: RinChan) => {
+  rinChans.forEach(async (rinChan: RinChan) => {
     const modifier = Math.floor((4 - 1) / 2);
     let newMood = Math.floor(Math.random() * 4) - modifier;
     newMood = clamp(0, 5, newMood);
     rinChan.mood = newMood;
-    RinChan.save(rinChan);
+    await rinChan.save();
   });
 });
