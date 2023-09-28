@@ -1,19 +1,26 @@
-import { Client, Events, Interaction } from "discord.js";
+import { AttachmentBuilder, Client, EmbedBuilder, Events, TextBasedChannel } from 'discord.js';
+import { Server } from 'src/entity/Server';
 
 export default (client: Client): void => {
-  client.on(Events.GuildMemberAdd, (member) => {
-    const loungeChannel = member.guild.channels.cache.find((ch) => ch.name === 'lounge');
-  
-    if (loungeChannel) {
-      const attachment = new Discord.MessageAttachment(`./images/welcome/welcome.gif`, 'welcome.gif');
-  
-      loungeChannel.send(
-        new Discord.MessageEmbed()
+  client.on(Events.GuildMemberAdd, async (member) => {
+    const server = await Server.get(member.guild.id);
+    const discordServer = await client.guilds.fetch(server.id);
+    if (server.loungeChannel) {
+      const loungeChannel = await discordServer.channels.fetch(server.loungeChannel);
+
+      if (loungeChannel?.isTextBased) {
+        const attachment = new AttachmentBuilder(`./images/welcome/welcome.gif`, {
+          name: 'welcome.gif',
+        });
+
+        const embed = new EmbedBuilder()
           .setColor('#FFD700')
           .setTitle(`Welcome to my server,`)
           .setDescription(`${member.user.username}`)
-          .attachFiles(attachment)
-          .setImage(`attachment://welcome.gif`)
-      );
+          .setImage(`attachment://welcome.gif`);
+
+        (loungeChannel as TextBasedChannel).send({ embeds: [embed], files: [attachment] });
+      }
     }
+  });
 };
