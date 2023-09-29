@@ -24,7 +24,7 @@ export class Item extends BaseEntity {
   public filling?: number;
 
   @Column({ nullable: true })
-  public searchUrl?: string;
+  public searchTag?: string;
 
   @Column({ nullable: true })
   public videoUrl?: string;
