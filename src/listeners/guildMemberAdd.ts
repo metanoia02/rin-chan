@@ -1,5 +1,5 @@
 import { AttachmentBuilder, Client, EmbedBuilder, Events, TextBasedChannel } from 'discord.js';
-import { Server } from 'src/entity/Server';
+import { Server } from '../entity/Server';
 
 export default (client: Client): void => {
   client.on(Events.GuildMemberAdd, async (member) => {

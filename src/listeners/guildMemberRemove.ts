@@ -1,7 +1,7 @@
 import { AttachmentBuilder, Client, EmbedBuilder, Events, TextBasedChannel } from 'discord.js';
-import { RinChan } from 'src/entity/RinChan';
-import { Server } from 'src/entity/Server';
-import { User } from 'src/entity/User';
+import { RinChan } from '../entity/RinChan';
+import { Server } from '../entity/Server';
+import { User } from '../entity/User';
 
 export default (client: Client): void => {
   client.on('guildMemberRemove', async (member) => {
