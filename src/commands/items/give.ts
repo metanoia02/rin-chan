@@ -157,10 +157,12 @@ export const give: ICommand = {
 
   async autocomplete(interaction: AutocompleteInteraction) {
     const user = await User.get(interaction.user.id, interaction.guildId!);
-    const items: ApplicationCommandOptionChoiceData[] = (await Item.find()).map((item) => ({
-      name: item.name,
-      value: item.id,
-    }));
+    const items: ApplicationCommandOptionChoiceData[] = (await Item.find())
+      .filter((item) => item.value)
+      .map((item) => ({
+        name: item.name,
+        value: item.id,
+      }));
 
     const focusedValue = interaction.options.getFocused();
 
