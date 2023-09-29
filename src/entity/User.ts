@@ -1,6 +1,6 @@
 import { Entity, Column, OneToMany, PrimaryColumn, BaseEntity } from 'typeorm';
 import { InventoryStack } from './InventoryStack';
-import { Guild, GuildMember, TextChannel } from 'discord.js';
+import { Guild, GuildMember, TextBasedChannel, TextChannel } from 'discord.js';
 import { config } from '../config';
 import { Level } from '../types/Level';
 import { client } from '../client';
@@ -148,9 +148,12 @@ export class User extends BaseEntity {
     }
   }
 
-  getLevel(): Level | undefined {
-    return config.levels.findLast((ele: Level) => this.xp >= ele.xp);
-  } /*
+  getLevel(): Level {
+    return (
+      config.levels.find((ele: Level) => this.xp >= ele.xp) ??
+      config.levels[config.levels.length - 1]
+    );
+  }
 
   /**
    *Static methods
@@ -175,7 +178,7 @@ export class User extends BaseEntity {
     return user;
   }
 
-  async addXp(addedXp: number) {
+  async addXp(addedXp: number, channel: TextBasedChannel) {
     if (addedXp > 0) {
       const currentLevel = this.getLevel();
       this.xp += addedXp;
@@ -193,17 +196,7 @@ export class User extends BaseEntity {
             await (await this.getDiscordMember()).roles.remove(currentRole, 'Level up');
             await (await this.getDiscordMember()).roles.add(newRole, 'Level up');
 
-            const botChannel = (await Server.get(this.guild)).botChannel;
-
-            if (botChannel) {
-              const channel = guild.channels.cache.get(botChannel);
-
-              if (channel?.isTextBased) {
-                (channel as TextChannel).send(
-                  commandEmbedEmote(`${this.id} Level up!`, './src/images/emotes/rinverywow.png'),
-                );
-              }
-            }
+            channel.send(commandEmbedEmote(`<@${this.id}> Level up!`, 'rinverywow.png'));
           }
         }
       }

@@ -3,6 +3,7 @@ import { CommandList } from '../commands/Commands';
 import { SlashCommandError } from '../util/SlashCommandError';
 import { Server } from '../entity/Server';
 import { QueryFailedError } from 'typeorm';
+import { User } from '../entity/User';
 
 export default (client: Client): void => {
   client.on(Events.InteractionCreate, async (interaction: Interaction) => {
@@ -16,6 +17,8 @@ export default (client: Client): void => {
 
       try {
         await command.execute(interaction);
+        const user = await User.get(interaction.user.id, interaction.guildId!);
+        await user.addXp(1, interaction.channel as TextBasedChannel);
       } catch (error) {
         if (interaction.replied || interaction.deferred) {
           await interaction.followUp({

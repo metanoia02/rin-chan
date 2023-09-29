@@ -4,6 +4,7 @@ import {
   ApplicationCommandOptionChoiceData,
   AutocompleteInteraction,
   ChatInputCommandInteraction,
+  TextBasedChannel,
 } from 'discord.js';
 import { Item } from '../../entity/Item';
 import { commandEmbedEmote } from '../../util/commands';
@@ -19,7 +20,11 @@ import { SlashCommandError } from '../../util/SlashCommandError';
 
 const orangeGiveCooldown = 300000; //move to config
 
-async function feedRinchan(user: User, item: Item): Promise<AttachedEmbed> {
+async function feedRinchan(
+  user: User,
+  item: Item,
+  interaction: ChatInputCommandInteraction,
+): Promise<AttachedEmbed> {
   const currentTime = new Date();
   const rinChan = await RinChan.get(user.guild);
   let embed: AttachedEmbed;
@@ -33,7 +38,7 @@ async function feedRinchan(user: User, item: Item): Promise<AttachedEmbed> {
       await user.takeItem(item.id);
       user.affection = clamp(0, 100, user.affection + 5);
       user.lastFedRinchan = currentTime.getTime();
-      await user.addXp(1);
+      await user.addXp(1, interaction.channel as TextBasedChannel);
 
       rinChan.hunger = clamp(0, config.hungerIcon.length + 1, rinChan.hunger - 1);
       rinChan.lastFed = currentTime.getTime();
@@ -44,7 +49,7 @@ async function feedRinchan(user: User, item: Item): Promise<AttachedEmbed> {
       await user.takeItem(item.id);
       user.affection = clamp(0, 100, user.affection + 10);
       user.lastFedRinchan = currentTime.getTime();
-      await user.addXp(10);
+      await user.addXp(10, interaction.channel as TextBasedChannel);
 
       rinChan.hunger = clamp(0, config.hungerIcon.length + 1, rinChan.hunger - 1);
       rinChan.lastFed = currentTime.getTime();
@@ -103,7 +108,7 @@ export const feed: ICommand = {
       }
 
       if (checkGiveSpam(user) || rinChan.hunger >= 4) {
-        interaction.reply(await feedRinchan(user, item));
+        interaction.reply(await feedRinchan(user, item, interaction));
         return;
       } else {
         interaction.reply(commandEmbedEmote(`Hang on, I'm still eating...`, 'rinchill.png'));
