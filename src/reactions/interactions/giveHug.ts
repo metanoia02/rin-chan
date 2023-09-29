@@ -3,7 +3,7 @@ import { Reaction } from '../../types/Reaction';
 export const giveHug: Reaction = {
   embedColour: '#FFFFFF',
 
-  images: './images/hug/',
+  images: './src/images/hug/',
 
   default: {
     response: [
