@@ -31,7 +31,7 @@ async function getEmbed(shop: Shop): Promise<AttachedEmbed> {
     });
   }
 
-  const shopImage = await generateImage('./src/templates/shop.html', shopContent);
+  const shopImage = await generateImage('./src/templates/shop.html', shopContent, 700);
   const thumbnail = new AttachmentBuilder('./src/images/shop/thumbnail.jpg', {
     name: 'thumbnail.jpg',
   });

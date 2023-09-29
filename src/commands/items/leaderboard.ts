@@ -71,7 +71,11 @@ export const leaderboard: ICommand = {
         }
       }
 
-      const leaderboardImage = await generateImage('./src/templates/leaderboard.html', content);
+      const leaderboardImage = await generateImage(
+        './src/templates/leaderboard.html',
+        content,
+        700,
+      );
 
       const attachment = new AttachmentBuilder(leaderboardImage, { name: 'leaderboard.jpg' });
       const leaderboardEmbed = new EmbedBuilder()

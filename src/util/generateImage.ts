@@ -2,7 +2,11 @@ const fs = require('fs');
 import Handlebars from 'handlebars';
 import puppeteer from 'puppeteer';
 
-export async function generateImage(templateFile: string, content: any): Promise<Buffer> {
+export async function generateImage(
+  templateFile: string,
+  content: any,
+  height: number,
+): Promise<Buffer> {
   //compile template
   const htmlFile = fs.readFileSync(templateFile, 'utf8');
   const template = Handlebars.compile(htmlFile);
@@ -16,7 +20,7 @@ export async function generateImage(templateFile: string, content: any): Promise
   const page = await browser.newPage();
   await page.setViewport({
     width: 400,
-    height: 700,
+    height: height,
   });
   await page.setContent(result);
   const image = await page.screenshot();

@@ -22,7 +22,7 @@ export async function getInventory(
     }
   }
 
-  const inventoryImage = await generateImage('./src/templates/inventory.html', content);
+  const inventoryImage = await generateImage('./src/templates/inventory.html', content, 700);
 
   const attachment = new AttachmentBuilder(inventoryImage, { name: 'inventory.png' });
   const inventoryEmbed = new EmbedBuilder()
