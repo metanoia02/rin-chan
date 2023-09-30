@@ -133,7 +133,7 @@ export class User extends BaseEntity {
   }
 
   getSongBook(): InventoryStack[] {
-    return this.inventory.filter((inventoryStack) => inventoryStack.item.videoUrl);
+    return this.inventory.filter((inventoryStack) => inventoryStack.item.singable);
   }
 
   async getQuantity(itemId: string): Promise<number> {

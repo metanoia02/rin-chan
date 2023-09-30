@@ -26,11 +26,13 @@ export class Item extends BaseEntity {
   @Column({ nullable: true })
   public searchTag?: string;
 
-  @Column({ nullable: true })
-  public videoUrl?: string;
+  @Column({ default: false })
+  public singable!: boolean;
 
   @Column({ nullable: true })
   public value?: number;
+
+  //shop that it can be sold in?
 
   @OneToMany(() => InventoryStack, (inventoryStack) => inventoryStack.item)
   public inventoryStacks!: InventoryStack[];

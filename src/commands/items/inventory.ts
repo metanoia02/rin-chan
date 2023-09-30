@@ -6,7 +6,7 @@ import { InventoryStack } from '../../entity/InventoryStack';
 import { getInventory } from '../../util/getInventory';
 
 function filterInventory(inventoryItem: InventoryStack): boolean {
-  return inventoryItem.quantity > 0 && !inventoryItem.item.videoUrl;
+  return inventoryItem.quantity > 0 && !inventoryItem.item.singable;
 }
 
 export const inventory: ICommand = {
