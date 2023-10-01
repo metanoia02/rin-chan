@@ -21,7 +21,7 @@ export const merrychristmas: ICommand = {
     let messageStr = '';
     const today = new Date();
 
-    if (today.getDate() == 27 && today.getMonth() == 11) {
+    if (today.getDate() > 20 && today.getDate() < 30 && today.getMonth() == 11) {
       if ((await user.getQuantity('merryChristmasMyHero')) < 1) {
         messageStr = `I have a present for you, <@${user.id}>!`;
 
