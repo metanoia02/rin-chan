@@ -1,11 +1,10 @@
 import { ICommand } from '../../interfaces/ICommand';
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { ChatInputCommandInteraction, PermissionFlagsBits, TextBasedChannel } from 'discord.js';
-import { Forever } from 'forever';
 import { client } from 'src/client';
 import { Server } from 'src/entity/Server';
 import { commandEmbedEmote } from 'src/util/commands';
-import { CommandFailedEvent } from 'typeorm';
+const forever = require('forever');
 
 export const sleep: ICommand = {
   data: new SlashCommandBuilder()
@@ -14,7 +13,7 @@ export const sleep: ICommand = {
     .setDescription('Go into maintenance mode.'),
 
   async execute(interaction: ChatInputCommandInteraction) {
-    Forever.startServer();
+    forever.startServer();
 
     const server = await Server.get(interaction.guildId!);
     if (server.botChannel) {
@@ -26,6 +25,6 @@ export const sleep: ICommand = {
       }
     }
 
-    await Forever.stopAll();
+    await forever.stopAll();
   },
 };
