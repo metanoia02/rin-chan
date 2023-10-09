@@ -7,7 +7,7 @@ import { RinChan } from '../../entity/RinChan';
 import { commandEmbedEmote } from '../../util/commands';
 import { giveHeadpat as giveHeadpatReact } from '../../reactions/interactions/giveHeadpat';
 
-const cost = 3;
+const cost = 1;
 
 export const headpat: ICommand = {
   data: new SlashCommandBuilder()
@@ -45,26 +45,13 @@ export const headpat: ICommand = {
           return;
         } else {
           await user.setQuantity('orange', (await user.getQuantity('orange')) - cost);
-          await user.setQuantity('orange', (await user.getQuantity('orange')) + cost);
+          const rinchan = await User.get(rinChan.id, interaction.guildId!);
+          await rinchan.setQuantity('orange', (await user.getQuantity('orange')) + cost);
 
-          const reaction = await ReactionMaker.getReaction(giveHeadpatReact, user);
+          const embed = await ReactionMaker.getEmbed(giveHeadpatReact, user);
+          embed.content = `<@${targetUser.id}>`;
 
-          const commandAttachment = new AttachmentBuilder(
-            reaction.imagePath + reaction.imageFilename,
-          );
-          const commandEmbed = new EmbedBuilder()
-            .addFields([
-              {
-                name: '\u200b',
-                value: '<@' + targetUser.id + '>' + reaction.reply + '<@' + rinChan.id + '>',
-              },
-            ])
-            .setThumbnail(`attachment://${reaction.imageFilename}`)
-            .setColor(giveHeadpatReact.embedColour);
-
-          const attachedEmbed = { files: [commandAttachment], embeds: [commandEmbed] };
-
-          interaction.reply(attachedEmbed);
+          interaction.reply(embed);
           return;
         }
       }

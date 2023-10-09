@@ -44,16 +44,12 @@ export const hug: ICommand = {
           );
           return;
         } else {
-          await user.setQuantity('orange', (await user.getQuantity('orange')) - cost);
+          await user.changeQuantity('orange', -cost);
           const rinchan = await User.get(rinChan.id, interaction.guildId!);
-          await user.setQuantity('orange', (await user.getQuantity('orange')) + cost);
+          await rinchan.changeQuantity('orange', cost);
 
           const embed = await ReactionMaker.getEmbed(giveHugReact, user);
-          embed.embeds[0].setDescription(
-            (await user.getDiscordMember()) +
-              embed.embeds[0].data.description! +
-              (await rinchan.getDiscordMember()),
-          );
+          embed.content = `<@${targetUser.id}>`;
 
           interaction.reply(embed);
           return;

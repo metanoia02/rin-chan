@@ -6,7 +6,7 @@ export const giveHeadpat: Reaction = {
   images: './src/images/emotes/',
 
   default: {
-    response: [' You got a headpat from '],
+    response: ['You got a headpat.'],
     image: 'rinheadpat.png',
   },
 };

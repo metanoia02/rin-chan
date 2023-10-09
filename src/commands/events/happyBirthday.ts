@@ -4,7 +4,7 @@ import { ChatInputCommandInteraction } from 'discord.js';
 import { happyBirthday as happyBirthdayReact } from '../../reactions/events/happyBirthday';
 import { ReactionMaker } from '../../reactions/ReactionMaker';
 import { User } from '../../entity/User';
-import { commandEmbedEmote } from 'src/util/commands';
+import { commandEmbedEmote } from '../../util/commands';
 
 export const happybirthday: ICommand = {
   data: new SlashCommandBuilder()
