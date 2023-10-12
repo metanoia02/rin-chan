@@ -31,6 +31,8 @@ export const level: ICommand = {
         barColour: barColour ?? '#FFA500',
         levelName: levelName,
         percentageFill: percentageFill,
+        currentXp: user.xp,
+        targetXp: nextLevel.xp,
       };
     } else {
       content = { barColour: '#D4AF37', levelName: 'Max Level', percentageFill: 100 };
