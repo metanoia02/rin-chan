@@ -61,8 +61,8 @@ async function feedRinchan(
       throw new SlashCommandError('No handler to feed item', item);
   }
 
-  User.save(user);
-  RinChan.save(rinChan);
+  await user.save();
+  await rinChan.save();
 
   return embed;
 }

@@ -9,4 +9,5 @@ export const giveHeadpat: Reaction = {
     response: ['You got a headpat.'],
     image: 'rinheadpat.png',
   },
+  largeImage: true,
 };

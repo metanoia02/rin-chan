@@ -10,10 +10,7 @@ async function rateUser(user: User, rinChan: RinChan): Promise<AttachedEmbed> {
   if (user.id == rinChan.id) {
     return commandEmbedEmote(`Probably about 1000%`, 'rintriumph.png');
   } else {
-    return commandEmbedEmote(
-      `I would rate <@${(await user.getDiscordMember()).id}> ${user.affection}%`,
-      'oharin.png',
-    );
+    return commandEmbedEmote(`I would rate <@${user.id}> ${user.affection}%`, 'oharin.png');
   }
 }
 

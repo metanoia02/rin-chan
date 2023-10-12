@@ -14,4 +14,5 @@ export const giveHug: Reaction = {
       'Everything will be okay, I promise!',
     ],
   },
+  largeImage: true,
 };

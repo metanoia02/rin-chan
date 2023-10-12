@@ -7,7 +7,7 @@ import { getInventory } from '../../util/getInventory';
 import { commandEmbedEmote } from '../../util/commands';
 
 function filterSongBook(inventoryItem: InventoryStack): boolean {
-  return inventoryItem.quantity > 0 && inventoryItem.item.singable != null;
+  return inventoryItem.quantity > 0 && inventoryItem.item.singable;
 }
 
 export const showSongBook: ICommand = {

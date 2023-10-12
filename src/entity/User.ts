@@ -43,42 +43,29 @@ export class User extends BaseEntity {
   })
   public inventory!: InventoryStack[];
 
-  async getDiscordMember(): Promise<GuildMember> {
-    let guild = client.guilds.cache.get(this.guild);
-    if (!guild) guild = await client.guilds.fetch(this.guild);
+  async getDiscordMember(): Promise<GuildMember | undefined> {
+    const guild = await this.getDiscordGuild();
 
-    let member = guild?.members.cache.get(this.id);
-    if (!member) member = await guild?.members.fetch(this.id);
+    if (guild) {
+      let member = guild?.members.cache.get(this.id);
 
-    if (member) {
       return member;
-    } else {
-      throw new SlashCommandError('Discord connection error', this);
     }
   }
 
-  async getDiscordGuild(): Promise<Guild> {
+  async getDiscordGuild(): Promise<Guild | undefined> {
     let guild = client.guilds.cache.get(this.guild);
-    if (!guild) guild = await client.guilds.fetch(this.guild);
 
-    if (guild) {
-      return guild;
-    } else {
-      throw new SlashCommandError('Discord connection error', this);
-    }
+    return guild;
   }
 
   async isBoosting(): Promise<boolean> {
-    let guild = client.guilds.cache.get(this.guild);
-    if (!guild) guild = await client.guilds.fetch(this.guild);
-
-    let member = guild?.members.cache.get(this.id);
-    if (!member) member = await guild?.members.fetch(this.id);
+    const member = await this.getDiscordMember();
 
     if (member) {
       return member.premiumSince !== null;
     } else {
-      throw new SlashCommandError('Discord connection error', this);
+      return false;
     }
   }
 
@@ -193,10 +180,15 @@ export class User extends BaseEntity {
           const newRole = guild.roles.cache.find((role) => role.name == newLevel.name);
 
           if (currentRole && newRole) {
-            await (await this.getDiscordMember()).roles.remove(currentRole, 'Level up');
-            await (await this.getDiscordMember()).roles.add(newRole, 'Level up');
+            const discordMember = await this.getDiscordMember();
+            if (discordMember) {
+              await discordMember.roles.remove(currentRole, 'Level up');
+              await discordMember.roles.add(newRole, 'Level up');
 
-            channel.send(commandEmbedEmote(`<@${this.id}> Level up!`, 'rinverywow.png'));
+              channel.send(commandEmbedEmote(`<@${this.id}> Level up!`, 'rinverywow.png'));
+            } else {
+              throw new SlashCommandError('Could not get discord member', this);
+            }
           }
         }
       }

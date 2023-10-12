@@ -38,7 +38,13 @@ export const ReactionMaker = {
           timeFulfilled = this.checkFulfilled(response.time, new Date().getHours());
         }
 
-        if (moodFulfilled && hungerFulfilled && affectionFulfilled && boostFulfilled)
+        if (
+          moodFulfilled &&
+          hungerFulfilled &&
+          affectionFulfilled &&
+          boostFulfilled &&
+          timeFulfilled
+        )
           answers.push(response);
       }
     }
@@ -82,7 +88,7 @@ export const ReactionMaker = {
 
     const commandAttachment = new AttachmentBuilder(reaction.imagePath + reaction.imageFilename);
     const commandEmbed = new EmbedBuilder()
-      .addFields([{ name: '\u200b', value: reaction.reply }])
+      .setDescription(reaction.reply)
       .setColor(config.embedColour);
 
     if (config.largeImage) {
