@@ -34,6 +34,7 @@ export const harvest: ICommand = {
     const rinChan = await RinChan.get(interaction.guildId!);
     const chance = Math.floor(Math.random() * 100) + 1;
     let response: AttachedEmbed | null = null;
+    const harvested = interaction.options.getString('harvest');
 
     if (today.getDate() == 27 && today.getMonth() == 11) {
       response = commandEmbedEmote('Forget that! I have cake to eat!', 'smolrin.png');
@@ -54,6 +55,10 @@ export const harvest: ICommand = {
       if (today.getTime() - user.lastHarvested > config.orangeHarvestCooldown) {
         user.lastHarvested = today.getTime();
       }
+
+      if (harvested) {
+        response?.embeds[0].setTitle(`You harvested ${harvested}.`);
+      }
     } else {
       const duration = getCooldown(config.orangeHarvestCooldown, user.lastHarvested);
       response = await ReactionMaker.getEmbed(imTiredReact, user);
@@ -64,14 +69,8 @@ export const harvest: ICommand = {
       });
     }
 
-    RinChan.save(rinChan);
-    User.save(user);
-
-    const harvested = interaction.options.getString('harvest');
-
-    if (harvested) {
-      response?.embeds[0].setDescription(`You harvested ${harvested}.`);
-    }
+    await rinChan.save();
+    await user.save();
 
     if (response) interaction.reply(response);
     else throw new SlashCommandError('Response not set in harvest.', user);
