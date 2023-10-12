@@ -1,0 +1,117 @@
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            background-color: #2b2d31;
+            color: #d9dadb;
+            width: 400px;
+            font-family: Whitney, Helvetica Neue, Helvetica, Arial, sans-serif;
+            font-size: 20px;
+        }
+
+        table {
+            width: 100%;
+            padding: 5px;
+            text-align: center;
+        }
+
+        th {
+            font-size: 24px;
+        }
+
+        .meter {
+            margin: 20px;
+            height: 20px;
+            position: relative;
+            background: #666;
+            border-radius: 25px;
+            padding: 4px;
+            box-shadow: inset 0 -1px 1px rgba(255, 255, 255, 0.3);
+        }
+
+        .meter>span {
+            display: block;
+            height: 100%;
+            border-top-right-radius: 20px;
+            border-bottom-right-radius: 20px;
+            border-top-left-radius: 20px;
+            border-bottom-left-radius: 20px;
+
+            box-shadow: inset 0 2px 9px rgba(255, 255, 255, 0.3),
+                inset 0 -2px 6px rgba(0, 0, 0, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        content {
+            display: flex;
+            margin: auto;
+            width: 350px;
+        }
+
+        content #inventory {
+            height: 100%;
+            background: #67bee7;
+            padding: 5px;
+            border: 1px solid blue;
+            border-radius: 10px;
+        }
+
+        content #inventory .inventoryWrapper {
+            width: 100%;
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+        }
+
+        content #inventory .Slot {
+            width: 70px;
+            height: 70px;
+            margin: 5px;
+            position: relative;
+            text-align: center;
+            border-radius: 5px;
+        }
+
+        content #inventory .Slot img {
+            width: 70px;
+            height: 70px;
+            max-width: 100%;
+            max-height: 100%;
+            display: block;
+            border-radius: 5px;
+        }
+
+        content #inventory .Slot span {
+            position: absolute;
+            bottom: 1px;
+            right: 1px;
+            background: rgba(20, 20, 20, 0.7);
+            border-radius: 5px;
+            color: white;
+            font-size: 12px;
+            padding: 1px;
+        }
+    </style>
+</head>
+
+<body>
+    <content>
+        <div id="inventory">
+            <div class="inventoryWrapper">
+                {{#each inventorySlots as |slot|}}
+                {{#> childEntry}}
+                <div class="Slot">
+                    <img src="{{slot.image}}">
+                    <span>{{slot.name}}</span>
+                </div>
+                {{/childEntry}}
+                {{/each}}
+            </div>
+        </div>
+    </content>
+</body>
+
+</html>

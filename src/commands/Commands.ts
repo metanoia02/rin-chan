@@ -39,6 +39,9 @@ CommandList.set(give.data.name, give);
 import { giveEveryone } from './items/giveEveryone';
 CommandList.set(giveEveryone.data.name, giveEveryone);
 
+import { items } from './items/items';
+CommandList.set(items.data.name, items);
+
 //rinchan
 import { hungry } from './rinchan/hungry';
 CommandList.set(hungry.data.name, hungry);
