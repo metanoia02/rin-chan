@@ -1,12 +1,30 @@
+import { Client, Events, Message } from 'discord.js';
+
+const twitterRegex = /^https:\/\/twitter\.com\/\S+\/status\/[0-9]+\S*/gi;
+
+function isValidMessage(message: Message): boolean {
+  if (message.author.bot) return false;
+  /*
+  if (utils.mentionSpamDetect(message)) {
+    return false;
+  }*/
+
+  return true;
+}
+
+export default (client: Client): void => {
+  client.on(Events.MessageCreate, async (message: Message) => {
+    if (isValidMessage(message)) {
+      if (twitterRegex.test(message.content) && message.embeds.length == 0) {
+        message.channel.send(message.content.replace('twitter', 'vxtwitter'));
+      }
+    }
+  });
+};
+
 /*
-client.on("message", async (message) => {
   const reg = "^<@" + rinChan.getId() + ">|^<@!" + rinChan.getId() + ">";
   const rinTest = new RegExp(reg);
-
-  if (!message.author.bot) {
-    if (utils.mentionSpamDetect(message)) {
-      return null;
-    }
 
     if (
       message.mentions.has(client.user) &&
@@ -28,6 +46,4 @@ client.on("message", async (message) => {
       );
       if (trigger) message.channel.send(trigger.response);
     }
-  }
-});
 */
