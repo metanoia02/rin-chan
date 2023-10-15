@@ -12,19 +12,19 @@ export const sayHi: Reaction = {
 
   responses: [
     {
-      time: { min: 5, max: 12 },
+      time: { min: 5, max: 11 },
 
       response: ['Good morning'],
       image: 'oharin.png',
     },
     {
-      time: { min: 13, max: 18 },
+      time: { min: 12, max: 17 },
 
       response: ['Good afternoon'],
       image: 'rintap.gif',
     },
     {
-      time: { min: 19, max: 23 },
+      time: { min: 18, max: 23 },
 
       response: ['Good evening'],
       image: 'rinlove.png',
