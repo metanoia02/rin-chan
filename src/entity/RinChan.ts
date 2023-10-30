@@ -28,10 +28,14 @@ export class RinChan extends BaseEntity {
   @Column({ default: false })
   public collecting!: boolean;
 
-  changeHunger(guild: Guild, hunger: number) {
+  setHunger(hunger: number) {
     this.hunger = clamp(1, 5, hunger);
 
-    guild.setIcon(config.hungerIcon[hunger]);
+    const guild = client.guilds.cache.get(this.guildId);
+
+    if (guild) {
+      guild.setIcon(config.hungerIcon[hunger]);
+    }
   }
 
   static async get(guildId: string): Promise<RinChan> {
@@ -66,7 +70,7 @@ schedule.scheduleJob('0 * * * *', async function () {
     const randomDelay = Math.floor(Math.random() * 3600000) + 1;
 
     setTimeout(async () => {
-      rinChan.hunger = clamp(0, 5, rinChan.hunger + 1);
+      rinChan.setHunger(rinChan.hunger + 1);
       await rinChan.save();
     }, randomDelay);
   });

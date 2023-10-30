@@ -40,7 +40,7 @@ async function feedRinchan(
       user.lastFedRinchan = currentTime.getTime();
       await user.addXp(1, interaction.channel as TextBasedChannel);
 
-      rinChan.hunger = clamp(0, config.hungerIcon.length + 1, rinChan.hunger - 1);
+      rinChan.setHunger(rinChan.hunger - 1);
       rinChan.lastFed = currentTime.getTime();
 
       embed = await ReactionMaker.getEmbed(feedOrangeReact, user);
@@ -51,7 +51,7 @@ async function feedRinchan(
       user.lastFedRinchan = currentTime.getTime();
       await user.addXp(10, interaction.channel as TextBasedChannel);
 
-      rinChan.hunger = clamp(0, config.hungerIcon.length + 1, rinChan.hunger - 1);
+      rinChan.setHunger(rinChan.hunger - 1);
       rinChan.lastFed = currentTime.getTime();
       rinChan.mood = clamp(0, 5, rinChan.mood + 1);
 
