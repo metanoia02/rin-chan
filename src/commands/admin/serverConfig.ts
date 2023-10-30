@@ -58,6 +58,15 @@ export const serverConfig: ICommand = {
         .addRoleOption((option) =>
           option.setName('role').setRequired(true).setDescription('Select a role'),
         ),
+    )
+
+    .addSubcommand((loungeChannel) =>
+      loungeChannel
+        .setName('set_lounge_channel')
+        .setDescription('Set the lounge channel for this server.')
+        .addChannelOption((option) =>
+          option.setName('channel').setRequired(true).setDescription('Select a Channel'),
+        ),
     ),
   async execute(interaction: ChatInputCommandInteraction) {
     const server = await Server.get(interaction.guildId!);
@@ -91,6 +100,11 @@ export const serverConfig: ICommand = {
         server.boosterRole = role!.id;
 
         message = 'Booster role has been set to ' + role!.name + ' (Id:' + role!.id + ')';
+        break;
+      case 'set_lounge_channel':
+        server.loungeChannel = channel!.id;
+
+        message = 'Lounge channel has been set to ' + channel!.name + ' (Id:' + channel!.id + ')';
         break;
       default:
         throw new SlashCommandError('Subcommand not set', interaction);
