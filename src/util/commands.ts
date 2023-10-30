@@ -1,5 +1,4 @@
-import { EmbedBuilder } from '@discordjs/builders';
-import { AttachmentBuilder, Embed, InteractionReplyOptions } from 'discord.js';
+import { EmbedBuilder, AttachmentBuilder } from 'discord.js';
 import { AttachedEmbed } from '../types/AttachedEmbed';
 
 /**
