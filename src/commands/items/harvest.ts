@@ -78,7 +78,7 @@ export const harvest: ICommand = {
 };
 
 async function stealOrange(user: User, rinChan: RinChan): Promise<AttachedEmbed> {
-  rinChan.hunger = rinChan.hunger - 1;
+  rinChan.setHunger(rinChan.hunger - 1);
   user.harvestAttempts = user.harvestAttempts - 1;
 
   return await ReactionMaker.getEmbed(stealOrangeReact, user);
