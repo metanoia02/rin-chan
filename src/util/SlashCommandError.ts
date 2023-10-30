@@ -1,7 +1,6 @@
 import { Embed, EmbedBuilder, InteractionReplyOptions, MessageCreateOptions } from 'discord.js';
 
-export class SlashCommandError {
-  private message: string;
+export class SlashCommandError extends Error {
   private errorClass: any;
   /**
    *
@@ -10,7 +9,7 @@ export class SlashCommandError {
    * @param {Discord.channel} channel to send error in
    */
   constructor(message: string, errorClass: any) {
-    this.message = message;
+    super(message);
     this.errorClass = errorClass;
   }
 
