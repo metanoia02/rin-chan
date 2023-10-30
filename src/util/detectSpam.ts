@@ -1,5 +1,5 @@
 import { Message } from 'discord.js';
-import { Server } from 'src/entity/Server';
+import { Server } from '../entity/Server';
 
 export default async function detectSpam(message: Message): Promise<boolean> {
   if (getUserIdArr(message.content).length > 10) {

@@ -15,7 +15,6 @@ import { AttachedEmbed } from '../../types/AttachedEmbed';
 import { RinChan } from '../../entity/RinChan';
 import { ReactionMaker } from '../../reactions/ReactionMaker';
 import { clamp } from '../../util/clamp';
-import { config } from '../../config';
 import { SlashCommandError } from '../../util/SlashCommandError';
 
 const orangeGiveCooldown = 300000; //move to config
