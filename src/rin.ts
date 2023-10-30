@@ -6,12 +6,12 @@ import interactionCreate from './listeners/interactionCreate';
 import ready from './listeners/ready';
 import guildMemberAdd from './listeners/guildMemberAdd';
 import guildMemberRemove from './listeners/guildMemberRemove';
-import message from './listeners/message';
+import messageCreate from './listeners/messageCreate';
 
 console.log('Rin-chan is waking up...');
 
 ready(client);
-message(client);
+messageCreate(client);
 interactionCreate(client);
 guildMemberAdd(client);
 guildMemberRemove(client);

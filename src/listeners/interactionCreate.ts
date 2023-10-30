@@ -4,6 +4,7 @@ import { SlashCommandError } from '../util/SlashCommandError';
 import { Server } from '../entity/Server';
 import { QueryFailedError } from 'typeorm';
 import { User } from '../entity/User';
+import handleError from '../util/handleError';
 
 export default (client: Client): void => {
   client.on(Events.InteractionCreate, async (interaction: Interaction) => {
@@ -31,27 +32,9 @@ export default (client: Client): void => {
             ephemeral: true,
           });
         }
-
-        if (interaction.guildId) {
-          const server = await Server.get(interaction.guildId);
-
-          if (server.diaryChannel) {
-            const discordServer = await client.guilds.fetch(server.id);
-            const channel = await discordServer.channels.fetch(server.diaryChannel);
-
-            if (channel?.isTextBased()) {
-              if (error instanceof SlashCommandError) {
-                (channel as TextBasedChannel).send(error.getEmbed());
-              } else if (error instanceof QueryFailedError) {
-                (channel as TextBasedChannel).send(
-                  new SlashCommandError(error.message, error.parameters).getEmbed(),
-                );
-              }
-            }
-          }
+        if (error instanceof Error) {
+          handleError(error, interaction.guild!);
         }
-
-        console.log(error);
       }
     } else if (interaction.isAutocomplete()) {
       const command = CommandList.get(interaction.commandName);
