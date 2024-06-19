@@ -380,8 +380,8 @@ export const currency: ICommand = {
         );
         const currencyTable: any = await response.json();
 
-        const usdAmmount = currencyValue / currencyTable['data']['conversion_rates'][currencyFrom];
-        const convertedValue = currencyTable['data']['conversion_rates'][currencyTo] * usdAmmount;
+        const usdAmmount = currencyValue / currencyTable['conversion_rates'][currencyFrom];
+        const convertedValue = currencyTable['conversion_rates'][currencyTo] * usdAmmount;
 
         interaction.reply(
           currencyValue +
