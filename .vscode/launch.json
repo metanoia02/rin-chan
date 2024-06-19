@@ -4,10 +4,11 @@
   "editor.formatOnSave": true,
   "configurations": [
     {
-      "command": "npm start",
-      "name": "Run npm start",
+      "type": "node",
       "request": "launch",
-      "type": "node-terminal"
+      "name": "Launch Program",
+      "runtimeArgs": ["-r", "ts-node/register"],
+      "args": ["${workspaceFolder}/src/rin.ts"]
     }
   ]
 }
