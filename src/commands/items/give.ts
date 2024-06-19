@@ -34,7 +34,11 @@ async function giveChristmasPresent(
     time: 120000,
   });
 
+  let answered = false;
+
   collector.on('collect', async (message) => {
+    answered = true;
+
     setTimeout(() => {
       message.reply('*rustle rustle*...');
     }, 4000);
@@ -54,9 +58,11 @@ async function giveChristmasPresent(
   });
 
   collector.on('end', () => {
-    interaction.followUp(
-      commandEmbedEmote(`Don't worry! Maybe they'll be here to open it later`, 'rintap.gif'),
-    );
+    if (!answered) {
+      interaction.followUp(
+        commandEmbedEmote(`Don't worry! Maybe they'll be here to open it later`, 'rintap.gif'),
+      );
+    }
   });
 }
 
@@ -87,7 +93,7 @@ export const give: ICommand = {
     const targetDiscordUser = interaction.options.getUser('user');
 
     if (itemId && quantity != null && targetDiscordUser) {
-      const item = await Item.get(itemId);
+      const item = await Item.getItem(itemId);
       const targetUser = await User.get(targetDiscordUser?.id, interaction.guildId!);
       const sourceUser = await User.get(interaction.user.id, interaction.guildId!);
       const rinChan = await RinChan.get(interaction.guildId!);
