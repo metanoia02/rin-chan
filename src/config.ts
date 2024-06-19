@@ -4,12 +4,12 @@ export const config: Config = {
   orangeHarvestCooldown: 2400000,
 
   hungerIcon: [
-    './images/hunger/0.png', // Stuffed
-    './images/hunger/1.gif', // Turbo Flap
-    './images/hunger/2.gif', // Normal Flap
-    './images/hunger/3.png', // NoFlap
-    './images/hunger/4.png', // Pout
-    './images/hunger/5.png', // Angrey
+    './src/images/hunger/0.png', // Stuffed
+    './src/images/hunger/1.gif', // Turbo Flap
+    './src/images/hunger/2.gif', // Normal Flap
+    './src/images/hunger/3.png', // NoFlap
+    './src/images/hunger/4.png', // Pout
+    './src/images/hunger/5.png', // Angrey
   ],
 
   levels: [
