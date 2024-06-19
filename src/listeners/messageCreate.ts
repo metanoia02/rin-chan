@@ -48,20 +48,17 @@ async function isValidMessage(message: Message): Promise<boolean> {
   return true;
 }
 
-function handleTwitter(message: Message): boolean {
-  const twitterRegex = /^https:\/\/twitter\.com\/\S+\/status\/[0-9]+\S*/gi;
-  const xRegex = /^https:\/\/x\.com\/\S+\/status\/[0-9]+\S*/gi;
+/*
+function handleX(message: Message): boolean {
+  const xRegex = /^https:\/\/x\.com\/\S+\/status\/[0-9]+\S*/ /*gi;
 
-  if (twitterRegex.test(message.content)) {
-    message.channel.send(message.content.replace('twitter.com', 'vxtwitter.com'));
-    return true;
-  } else if (xRegex.test(message.content)) {
+  if (xRegex.test(message.content)) {
     message.channel.send(message.content.replace('x.com', 'Fixupx.com'));
     return true;
   } else {
     return false;
   }
-}
+}*/
 
 async function handleTriggerWords(message: Message): Promise<boolean> {
   const rinChan = await RinChan.get(message.guild!.id);
@@ -79,8 +76,6 @@ export default (client: Client): void => {
   client.on(Events.MessageCreate, async (message: Message) => {
     try {
       if (await isValidMessage(message)) {
-        if (await handleTwitter(message)) return;
-
         //Lowest priority
         if (await handleTriggerWords(message)) return;
 
