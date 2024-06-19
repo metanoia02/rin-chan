@@ -90,7 +90,7 @@ export class User extends BaseEntity {
   }
 
   async setQuantity(itemId: string, quantity: number) {
-    if (!Item.exists(itemId)) throw new SlashCommandError(`Invalid Item`, itemId);
+    if (!Item.itemExists(itemId)) throw new SlashCommandError(`Invalid Item`, itemId);
 
     if (quantity < 0)
       throw new SlashCommandError(
@@ -106,7 +106,7 @@ export class User extends BaseEntity {
     } else {
       inventoryStack = new InventoryStack();
       inventoryStack.user = this;
-      inventoryStack.item = await Item.get(itemId);
+      inventoryStack.item = await Item.getItem(itemId);
       inventoryStack.quantity = quantity;
 
       this.inventory.push(inventoryStack);
@@ -124,7 +124,7 @@ export class User extends BaseEntity {
   }
 
   async getQuantity(itemId: string): Promise<number> {
-    if (!Item.exists(itemId)) throw new SlashCommandError('Invalid Item', itemId);
+    if (!Item.itemExists(itemId)) throw new SlashCommandError('Invalid Item', itemId);
 
     const inventoryStack = this.inventory?.findLast((stack) => stack.item.id == itemId);
 

@@ -40,7 +40,7 @@ export class Item extends BaseEntity {
   @OneToMany(() => ItemAlts, (alts) => alts.item)
   public alts?: ItemAlts;
 
-  static async get(itemId: string): Promise<Item> {
+  static async getItem(itemId: string): Promise<Item> {
     const item = await Item.findOne({ where: { id: itemId } });
     if (item) {
       return item;
@@ -49,7 +49,7 @@ export class Item extends BaseEntity {
     }
   }
 
-  static async exists(itemAlt: string): Promise<boolean> {
+  static async itemExists(itemAlt: string): Promise<boolean> {
     if (
       (await Item.findOne({ where: { id: itemAlt } })) ||
       (await Item.findOne({ where: { name: itemAlt } })) ||

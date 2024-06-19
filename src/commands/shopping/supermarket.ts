@@ -104,8 +104,8 @@ export const supermarket: ICommand = {
         const user = await User.get(interaction.user.id, interaction.guildId!);
 
         if (quantity && itemId) {
-          if (await Item.exists(itemId)) {
-            const item = await Item.get(itemId);
+          if (await Item.itemExists(itemId)) {
+            const item = await Item.getItem(itemId);
 
             //generic checks
             //selling/buying same as currency?

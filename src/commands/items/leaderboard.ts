@@ -42,7 +42,7 @@ export const leaderboard: ICommand = {
     const itemId = interaction.options.getString('item');
 
     if (itemId) {
-      const item = await Item.get(itemId);
+      const item = await Item.getItem(itemId);
       const board = await getLeaderboard(itemId, 20);
       const content: LeaderboardContent = {
         itemPlural: capitalizeFirstLetter(item.plural),

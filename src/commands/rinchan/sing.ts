@@ -79,7 +79,7 @@ export const sing: ICommand = {
     const user = await User.get(interaction.user.id, interaction.guildId!);
     const songId = interaction.options.getString('song');
 
-    if (!songId || !(await Item.exists(songId))) {
+    if (!songId || !(await Item.itemExists(songId))) {
       interaction.reply(commandEmbedEmote(`Are you sure that's a song...`, 'rinwha.png'));
       return;
     }
@@ -93,7 +93,7 @@ export const sing: ICommand = {
       return;
     }
 
-    const song = await Item.get(songId);
+    const song = await Item.getItem(songId);
     const server = await Server.get(interaction.guildId!);
     const discordServer = await interaction.client.guilds.fetch(server.id);
 

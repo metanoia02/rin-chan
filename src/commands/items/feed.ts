@@ -91,8 +91,8 @@ export const feed: ICommand = {
   async execute(interaction: ChatInputCommandInteraction) {
     const itemId = interaction.options.getString('item');
 
-    if (itemId && (await Item.exists(itemId))) {
-      const item = await Item.get(itemId);
+    if (itemId && (await Item.itemExists(itemId))) {
+      const item = await Item.getItem(itemId);
       const user = await User.get(interaction.user.id, interaction.guildId!);
       const rinChan = await RinChan.get(interaction.guildId!);
 

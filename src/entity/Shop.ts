@@ -33,7 +33,7 @@ export class Shop extends BaseEntity {
   public stock!: InventoryStack[];
 
   async setQuantity(itemId: string, quantity: number) {
-    if (!Item.exists(itemId)) throw new SlashCommandError(`Invalid Item`, itemId);
+    if (!Item.itemExists(itemId)) throw new SlashCommandError(`Invalid Item`, itemId);
 
     if (quantity < 0)
       throw new SlashCommandError(
@@ -48,7 +48,7 @@ export class Shop extends BaseEntity {
     } else {
       inventoryStack = new InventoryStack();
       inventoryStack.shop = this;
-      inventoryStack.item = await Item.get(itemId);
+      inventoryStack.item = await Item.getItem(itemId);
       inventoryStack.quantity = quantity;
 
       this.stock.push(inventoryStack);
@@ -62,7 +62,7 @@ export class Shop extends BaseEntity {
   }
 
   async getQuantity(itemId: string): Promise<number> {
-    if (!Item.exists(itemId)) throw new SlashCommandError('Invalid Item', itemId);
+    if (!Item.itemExists(itemId)) throw new SlashCommandError('Invalid Item', itemId);
 
     const inventoryStack = this.stock?.findLast((stack) => stack.item.id == itemId);
 

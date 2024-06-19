@@ -38,12 +38,12 @@ export const giveEveryone: ICommand = {
         return;
       }
 
-      if (!(await Item.exists(itemId))) {
+      if (!(await Item.itemExists(itemId))) {
         interaction.reply(commandEmbedEmote('Invalid item.', 'rinconfuse.png'));
         return;
       }
 
-      const item = await Item.get(itemId);
+      const item = await Item.getItem(itemId);
       const users = await User.find();
 
       const entityString = quantity > 1 ? item.plural : item.determiner + ' ' + item.name;
