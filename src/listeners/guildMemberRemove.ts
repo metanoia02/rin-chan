@@ -4,14 +4,14 @@ import { Server } from '../entity/Server';
 import { User } from '../entity/User';
 
 export default (client: Client): void => {
-  client.on('guildMemberRemove', async (member) => {
+  client.on(Events.GuildMemberRemove, async (member) => {
     const server = await Server.get(member.guild.id);
     const discordServer = await client.guilds.fetch(server.id);
     if (server.loungeChannel) {
       const loungeChannel = await discordServer.channels.fetch(server.loungeChannel);
 
       if (loungeChannel?.isTextBased) {
-        const attachment = new AttachmentBuilder(`./images/leave/leave.gif`, {
+        const attachment = new AttachmentBuilder(`./src/images/leave/leave.gif`, {
           name: 'leave.gif',
         });
         const embed = new EmbedBuilder().setColor('#FFD700').setImage(`attachment://leave.gif`);
